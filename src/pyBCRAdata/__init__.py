@@ -9,7 +9,7 @@ from .getter import APIGetter
 from .connector import APIConnector
 from .config import APIConfig
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 __author__ = 'Diego Mora'
 __email__ = 'morabdiego@gmail.com'
 

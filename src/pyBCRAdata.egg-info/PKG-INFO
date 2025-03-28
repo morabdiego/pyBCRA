@@ -1,4 +1,20 @@
-# pyBCRAdata v0.1.1
+Metadata-Version: 2.4
+Name: pyBCRAdata
+Version: 0.1
+Summary: A Python client for accessing BCRA (Banco Central de la República Argentina) data
+Author-email: Diego Mora <morabdiego@gmail.com>
+Project-URL: Homepage, https://github.com/morabdiego/pyBCRAdata
+Project-URL: Bug Tracker, https://github.com/morabdiego/pyBCRAdata/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas>=1.0.0
+Requires-Dist: requests>=2.25.0
+Dynamic: license-file
+
+# pyBCRAdata v0.1
 
 A Python client for accessing monetary statistics and foreign exchange data published by the Central Bank of Argentina (BCRA). Designed for economists, analysts, and developers working with macroeconomic data.
 
@@ -18,7 +34,7 @@ No authentication token is required to access the data. However, please note:
 - Consider implementing caching for frequently accessed data
 
 ```python
-from pyBCRAdata import APIGetter
+from bcra_data_client import APIGetter
 
 # Initialize the client
 client = APIGetter()
@@ -32,7 +48,7 @@ df = client.get_monetary_data()
 The client supports various SSL verification options:
 
 ```python
-from pyBCRAdata import APIGetter
+from bcra_data_client import APIGetter
 
 # Use system certificates (default)
 client = APIGetter()

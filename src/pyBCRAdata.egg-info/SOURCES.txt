@@ -1,0 +1,14 @@
+LICENSE
+MANIFEST.in
+README.md
+pyproject.toml
+src/pyBCRAdata/__init__.py
+src/pyBCRAdata/config.py
+src/pyBCRAdata/connector.py
+src/pyBCRAdata/getter.py
+src/pyBCRAdata.egg-info/PKG-INFO
+src/pyBCRAdata.egg-info/SOURCES.txt
+src/pyBCRAdata.egg-info/dependency_links.txt
+src/pyBCRAdata.egg-info/requires.txt
+src/pyBCRAdata.egg-info/top_level.txt
+src/pyBCRAdata/cert/ca.pem
