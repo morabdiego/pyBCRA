@@ -7,7 +7,7 @@ import json
 from .config import APIConfig
 from .connector import APIConnector
 
-class APIGetter:
+class BCRAclient:
     """
     A comprehensive class for fetching monetary and currency-related data from an API.
 
@@ -21,7 +21,7 @@ class APIGetter:
         verify_ssl: bool = True
     ):
         """
-        Initialize the APIGetter with API configuration.
+        Initialize the BCRAdata: with API configuration.
 
         Args:
             base_url (str): Base URL for the API
