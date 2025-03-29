@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from importlib.resources import files
 
 @dataclass(frozen=True)
 class APIConfig:
@@ -16,8 +17,8 @@ class APIConfig:
     # Currency API configurations
     CURRENCY_BASE_ENDPOINT: str = '/estadisticascambiarias/v1.0'
 
-    # Certificate path
-    CERT_PATH: str = 'src/pyBCRAdata/cert/ca.pem'
+    # Certificate path using importlib.resources
+    CERT_PATH: str = str(files('pyBCRAdata').joinpath('cert/ca.pem'))
 
     # Derived currency-related endpoints
     CURRENCY_MASTER_URL: str = f'{CURRENCY_BASE_ENDPOINT}/Maestros/Divisas'

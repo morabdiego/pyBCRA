@@ -1,8 +1,8 @@
-from pyBCRAdata import APIGetter
+from pyBCRAdata import BCRAclient
 
 # Initialize the client with your API token
-client = APIGetter()
+client = BCRAclient()
 
 # Try getting some data
-df = client.get_monetary_data()
+df = client.get_currency_quotes()
 print(df.head())
