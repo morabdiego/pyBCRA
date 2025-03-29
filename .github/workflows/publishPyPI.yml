@@ -1,9 +1,11 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+# @ts-ignore
 name: Publish to PyPI
 
 on:
   push:
     branches:
-      - main
+      - main  # o master, según tu rama principal
 
 jobs:
   publish:
