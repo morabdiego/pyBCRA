@@ -1,4 +1,4 @@
-# pyBCRAdata v0.1.1
+# pyBCRAdata v0.1.2
 
 A Python client for accessing monetary statistics and foreign exchange data published by the Central Bank of Argentina (BCRA). Designed for economists, analysts, and developers working with macroeconomic data.
 
@@ -31,7 +31,7 @@ df = client.get_monetary_data()
 
 ### Get Monetary Statistics
 ```python
-# Basic monetary data query
+# Basic monetary data query. *Get all id_variables availables
 df = client.get_monetary_data()
 
 # With filters and pagination
@@ -99,7 +99,7 @@ client = APIGetter()
     - Custom certificates can be obtained from api.bcra.gob.ar
 
 ### Monetary Data Methods
-- `get_monetary_data(id_variable=None, desde=None, hasta=None, offset=None, limit=None, debug=False)`
+- `get_monetary_data(id_variable=None, desde=None, hasta=None, offset=None, limit=None, debug=False, return_json=False)`
     - Get monetary statistics with optional variable ID, date range and pagination
     - `id_variable`: Specific monetary variable ID
     - `desde`: Start date (YYYY-MM-DD)
@@ -107,20 +107,23 @@ client = APIGetter()
     - `offset`: Pagination offset
     - `limit`: Maximum number of records
     - `debug`: Return URL instead of data
+    - `return_json`: Return data as JSON instead of DataFrame
 
 ### Currency Data Methods
-- `get_currency_master(debug=False)`
+- `get_currency_master(debug=False, return_json=False)`
     - Get list of available currencies and their codes
     - `debug`: Return URL instead of data
+    - `return_json`: Return data as JSON instead of DataFrame
 
-- `get_currency_quotes(fecha=None, offset=None, limit=None, debug=False)`
+- `get_currency_quotes(fecha=None, offset=None, limit=None, debug=False, return_json=False)`
     - Get exchange rates for all currencies
     - `fecha`: Specific date (YYYY-MM-DD)
     - `offset`: Pagination offset
     - `limit`: Maximum number of records
     - `debug`: Return URL instead of data
+    - `return_json`: Return data as JSON instead of DataFrame
 
-- `get_currency_timeseries(moneda, fechadesde=None, fechahasta=None, offset=None, limit=None, debug=False)`
+- `get_currency_timeseries(moneda, fechadesde=None, fechahasta=None, offset=None, limit=None, debug=False, return_json=False)`
     - Get historical exchange rates for a specific currency
     - `moneda`: Currency ISO code (Required)
     - `fechadesde`: Start date (YYYY-MM-DD)
@@ -128,10 +131,11 @@ client = APIGetter()
     - `offset`: Pagination offset
     - `limit`: Maximum number of records
     - `debug`: Return URL instead of data
+    - `return_json`: Return data as JSON instead of DataFrame
 
 ## 🛠️ Data Response Format
 
-All methods return pandas DataFrames with clean, ready-to-use data. For more information about the structure of the API's data, refer to the BCRA's documentation or test the methods directly.
+All methods return pandas DataFrames by default, but can return JSON if `return_json=True` is specified. For more information about the structure of the API's data, refer to the BCRA's documentation or test the methods directly.
 
 ## 🗺️ Roadmap
 

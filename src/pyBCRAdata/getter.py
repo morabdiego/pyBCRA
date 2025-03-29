@@ -1,7 +1,8 @@
-from typing import Optional
+from typing import Optional, Union
 import pandas as pd
 import requests
 import warnings
+import json
 
 from .config import APIConfig
 from .connector import APIConnector
@@ -50,8 +51,9 @@ class APIGetter:
         hasta: Optional[str] = None,
         offset: Optional[int] = None,
         limit: Optional[int] = None,
-        debug: bool = False
-    ) -> pd.DataFrame:
+        debug: bool = False,
+        return_json: bool = False
+    ) -> Union[pd.DataFrame, dict]:
         """
         Retrieve monetary data from the API with advanced filtering capabilities.
 
@@ -62,9 +64,10 @@ class APIGetter:
             offset (Optional[int]): Pagination offset
             limit (Optional[int]): Maximum number of records to retrieve
             debug (bool): Return constructed URL instead of data if True
+            return_json (bool): Return JSON instead of DataFrame if True
 
         Returns:
-            pd.DataFrame: Monetary data
+            Union[pd.DataFrame, dict]: Monetary data as DataFrame or JSON
         """
         endpoint = f"{APIConfig.MONETARY_ENDPOINT}/{id_variable}" if id_variable else APIConfig.MONETARY_ENDPOINT
         params = {
@@ -74,35 +77,45 @@ class APIGetter:
             "limit": limit
         }
 
-        return self.api_connector.fetch_data(
+        response = self.api_connector.fetch_data(
             endpoint=f"{self.api_connector.base_url}{endpoint}",
             params={k: v for k, v in params.items() if v is not None},
             debug=debug
         )
 
-    def get_currency_master(self, debug: bool = False) -> pd.DataFrame:
+        return response.to_dict('records') if return_json else response
+
+    def get_currency_master(
+        self,
+        debug: bool = False,
+        return_json: bool = False
+    ) -> Union[pd.DataFrame, dict]:
         """
         Retrieve master currency data from the API.
 
         Args:
             debug (bool): Return constructed URL instead of data if True
+            return_json (bool): Return JSON instead of DataFrame if True
 
         Returns:
-            pd.DataFrame: Master currency data
+            Union[pd.DataFrame, dict]: Master currency data as DataFrame or JSON
         """
-        return self.api_connector.fetch_data(
+        response = self.api_connector.fetch_data(
             endpoint=f"{self.api_connector.base_url}{APIConfig.CURRENCY_MASTER_URL}",
             params={},
             debug=debug
         )
+
+        return response.to_dict('records') if return_json else response
 
     def get_currency_quotes(
         self,
         fecha: Optional[str] = None,
         offset: Optional[int] = None,
         limit: Optional[int] = None,
-        debug: bool = False
-    ) -> pd.DataFrame:
+        debug: bool = False,
+        return_json: bool = False
+    ) -> Union[pd.DataFrame, dict]:
         """
         Retrieve currency quotes for a specific date.
 
@@ -111,9 +124,10 @@ class APIGetter:
             offset (Optional[int]): Pagination offset
             limit (Optional[int]): Maximum number of records to retrieve
             debug (bool): Return constructed URL instead of data if True
+            return_json (bool): Return JSON instead of DataFrame if True
 
         Returns:
-            pd.DataFrame: Currency quotes data
+            Union[pd.DataFrame, dict]: Currency quotes data as DataFrame or JSON
         """
         params = {
             'fecha': fecha,
@@ -121,11 +135,13 @@ class APIGetter:
             'limit': limit
         }
 
-        return self.api_connector.fetch_data(
+        response = self.api_connector.fetch_data(
             endpoint=f"{self.api_connector.base_url}{APIConfig.CURRENCY_QUOTES_URL}",
             params={k: v for k, v in params.items() if v is not None},
             debug=debug
         )
+
+        return response.to_dict('records') if return_json else response
 
     def get_currency_timeseries(
         self,
@@ -134,8 +150,9 @@ class APIGetter:
         fechahasta: Optional[str] = None,
         offset: Optional[int] = None,
         limit: Optional[int] = None,
-        debug: bool = False
-    ) -> pd.DataFrame:
+        debug: bool = False,
+        return_json: bool = False
+    ) -> Union[pd.DataFrame, dict]:
         """
         Retrieve historical currency data for a specific currency.
 
@@ -146,9 +163,10 @@ class APIGetter:
             offset (Optional[int]): Pagination offset
             limit (Optional[int]): Maximum number of records to retrieve
             debug (bool): Return constructed URL instead of data if True
+            return_json (bool): Return JSON instead of DataFrame if True
 
         Returns:
-            pd.DataFrame: Historical currency data
+            Union[pd.DataFrame, dict]: Historical currency data as DataFrame or JSON
         """
         if not moneda:
             raise ValueError("El código de moneda es requerido")
@@ -160,8 +178,10 @@ class APIGetter:
             'limit': limit
         }
 
-        return self.api_connector.fetch_data(
+        response = self.api_connector.fetch_data(
             endpoint=f"{self.api_connector.base_url}{APIConfig.CURRENCY_QUOTES_URL}/{moneda}",
             params={k: v for k, v in params.items() if v is not None},
             debug=debug
         )
+
+        return response.to_dict('records') if return_json else response
