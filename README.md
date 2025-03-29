@@ -27,33 +27,6 @@ client = APIGetter()
 df = client.get_monetary_data()
 ```
 
-## 🔧 SSL Configuration
-
-The client supports various SSL verification options:
-
-```python
-from pyBCRAdata import APIGetter
-
-# Use system certificates (default)
-client = APIGetter()
-
-# Use custom certificate
-client = APIGetter(cert_path="/path/to/your/custom/cert.pem")
-
-# Disable SSL verification (not recommended for production)
-client = APIGetter(verify_ssl=False)
-```
-
-**Important SSL Certificate Notes:**
-- If using a custom certificate, ensure it includes all three required certificates:
-  1. Root certificate
-  2. Intermediate certificate
-  3. Server certificate
-- You can obtain these certificates by visiting api.bcra.gob.ar in any web browser and downloading the .pem file
-- Combining certificates in a single .pem file is required for proper SSL verification
-
-**Note**: Disabling SSL verification is not recommended for production environments as it makes your application vulnerable to man-in-the-middle attacks.
-
 ## 🏦 Monetary Data
 
 ### Get Monetary Statistics
@@ -80,7 +53,7 @@ currencies = client.get_currency_master()
 print(currencies.head())
 
 # Debug mode
-url = client.get_currency_master(debug=True)
+api_url = client.get_currency_master(debug=True)
 ```
 
 ### 2. Get Currency Quotes
@@ -112,36 +85,49 @@ print(usd_history.head())
 
 ## 📚 API Reference
 
+### Initialization
+```python
+from pyBCRAdata import APIGetter
+
+# Basic initialization with system certificates
+client = APIGetter()
+```
+- `APIGetter(cert_path=None, verify_ssl=True)`
+    - `cert_path`: If you need to use a custom SSL certificate, specify its path here. Use this only if the default certificate has expired.
+    - `verify_ssl`: If SSL certificate has expired you can disable SSL verification. Not recommended for production environments
+    - If using a custom certificate, ensure it includes all required certificates (root, intermediate, server)
+    - Custom certificates can be obtained from api.bcra.gob.ar
+
 ### Monetary Data Methods
 - `get_monetary_data(id_variable=None, desde=None, hasta=None, offset=None, limit=None, debug=False)`
-  - Get monetary statistics with optional variable ID, date range and pagination
-  - `id_variable`: Specific monetary variable ID
-  - `desde`: Start date (YYYY-MM-DD)
-  - `hasta`: End date (YYYY-MM-DD)
-  - `offset`: Pagination offset
-  - `limit`: Maximum number of records
-  - `debug`: Return URL instead of data
+    - Get monetary statistics with optional variable ID, date range and pagination
+    - `id_variable`: Specific monetary variable ID
+    - `desde`: Start date (YYYY-MM-DD)
+    - `hasta`: End date (YYYY-MM-DD)
+    - `offset`: Pagination offset
+    - `limit`: Maximum number of records
+    - `debug`: Return URL instead of data
 
 ### Currency Data Methods
 - `get_currency_master(debug=False)`
-  - Get list of available currencies and their codes
-  - `debug`: Return URL instead of data
+    - Get list of available currencies and their codes
+    - `debug`: Return URL instead of data
 
 - `get_currency_quotes(fecha=None, offset=None, limit=None, debug=False)`
-  - Get exchange rates for all currencies
-  - `fecha`: Specific date (YYYY-MM-DD)
-  - `offset`: Pagination offset
-  - `limit`: Maximum number of records
-  - `debug`: Return URL instead of data
+    - Get exchange rates for all currencies
+    - `fecha`: Specific date (YYYY-MM-DD)
+    - `offset`: Pagination offset
+    - `limit`: Maximum number of records
+    - `debug`: Return URL instead of data
 
 - `get_currency_timeseries(moneda, fechadesde=None, fechahasta=None, offset=None, limit=None, debug=False)`
-  - Get historical exchange rates for a specific currency
-  - `moneda`: Currency ISO code (Required)
-  - `fechadesde`: Start date (YYYY-MM-DD)
-  - `fechahasta`: End date (YYYY-MM-DD)
-  - `offset`: Pagination offset
-  - `limit`: Maximum number of records
-  - `debug`: Return URL instead of data
+    - Get historical exchange rates for a specific currency
+    - `moneda`: Currency ISO code (Required)
+    - `fechadesde`: Start date (YYYY-MM-DD)
+    - `fechahasta`: End date (YYYY-MM-DD)
+    - `offset`: Pagination offset
+    - `limit`: Maximum number of records
+    - `debug`: Return URL instead of data
 
 ## 🛠️ Data Response Format
 
