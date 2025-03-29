@@ -2,6 +2,8 @@
 
 A Python client for accessing monetary statistics and foreign exchange data published by the Central Bank of Argentina (BCRA). Designed for economists, analysts, and developers working with macroeconomic data.
 
+📍 **GitHub Repository**: [https://github.com/morabdiego/pyBCRAdata](https://github.com/morabdiego/pyBCRAdata)
+
 ## 📦 Installation
 
 ```bash
@@ -18,20 +20,23 @@ No authentication token is required to access the data. However, please note:
 - Consider implementing caching for frequently accessed data
 
 ```python
-from pyBCRAdata import APIGetter
+from pyBCRAdata import BCRAclient
+# You can import pyBCRAdata and methods directly. For example:
+# import pyBCRAdata as client
 
 # Initialize the client
-client = APIGetter()
+client = BCRAclient()
 
 # Make API calls
 df = client.get_monetary_data()
 ```
 
+
 ## 🏦 Monetary Data
 
 ### Get Monetary Statistics
 ```python
-# Basic monetary data query. *Get all id_variables availables
+# Basic monetary data query. Get all id_variables availables
 df = client.get_monetary_data()
 
 # With filters and pagination
@@ -87,12 +92,16 @@ print(usd_history.head())
 
 ### Initialization
 ```python
-from pyBCRAdata import APIGetter
+from pyBCRAdata import BCRAclient
 
 # Basic initialization with system certificates
-client = APIGetter()
+client = BCRAclient()
 ```
-- `APIGetter(cert_path=None, verify_ssl=True)`
+```python
+import pyBCRAdata as client
+```
+
+- `BCRAclient(cert_path=None, verify_ssl=True)`
     - `cert_path`: If you need to use a custom SSL certificate, specify its path here. Use this only if the default certificate has expired.
     - `verify_ssl`: If SSL certificate has expired you can disable SSL verification. Not recommended for production environments
     - If using a custom certificate, ensure it includes all required certificates (root, intermediate, server)
@@ -143,6 +152,7 @@ Future versions will include:
 - SSL certificate manager
 - Type hints for all data queries
 - Integration with BCRA's Debtors and Checks APIs
+- Examples in Google Colab
 - Additional data validation and error handling
 
 ## 👋 About
