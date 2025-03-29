@@ -25,7 +25,7 @@ classifiers = [
     "Topic :: Office/Business :: Financial",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = [https://pypi.org/classifiers/
+dependencies = [
     "pandas>=1.0.0",
     "requests>=2.25.0",
 ]

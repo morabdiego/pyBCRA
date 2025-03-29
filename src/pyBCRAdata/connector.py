@@ -102,7 +102,8 @@ class APIConnector:
         endpoint: str,
         params: Optional[Dict[str, Union[str, int]]] = None,
         results_key: str = 'results',
-        debug: bool = False
+        debug: bool = False,
+        is_currency: bool = False  # Nuevo parámetro para identificar datos de divisas
     ) -> pd.DataFrame:
         """
         Fetch data from the API and transform it into a pandas DataFrame.
@@ -112,6 +113,7 @@ class APIConnector:
             params (Optional[Dict]): Optional query parameters
             results_key (str): Key containing the data in the response
             debug (bool): Return URL instead of fetching data
+            is_currency (bool): Flag to indicate if the data is from currency endpoints
 
         Returns:
             pd.DataFrame: Parsed data or empty DataFrame
@@ -119,7 +121,7 @@ class APIConnector:
         full_url = self.build_url(endpoint, params)
 
         if debug:
-            return pd.DataFrame({'url': [full_url]})
+            return str(full_url)
 
         try:
             data = self.connect_to_api(endpoint, params)
@@ -133,6 +135,17 @@ class APIConnector:
             if not results:
                 self.logger.warning(f"No '{results_key}' found in API response")
                 return pd.DataFrame()
+
+            # Manejo especial para datos de divisas
+            if is_currency:
+                if isinstance(results, dict) and 'detalle' in results:
+                    # Crear un DataFrame con los detalles y agregar la fecha
+                    df = pd.DataFrame(results['detalle'])
+                    df['fecha'] = results.get('fecha')
+                    return df
+                else:
+                    self.logger.warning("Unexpected currency data structure")
+                    return pd.DataFrame()
 
             return pd.DataFrame(results)
 

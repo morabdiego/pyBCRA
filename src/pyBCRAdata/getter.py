@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Dict
 import pandas as pd
 import requests
 import warnings
@@ -103,42 +103,32 @@ class APIGetter:
         response = self.api_connector.fetch_data(
             endpoint=f"{self.api_connector.base_url}{APIConfig.CURRENCY_MASTER_URL}",
             params={},
-            debug=debug
+            debug=debug,
+            is_currency=True  # Agregado el parámetro is_currency
         )
 
         return response.to_dict('records') if return_json else response
 
     def get_currency_quotes(
         self,
-        fecha: Optional[str] = None,
-        offset: Optional[int] = None,
-        limit: Optional[int] = None,
         debug: bool = False,
         return_json: bool = False
     ) -> Union[pd.DataFrame, dict]:
         """
-        Retrieve currency quotes for a specific date.
+        Get current currency quotes from the API.
 
         Args:
-            fecha (Optional[str]): Specific date (YYYY-MM-DD)
-            offset (Optional[int]): Pagination offset
-            limit (Optional[int]): Maximum number of records to retrieve
             debug (bool): Return constructed URL instead of data if True
             return_json (bool): Return JSON instead of DataFrame if True
 
         Returns:
-            Union[pd.DataFrame, dict]: Currency quotes data as DataFrame or JSON
+            Union[pd.DataFrame, dict]: Currency quotes as DataFrame or JSON
         """
-        params = {
-            'fecha': fecha,
-            'offset': offset,
-            'limit': limit
-        }
-
         response = self.api_connector.fetch_data(
             endpoint=f"{self.api_connector.base_url}{APIConfig.CURRENCY_QUOTES_URL}",
-            params={k: v for k, v in params.items() if v is not None},
-            debug=debug
+            params={},
+            debug=debug,
+            is_currency=True  # Agregado el parámetro is_currency
         )
 
         return response.to_dict('records') if return_json else response
@@ -181,7 +171,8 @@ class APIGetter:
         response = self.api_connector.fetch_data(
             endpoint=f"{self.api_connector.base_url}{APIConfig.CURRENCY_QUOTES_URL}/{moneda}",
             params={k: v for k, v in params.items() if v is not None},
-            debug=debug
+            debug=debug,
+            is_currency=True  # Agregado el parámetro is_currency
         )
 
         return response.to_dict('records') if return_json else response

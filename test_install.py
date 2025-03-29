@@ -4,5 +4,5 @@ from pyBCRAdata import APIGetter
 client = APIGetter()
 
 # Try getting some data
-df = client.get_monetary_data()
+df = client.get_currency_quotes()
 print(df.head())
