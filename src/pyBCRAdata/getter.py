@@ -1,8 +1,7 @@
-from typing import Optional, Union, Dict
+from typing import Optional, Union, Dict, Any
 import pandas as pd
 import requests
 import warnings
-import json
 
 from .config import APIConfig
 from .connector import APIConnector
@@ -10,8 +9,6 @@ from .connector import APIConnector
 class BCRAclient:
     """
     A comprehensive class for fetching monetary and currency-related data from an API.
-
-    Provides methods to retrieve monetary and currency data with flexible filtering options.
     """
 
     def __init__(
@@ -21,13 +18,12 @@ class BCRAclient:
         verify_ssl: bool = True
     ):
         """
-        Initialize the BCRAdata: with API configuration.
+        Initialize the BCRAclient.
 
         Args:
-            base_url (str): Base URL for the API
-            cert_path (Optional[str]): Path to custom SSL certificate. If None, uses system's certificates
-            verify_ssl (bool): Whether to verify SSL certificates. Set to False to disable verification
-                                (not recommended for production)
+            base_url (str): Base URL for the API. Defaults to APIConfig.BASE_URL.
+            cert_path (Optional[str]): Path to the SSL certificate. Defaults to APIConfig.CERT_PATH.
+            verify_ssl (bool): Whether to verify SSL certificates. Defaults to True.
         """
         if not verify_ssl:
             warnings.warn(
@@ -36,143 +32,97 @@ class BCRAclient:
             )
             requests.packages.urllib3.disable_warnings()
 
-        # Use custom cert path, fallback to default, or None for system certs
-        effective_cert_path = cert_path or APIConfig.CERT_PATH if verify_ssl else False
-
         self.api_connector = APIConnector(
             base_url=base_url,
-            cert_path=effective_cert_path
+            cert_path=cert_path or (APIConfig.CERT_PATH if verify_ssl else False)
         )
 
-    def get_monetary_data(
-        self,
-        id_variable: Optional[str] = None,
-        desde: Optional[str] = None,
-        hasta: Optional[str] = None,
-        offset: Optional[int] = None,
-        limit: Optional[int] = None,
-        debug: bool = False,
-        return_json: bool = False
-    ) -> Union[pd.DataFrame, dict]:
+    def get_monetary_data(self, **kwargs) -> Union[pd.DataFrame, dict]:
         """
-        Retrieve monetary data from the API with advanced filtering capabilities.
-
-        Args:
-            id_variable (Optional[str]): Specific variable ID to fetch
-            desde (Optional[str]): Start date (YYYY-MM-DD)
-            hasta (Optional[str]): End date (YYYY-MM-DD)
-            offset (Optional[int]): Pagination offset
-            limit (Optional[int]): Maximum number of records to retrieve
-            debug (bool): Return constructed URL instead of data if True
-            return_json (bool): Return JSON instead of DataFrame if True
-
-        Returns:
-            Union[pd.DataFrame, dict]: Monetary data as DataFrame or JSON
+        Retrieve monetary data from the API.
         """
-        endpoint = f"{APIConfig.MONETARY_ENDPOINT}/{id_variable}" if id_variable else APIConfig.MONETARY_ENDPOINT
-        params = {
-            "desde": desde,
-            "hasta": hasta,
-            "offset": offset,
-            "limit": limit
-        }
+        valid_params = {"id_variable", "desde", "hasta", "offset", "limit", "debug", "return_json"}
+        params = self._validate_and_filter_params(kwargs, valid_params)
+        endpoint = self._build_endpoint(APIConfig.MONETARY_ENDPOINT, params.pop("id_variable", ""))
+        return self._fetch_and_process(endpoint, params, params.pop("debug", False), params.pop("return_json", False))
 
-        response = self.api_connector.fetch_data(
-            endpoint=f"{self.api_connector.base_url}{endpoint}",
-            params={k: v for k, v in params.items() if v is not None},
-            debug=debug
-        )
-
-        return response.to_dict('records') if return_json else response
-
-    def get_currency_master(
-        self,
-        debug: bool = False,
-        return_json: bool = False
-    ) -> Union[pd.DataFrame, dict]:
+    def get_currency_master(self, **kwargs) -> Union[pd.DataFrame, dict]:
         """
         Retrieve master currency data from the API.
-
-        Args:
-            debug (bool): Return constructed URL instead of data if True
-            return_json (bool): Return JSON instead of DataFrame if True
-
-        Returns:
-            Union[pd.DataFrame, dict]: Master currency data as DataFrame or JSON
         """
-        response = self.api_connector.fetch_data(
-            endpoint=f"{self.api_connector.base_url}{APIConfig.CURRENCY_MASTER_URL}",
-            params={},
-            debug=debug,
-            is_currency=True  # Agregado el parámetro is_currency
-        )
+        valid_params = {"debug", "return_json"}
+        params = self._validate_and_filter_params(kwargs, valid_params)
+        endpoint = self._build_endpoint(APIConfig.CURRENCY_MASTER_URL)
+        return self._fetch_and_process(endpoint, params, params.pop("debug", False), params.pop("return_json", False), is_currency=True)
 
-        return response.to_dict('records') if return_json else response
-
-    def get_currency_quotes(
-        self,
-        debug: bool = False,
-        return_json: bool = False
-    ) -> Union[pd.DataFrame, dict]:
+    def get_currency_quotes(self, **kwargs) -> Union[pd.DataFrame, dict]:
         """
-        Get current currency quotes from the API.
-
-        Args:
-            debug (bool): Return constructed URL instead of data if True
-            return_json (bool): Return JSON instead of DataFrame if True
-
-        Returns:
-            Union[pd.DataFrame, dict]: Currency quotes as DataFrame or JSON
+        Retrieve current currency quotes from the API.
         """
-        response = self.api_connector.fetch_data(
-            endpoint=f"{self.api_connector.base_url}{APIConfig.CURRENCY_QUOTES_URL}",
-            params={},
-            debug=debug,
-            is_currency=True  # Agregado el parámetro is_currency
-        )
+        valid_params = {"debug", "return_json"}
+        params = self._validate_and_filter_params(kwargs, valid_params)
+        endpoint = self._build_endpoint(APIConfig.CURRENCY_QUOTES_URL)
+        return self._fetch_and_process(endpoint, params, params.pop("debug", False), params.pop("return_json", False), is_currency=True)
 
-        return response.to_dict('records') if return_json else response
-
-    def get_currency_timeseries(
-        self,
-        moneda: str,
-        fechadesde: Optional[str] = None,
-        fechahasta: Optional[str] = None,
-        offset: Optional[int] = None,
-        limit: Optional[int] = None,
-        debug: bool = False,
-        return_json: bool = False
-    ) -> Union[pd.DataFrame, dict]:
+    def get_currency_timeseries(self, moneda: str, **kwargs) -> Union[pd.DataFrame, dict]:
         """
         Retrieve historical currency data for a specific currency.
-
-        Args:
-            moneda (str): Currency ISO code
-            fechadesde (Optional[str]): Start date (YYYY-MM-DD)
-            fechahasta (Optional[str]): End date (YYYY-MM-DD)
-            offset (Optional[int]): Pagination offset
-            limit (Optional[int]): Maximum number of records to retrieve
-            debug (bool): Return constructed URL instead of data if True
-            return_json (bool): Return JSON instead of DataFrame if True
-
-        Returns:
-            Union[pd.DataFrame, dict]: Historical currency data as DataFrame or JSON
         """
         if not moneda:
             raise ValueError("El código de moneda es requerido")
 
-        params = {
-            'fechadesde': fechadesde,
-            'fechahasta': fechahasta,
-            'offset': offset,
-            'limit': limit
-        }
+        valid_params = {"fechadesde", "fechahasta", "offset", "limit", "debug", "return_json"}
+        params = self._validate_and_filter_params(kwargs, valid_params)
+        endpoint = self._build_endpoint(APIConfig.CURRENCY_QUOTES_URL, moneda)
+        return self._fetch_and_process(endpoint, params, params.pop("debug", False), params.pop("return_json", False), is_currency=True)
 
+    def _validate_and_filter_params(self, kwargs: Dict[str, Any], valid_params: set) -> Dict[str, Any]:
+        """
+        Validate and filter input parameters.
+        """
+        filtered_params = {k: v for k, v in kwargs.items() if k in valid_params and v is not None}
+        invalid_params = set(kwargs.keys()) - valid_params
+        if invalid_params:
+            raise ValueError(f"Invalid parameters: {', '.join(invalid_params)}")
+        return filtered_params
+
+    def _build_endpoint(self, endpoint: str, resource: Optional[str] = None) -> str:
+        """
+        Build a complete API endpoint URL.
+
+        Args:
+            endpoint (str): API endpoint.
+            resource (Optional[str]): Additional resource to append to the endpoint.
+
+        Returns:
+            str: Complete URL.
+        """
+        full_endpoint = f"{endpoint}/{resource}".rstrip("/") if resource else endpoint
+        return self.api_connector.build_url(self.api_connector.base_url, full_endpoint)
+
+    def _fetch_and_process(
+        self,
+        endpoint: str,
+        params: Dict[str, Any],
+        debug: bool,
+        return_json: bool,
+        is_currency: bool = False
+    ) -> Union[pd.DataFrame, dict]:
+        """
+        Fetch data from the API and process the response.
+        """
         response = self.api_connector.fetch_data(
-            endpoint=f"{self.api_connector.base_url}{APIConfig.CURRENCY_QUOTES_URL}/{moneda}",
-            params={k: v for k, v in params.items() if v is not None},
+            endpoint=endpoint,
+            params=params,
             debug=debug,
-            is_currency=True  # Agregado el parámetro is_currency
+            is_currency=is_currency
         )
+        return self._process_response(response, return_json)
 
-        return response.to_dict('records') if return_json else response
+    def _process_response(self, response: Union[dict, pd.DataFrame], return_json: bool) -> Union[pd.DataFrame, dict]:
+        """
+        Process the API response into the desired format.
+        """
+        if return_json:
+            return response.to_dict("records") if isinstance(response, pd.DataFrame) else response
+        return pd.DataFrame(response) if isinstance(response, dict) else response

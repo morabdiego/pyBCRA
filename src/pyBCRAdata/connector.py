@@ -1,4 +1,5 @@
 import logging
+import time
 from typing import Optional, Dict, Any, Union, Literal
 from urllib.parse import urlencode
 
@@ -7,9 +8,10 @@ import pandas as pd
 
 from .config import APIConfig
 
+
 class APIConnector:
     """
-    A comprehensive utility class for handling API connections and data fetching.
+    A utility class for handling API connections and data fetching.
     Provides robust error handling, logging, and data transformation capabilities.
     """
 
@@ -19,15 +21,6 @@ class APIConnector:
         cert_path: Union[str, bool, None] = APIConfig.CERT_PATH,
         log_level: Literal['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'] = 'INFO'
     ):
-        """
-        Initialize the APIConnector with base configuration.
-
-        Args:
-            base_url (str): Base URL for the API
-            cert_path (Union[str, bool, None]): Path to SSL certificate, False to disable verification,
-                                                or None to use system certificates
-            log_level (Literal): Logging level for the connector
-        """
         self.base_url = base_url
         self.cert_path = cert_path
 
@@ -44,55 +37,74 @@ class APIConnector:
         params: Optional[Dict[str, Union[str, int]]] = None
     ) -> Optional[Dict[str, Any]]:
         """
-        Establish a connection to the API with comprehensive error handling.
+        Connect to the API and fetch data.
 
         Args:
-            endpoint (str): API endpoint
-            params (Optional[Dict]): Optional query parameters
+            endpoint (str): API endpoint to connect to.
+            params (Optional[Dict[str, Union[str, int]]]): Query parameters for the request.
 
         Returns:
-            Optional[Dict[str, Any]]: Parsed JSON response or None
+            Optional[Dict[str, Any]]: Parsed JSON response from the API, or None if an error occurs.
         """
-        url = self.build_url(endpoint, params)
+        url = self.build_url(self.base_url, endpoint, params)
+        start_time = time.time()
 
         try:
             self.logger.debug(f"Connecting to URL: {url}")
             response = requests.get(url, verify=self.cert_path)
-            response.raise_for_status()  # Raises HTTPError for bad responses
+            response.raise_for_status()
+            elapsed_time = time.time() - start_time
+            self.logger.info(f"Request completed in {elapsed_time:.2f} seconds")
             return response.json()
 
-        except requests.exceptions.SSLError as ssl_error:
-            self.logger.error(f"SSL Error: {ssl_error}")
-            self.logger.info("Consider providing a valid certificate path or disabling SSL verification")
-        except requests.exceptions.HTTPError as http_err:
-            self.logger.error(f"HTTP Error: {http_err}")
-            self.logger.error(f"Response Content: {http_err.response.text}")
-        except requests.exceptions.RequestException as req_err:
-            self.logger.error(f"Request Error: {req_err}")
+        except Exception as error:
+            self._handle_request_error(error)
+            return None
 
-        return None
+    def _handle_request_error(self, error: Exception) -> None:
+        """
+        Handle errors during API requests.
+
+        Args:
+            error (Exception): The exception raised during the request.
+        """
+        if isinstance(error, requests.exceptions.SSLError):
+            self.logger.error(f"SSL Error: {error}")
+            self.logger.info("Consider providing a valid certificate path or disabling SSL verification")
+        elif isinstance(error, requests.exceptions.HTTPError):
+            self.logger.error(f"HTTP Error: {error}")
+            if hasattr(error, 'response') and error.response is not None:
+                self.logger.error(f"Response Content: {error.response.text}")
+        elif isinstance(error, requests.exceptions.RequestException):
+            self.logger.error(f"Request Error: {error}")
+        else:
+            self.logger.error(f"Unexpected Error: {error}")
 
     @staticmethod
     def build_url(
+        base_url: str,
         endpoint: str,
         params: Optional[Dict[str, Union[str, int]]] = None
     ) -> str:
         """
-        Construct a URL with optional query parameters.
+        Build a complete URL with query parameters.
 
         Args:
-            endpoint (str): API endpoint
-            params (Optional[Dict]): Optional query parameters
+            base_url (str): Base URL of the API.
+            endpoint (str): API endpoint.
+            params (Optional[Dict[str, Union[str, int]]]): Query parameters.
 
         Returns:
-            str: Fully constructed URL
+            str: Complete URL with query string.
         """
-        url = endpoint
+        # Ensure base_url ends with a slash and endpoint does not start with one
+        base_url = base_url.rstrip("/")
+        endpoint = endpoint.lstrip("/")
+        url = f"{base_url}/{endpoint}"
+
         if params:
-            # Filter out None values and encode parameters
             filtered_params = {k: v for k, v in params.items() if v is not None}
             query_string = urlencode(filtered_params)
-
             url = f"{url}?{query_string}" if query_string else url
 
         return url
@@ -103,22 +115,25 @@ class APIConnector:
         params: Optional[Dict[str, Union[str, int]]] = None,
         results_key: str = 'results',
         debug: bool = False,
-        is_currency: bool = False  # Nuevo parámetro para identificar datos de divisas
+        is_currency: bool = False
     ) -> pd.DataFrame:
         """
-        Fetch data from the API and transform it into a pandas DataFrame.
+        Fetch data from the API and process the response.
 
         Args:
-            endpoint (str): API endpoint
-            params (Optional[Dict]): Optional query parameters
-            results_key (str): Key containing the data in the response
-            debug (bool): Return URL instead of fetching data
-            is_currency (bool): Flag to indicate if the data is from currency endpoints
+            endpoint (str): API endpoint.
+            params (Optional[Dict[str, Union[str, int]]]): Query parameters.
+            results_key (str): Key to extract results from the API response.
+            debug (bool): If True, returns the constructed URL instead of data.
+            is_currency (bool): If True, processes the response as currency data.
 
         Returns:
-            pd.DataFrame: Parsed data or empty DataFrame
+            pd.DataFrame: Processed data as a DataFrame.
         """
-        full_url = self.build_url(endpoint, params)
+        if params and not isinstance(params, dict):
+            raise ValueError("Params must be a dictionary")
+
+        full_url = self.build_url(self.base_url, endpoint, params)
 
         if debug:
             return str(full_url)
@@ -136,19 +151,29 @@ class APIConnector:
                 self.logger.warning(f"No '{results_key}' found in API response")
                 return pd.DataFrame()
 
-            # Manejo especial para datos de divisas
             if is_currency:
-                if isinstance(results, dict) and 'detalle' in results:
-                    # Crear un DataFrame con los detalles y agregar la fecha
-                    df = pd.DataFrame(results['detalle'])
-                    df['fecha'] = results.get('fecha')
-                    return df
-                else:
-                    self.logger.warning("Unexpected currency data structure")
-                    return pd.DataFrame()
+                return self._process_currency_data(results)
 
             return pd.DataFrame(results)
 
         except Exception as e:
             self.logger.error(f"Error processing API data: {e}")
+            return pd.DataFrame()
+
+    def _process_currency_data(self, results: Any) -> pd.DataFrame:
+        """
+        Process currency-specific data from the API response.
+
+        Args:
+            results (Any): Raw results from the API.
+
+        Returns:
+            pd.DataFrame: Processed currency data as a DataFrame.
+        """
+        if isinstance(results, dict) and 'detalle' in results:
+            df = pd.DataFrame(results['detalle'])
+            df['fecha'] = results.get('fecha')
+            return df
+        else:
+            self.logger.warning("Unexpected currency data structure")
             return pd.DataFrame()

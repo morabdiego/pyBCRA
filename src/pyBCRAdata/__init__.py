@@ -6,8 +6,6 @@ published by the Central Bank of Argentina.
 """
 
 from .getter import BCRAclient
-from .connector import APIConnector
-from .config import APIConfig
 
 __version__ = '0.1.2'
 __author__ = 'Diego Mora'
@@ -24,8 +22,6 @@ get_currency_timeseries = _default_client.get_currency_timeseries
 
 __all__ = [
     'BCRAclient',
-    'APIConnector',
-    'APIConfig',
     'get_monetary_data',
     'get_currency_master',
     'get_currency_quotes',
