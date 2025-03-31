@@ -7,7 +7,7 @@ published by the Central Bank of Argentina.
 
 from .getter import BCRAclient
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 __author__ = 'Diego Mora'
 __email__ = 'morabdiego@gmail.com'
 

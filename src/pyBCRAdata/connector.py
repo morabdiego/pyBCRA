@@ -1,12 +1,13 @@
 import logging
 import time
+import json
 from typing import Optional, Dict, Any, Union, Literal
 from urllib.parse import urlencode
 
 import requests
 import pandas as pd
 
-from .config import APIConfig
+from .config import APIConfig, COLUMNS_INFO
 
 
 class APIConnector:
@@ -96,7 +97,8 @@ class APIConnector:
         results_key: str = 'results',
         debug: bool = False,
         is_currency: bool = False,
-        is_timeseries: bool = False
+        is_timeseries: bool = False,
+        method: Optional[str] = None
     ) -> Union[str, pd.DataFrame]:
         """
         Fetch data from the API and process the response.
@@ -107,6 +109,7 @@ class APIConnector:
             debug (bool): If True, returns the constructed URL instead of data.
             is_currency (bool): If True, processes the response as currency data.
             is_timeseries (bool): If True, processes the response as timeseries data.
+            method (Optional[str]): The method name for assigning column types.
 
         Returns:
             Union[str, pd.DataFrame]: URL (if debug=True) or processed data as a DataFrame.
@@ -130,11 +133,17 @@ class APIConnector:
 
         # Process results
         if is_timeseries:
-            return self._process_timeseries_data(results)
-        if is_currency:
-            return self._process_currency_data(results)
+            df = self._process_timeseries_data(results)
+        elif is_currency:
+            df = self._process_currency_data(results)
+        else:
+            df = pd.DataFrame(results)
 
-        return pd.DataFrame(results)
+        # Assign column types
+        if method:
+            df = self._assign_column_types(df, method)
+
+        return df
 
     def _handle_request_error(self, error: Exception) -> None:
         """
@@ -197,3 +206,35 @@ class APIConnector:
         else:
             self.logger.warning("Unexpected timeseries data structure")
             return pd.DataFrame()
+
+    def _assign_column_types(self, df: pd.DataFrame, method: str) -> pd.DataFrame:
+        """
+        Assign appropriate data types to DataFrame columns based on the method.
+
+        Args:
+            df (pd.DataFrame): The DataFrame to process.
+            method (str): The method name (e.g., 'get_monetary_data').
+
+        Returns:
+            pd.DataFrame: DataFrame with assigned types.
+        """
+        if method not in COLUMNS_INFO:
+            self.logger.warning(f"No column info found for method '{method}'. Returning DataFrame as is.")
+            return df
+
+        column_types = COLUMNS_INFO[method]
+        for column in column_types:
+            if column not in df.columns:
+                continue
+
+            if column == "fecha":
+                # Convert to datetime
+                df[column] = pd.to_datetime(df[column], format="%Y-%m-%d", errors="coerce")
+            elif column in ["valor", "tipoCotizacion", "tipoPase"]:
+                # Convert to float
+                df[column] = pd.to_numeric(df[column], errors="coerce", downcast="float")
+            else:
+                # Default to string
+                df[column] = df[column].astype(str)
+
+        return df
