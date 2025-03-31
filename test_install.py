@@ -45,7 +45,7 @@ try:
         moneda="USD",
         fechadesde="2023-01-01",
         fechahasta="2023-12-31",
-        limit=5,
+        limit=10,
         debug=True
     )
     print(f"Debug URL for get_currency_timeseries: {debug_url}")
@@ -53,7 +53,7 @@ try:
         moneda="USD",
         fechadesde="2023-01-01",
         fechahasta="2023-12-31",
-        limit=5
+        limit=10
     )
     print(df_currency_timeseries.head())
     columns_info["get_currency_timeseries"] = list(df_currency_timeseries.columns)

@@ -1,4 +1,27 @@
 {
-    "get_monetary_data": [],
-    "get_currency_timeseries": []
+    "get_monetary_data": [
+        "idVariable",
+        "descripcion",
+        "categoria",
+        "fecha",
+        "valor"
+    ],
+    "get_currency_master": [
+        "codigo",
+        "denominacion"
+    ],
+    "get_currency_quotes": [
+        "codigoMoneda",
+        "descripcion",
+        "tipoPase",
+        "tipoCotizacion",
+        "fecha"
+    ],
+    "get_currency_timeseries": [
+        "codigoMoneda",
+        "descripcion",
+        "tipoPase",
+        "tipoCotizacion",
+        "fecha"
+    ]
 }

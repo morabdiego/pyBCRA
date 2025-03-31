@@ -6,6 +6,7 @@ import warnings
 from .config import APIConfig
 from .connector import APIConnector
 
+
 class BCRAclient:
     """
     A comprehensive class for fetching monetary and currency-related data from an API.
@@ -37,92 +38,37 @@ class BCRAclient:
             cert_path=cert_path or (APIConfig.CERT_PATH if verify_ssl else False)
         )
 
-    def get_monetary_data(self, **kwargs) -> Union[pd.DataFrame, dict]:
+    def get_monetary_data(self, **kwargs) -> Union[str, pd.DataFrame]:
         """
         Retrieve monetary data from the API.
         """
-        valid_params = {"id_variable", "desde", "hasta", "offset", "limit", "debug", "return_json"}
-        params = self._validate_and_filter_params(kwargs, valid_params)
-        endpoint = self._build_endpoint(APIConfig.MONETARY_ENDPOINT, params.pop("id_variable", ""))
-        return self._fetch_and_process(endpoint, params, params.pop("debug", False), params.pop("return_json", False))
+        endpoint = APIConfig.MONETARY_ENDPOINT
+        debug = kwargs.pop("debug", False)
+        return self.api_connector.fetch_data(endpoint=endpoint, params=kwargs, debug=debug)
 
-    def get_currency_master(self, **kwargs) -> Union[pd.DataFrame, dict]:
+    def get_currency_master(self, **kwargs) -> Union[str, pd.DataFrame]:
         """
         Retrieve master currency data from the API.
         """
-        valid_params = {"debug", "return_json"}
-        params = self._validate_and_filter_params(kwargs, valid_params)
-        endpoint = self._build_endpoint(APIConfig.CURRENCY_MASTER_URL)
-        return self._fetch_and_process(endpoint, params, params.pop("debug", False), params.pop("return_json", False), is_currency=True)
+        endpoint = APIConfig.CURRENCY_MASTER_URL
+        debug = kwargs.pop("debug", False)
+        return self.api_connector.fetch_data(endpoint=endpoint, params=None, debug=debug)
 
-    def get_currency_quotes(self, **kwargs) -> Union[pd.DataFrame, dict]:
+    def get_currency_quotes(self, **kwargs) -> Union[str, pd.DataFrame]:
         """
         Retrieve current currency quotes from the API.
         """
-        valid_params = {"debug", "return_json"}
-        params = self._validate_and_filter_params(kwargs, valid_params)
-        endpoint = self._build_endpoint(APIConfig.CURRENCY_QUOTES_URL)
-        return self._fetch_and_process(endpoint, params, params.pop("debug", False), params.pop("return_json", False), is_currency=True)
+        endpoint = APIConfig.CURRENCY_QUOTES_URL
+        debug = kwargs.pop("debug", False)
+        return self.api_connector.fetch_data(endpoint=endpoint, params=kwargs, debug=debug, is_currency=True)
 
-    def get_currency_timeseries(self, moneda: str, **kwargs) -> Union[pd.DataFrame, dict]:
+    def get_currency_timeseries(self, moneda: str, **kwargs) -> Union[str, pd.DataFrame]:
         """
         Retrieve historical currency data for a specific currency.
         """
         if not moneda:
             raise ValueError("El código de moneda es requerido")
 
-        valid_params = {"fechadesde", "fechahasta", "offset", "limit", "debug", "return_json"}
-        params = self._validate_and_filter_params(kwargs, valid_params)
-        endpoint = self._build_endpoint(APIConfig.CURRENCY_QUOTES_URL, moneda)
-        return self._fetch_and_process(endpoint, params, params.pop("debug", False), params.pop("return_json", False), is_currency=True)
-
-    def _validate_and_filter_params(self, kwargs: Dict[str, Any], valid_params: set) -> Dict[str, Any]:
-        """
-        Validate and filter input parameters.
-        """
-        filtered_params = {k: v for k, v in kwargs.items() if k in valid_params and v is not None}
-        invalid_params = set(kwargs.keys()) - valid_params
-        if invalid_params:
-            raise ValueError(f"Invalid parameters: {', '.join(invalid_params)}")
-        return filtered_params
-
-    def _build_endpoint(self, endpoint: str, resource: Optional[str] = None) -> str:
-        """
-        Build a complete API endpoint URL.
-
-        Args:
-            endpoint (str): API endpoint.
-            resource (Optional[str]): Additional resource to append to the endpoint.
-
-        Returns:
-            str: Complete URL.
-        """
-        full_endpoint = f"{endpoint}/{resource}".rstrip("/") if resource else endpoint
-        return self.api_connector.build_url(self.api_connector.base_url, full_endpoint)
-
-    def _fetch_and_process(
-        self,
-        endpoint: str,
-        params: Dict[str, Any],
-        debug: bool,
-        return_json: bool,
-        is_currency: bool = False
-    ) -> Union[pd.DataFrame, dict]:
-        """
-        Fetch data from the API and process the response.
-        """
-        response = self.api_connector.fetch_data(
-            endpoint=endpoint,
-            params=params,
-            debug=debug,
-            is_currency=is_currency
-        )
-        return self._process_response(response, return_json)
-
-    def _process_response(self, response: Union[dict, pd.DataFrame], return_json: bool) -> Union[pd.DataFrame, dict]:
-        """
-        Process the API response into the desired format.
-        """
-        if return_json:
-            return response.to_dict("records") if isinstance(response, pd.DataFrame) else response
-        return pd.DataFrame(response) if isinstance(response, dict) else response
+        endpoint = f"{APIConfig.CURRENCY_QUOTES_URL}/{moneda}"
+        debug = kwargs.pop("debug", False)
+        return self.api_connector.fetch_data(endpoint=endpoint, params=kwargs, debug=debug, is_timeseries=True)
