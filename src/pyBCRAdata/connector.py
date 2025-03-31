@@ -56,12 +56,10 @@ class APIConnector:
         Returns:
             str: Complete URL with query string.
         """
-        # Ensure endpoint does not start with a slash
         endpoint = endpoint.lstrip('/')
         url = f"{base_url}/{endpoint}"
 
         if params:
-            # Filter out invalid parameters (e.g., debug, return_json)
             filtered_params = {k: v for k, v in params.items() if v is not None}
             query_string = urlencode(filtered_params)
             url = f"{url}?{query_string}" if query_string else url
@@ -94,8 +92,7 @@ class APIConnector:
 
     def fetch_data(
         self,
-        endpoint: str,
-        params: Optional[Dict[str, Union[str, int]]] = None,
+        url: str,
         results_key: str = 'results',
         debug: bool = False,
         is_currency: bool = False,
@@ -105,8 +102,7 @@ class APIConnector:
         Fetch data from the API and process the response.
 
         Args:
-            endpoint (str): API endpoint.
-            params (Optional[Dict[str, Union[str, int]]]): Query parameters.
+            url (str): Complete URL to fetch data from.
             results_key (str): Key to extract results from the API response.
             debug (bool): If True, returns the constructed URL instead of data.
             is_currency (bool): If True, processes the response as currency data.
@@ -115,9 +111,6 @@ class APIConnector:
         Returns:
             Union[str, pd.DataFrame]: URL (if debug=True) or processed data as a DataFrame.
         """
-        # Build the URL
-        url = self.build_url(self.base_url, endpoint, params)
-
         if debug:
             return url  # Return the URL if debug is True
 

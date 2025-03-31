@@ -3,7 +3,7 @@ from src.pyBCRAdata.getter import BCRAclient
 client = BCRAclient()
 
 # Test monetary data
-url_monetary = client.get_monetary_data(id_variable="123", desde="2025-01-01", hasta="2025-03-31", debug=True)
+url_monetary = client.get_monetary_data(id_variable="123", desde="2025-01-01", hasta="2025-03-31", json_return=True)
 print(url_monetary)
 
 # Test currency master
