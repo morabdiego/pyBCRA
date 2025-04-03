@@ -1,13 +1,15 @@
-# pyBCRAdata v0.1.3
+# pyBCRA v0.2.0
+
+⚠️ **Important Notice**: This package was previously known as `pyBCRAdata` and has been renamed to `pyBCRA`. Please update your dependencies accordingly.
 
 A Python client for accessing monetary statistics and foreign exchange data published by the Central Bank of Argentina (BCRA). Designed for economists, analysts, and developers working with macroeconomic data.
 
-📍 **GitHub Repository**: [https://github.com/morabdiego/pyBCRAdata](https://github.com/morabdiego/pyBCRAdata)
+📍 **GitHub Repository**: [https://github.com/morabdiego/pyBCRA](https://github.com/morabdiego/pyBCRA)
 
 ## 📦 Installation
 
 ```bash
-pip install pyBCRAdata
+pip install pyBCRA
 ```
 
 ## 🔑 API Access
@@ -20,9 +22,7 @@ No authentication token is required to access the data. However, please note:
 - Consider implementing caching for frequently accessed data
 
 ```python
-from pyBCRAdata import BCRAclient
-# You can import pyBCRAdata and methods directly. For example:
-# import pyBCRAdata as client
+from pyBCRA import BCRAclient
 
 # Initialize the client
 client = BCRAclient()
@@ -30,7 +30,6 @@ client = BCRAclient()
 # Make API calls
 df = client.get_monetary_data()
 ```
-
 
 ## 🏦 Monetary Data
 
@@ -92,13 +91,15 @@ print(usd_history.head())
 
 ### Initialization
 ```python
-from pyBCRAdata import BCRAclient
+from pyBCRA import BCRAclient
 
 # Basic initialization with system certificates
 client = BCRAclient()
 ```
 ```python
-import pyBCRAdata as client
+import pyBCRA as client
+# or
+# from pyBCRA import get_*
 ```
 
 - `BCRAclient(cert_path=None, verify_ssl=True)`
@@ -151,6 +152,7 @@ All methods return pandas DataFrames by default, but can return JSON if `json=Tr
 Future versions will include:
 - SSL certificate manager
 - Integration with BCRA's Debtors and Checks APIs
+- Cache Manager
 - Examples in Google Colab
 
 ## 👋 About

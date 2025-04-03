@@ -1,4 +1,4 @@
-from src.pyBCRAdata.api.client import BCRAclient
+from src.pyBCRA.api.client import BCRAclient
 
 client = BCRAclient()
 

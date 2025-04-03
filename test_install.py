@@ -1,5 +1,5 @@
 import json
-from pyBCRAdata import BCRAclient
+from pyBCRA import BCRAclient
 
 # Initialize the client
 client = BCRAclient()
