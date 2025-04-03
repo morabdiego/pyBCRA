@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyBCRAdata"
-version = "0.1.2"
+version = "0.2.0"  # Updated version number for significant changes
 authors = [
     { name = "Diego Mora", email = "morabdiego@gmail.com" },
 ]
@@ -28,15 +28,25 @@ classifiers = [
 dependencies = [
     "pandas>=1.0.0",
     "requests>=2.25.0",
+    "typing-extensions>=4.0.0",  # Added for better type hint support
 ]
 
 [project.urls]
 "Homepage" = "https://github.com/morabdiego/pyBCRAdata"
 "Bug Tracker" = "https://github.com/morabdiego/pyBCRAdata/issues"
+"Documentation" = "https://github.com/morabdiego/pyBCRAdata#readme"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
-packages = ["pyBCRAdata"]
+packages = [
+    "pyBCRAdata",
+    "pyBCRAdata.api",
+    "pyBCRAdata.config",
+    "pyBCRAdata.utils"
+]
 
 [tool.setuptools.package-data]
-"pyBCRAdata" = ["cert/*.pem"]
+"pyBCRAdata" = [
+    "cert/*.pem",
+    "py.typed"  # Added for type hint support
+]

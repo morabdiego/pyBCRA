@@ -1,20 +1,16 @@
 """
-pyBCRAclient - A Python client for accessing BCRA (Banco Central de la República Argentina) data.
-
-This package provides easy access to monetary statistics and foreign exchange data
-published by the Central Bank of Argentina.
+pyBCRAdata - Cliente Python para la API del Banco Central de la República Argentina
 """
 
-from .getter import BCRAclient
+from .api.client import BCRAclient
 
-__version__ = '0.1.3'
-__author__ = 'Diego Mora'
-__email__ = 'morabdiego@gmail.com'
+__version__ = "0.2.0"
+__author__ = "Diego Mora"
 
-# Create default instance
+# Create default client instance
 _default_client = BCRAclient()
 
-# Expose methods from default instance
+# Expose get methods from default client
 get_monetary_data = _default_client.get_monetary_data
 get_currency_master = _default_client.get_currency_master
 get_currency_quotes = _default_client.get_currency_quotes
@@ -25,5 +21,5 @@ __all__ = [
     'get_monetary_data',
     'get_currency_master',
     'get_currency_quotes',
-    'get_currency_timeseries',
+    'get_currency_timeseries'
 ]
