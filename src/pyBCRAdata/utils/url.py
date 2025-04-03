@@ -18,7 +18,7 @@ class URLBuilder:
             base_url: URL base de la API
             endpoint: Ruta del endpoint
             params: Parámetros de query
-            currency: Código de moneda (opcional)
+            currency: Código de moneda para endpoints de divisas
 
         Returns:
             URL completa construida
@@ -26,12 +26,14 @@ class URLBuilder:
         # Limpiar y combinar base_url y endpoint
         url = f"{base_url.rstrip('/')}/{endpoint.lstrip('/')}"
 
-        # Agregar código de moneda si existe
+        # Agregar moneda al path si existe
         if currency:
             url = f"{url}/{currency}"
 
-        # Agregar parámetros de query si existen
+        # Agregar parámetros de query si existen (excluyendo moneda)
         if params:
-            url = f"{url}?{urlencode(params)}"
+            query_params = {k: v for k, v in params.items() if k != 'moneda'}
+            if query_params:
+                url = f"{url}?{urlencode(query_params)}"
 
         return url

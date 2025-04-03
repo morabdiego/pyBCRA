@@ -67,9 +67,15 @@ class APIConnector:
 
         return df
 
-    def build_url(self, endpoint: str, params: Dict[str, Any], currency: Optional[str] = None) -> str:
+    def build_url(self, endpoint: str, params: Dict[str, Any]) -> str:
         """Construye URL usando URLBuilder."""
-        return URLBuilder.build_url(self.base_url, endpoint, params, currency)
+        currency = params.pop('moneda', None) if 'moneda' in params else None
+        return URLBuilder.build_url(
+            self.base_url,
+            endpoint,
+            params,
+            currency=currency
+        )
 
     def _handle_request_error(self, error: Exception) -> None:
         """Maneja errores de peticiones HTTP."""
