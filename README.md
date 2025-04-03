@@ -1,13 +1,15 @@
-# pyBCRAdata v0.1.2
+# pyBCRA v0.2.0
+
+⚠️ **Important Notice**: This package was previously known as `pyBCRAdata` and has been renamed to `pyBCRA`. Please update your dependencies accordingly.
 
 A Python client for accessing monetary statistics and foreign exchange data published by the Central Bank of Argentina (BCRA). Designed for economists, analysts, and developers working with macroeconomic data.
 
-📍 **GitHub Repository**: [https://github.com/morabdiego/pyBCRAdata](https://github.com/morabdiego/pyBCRAdata)
+📍 **GitHub Repository**: [https://github.com/morabdiego/pyBCRA](https://github.com/morabdiego/pyBCRA)
 
 ## 📦 Installation
 
 ```bash
-pip install pyBCRAdata
+pip install pyBCRA
 ```
 
 ## 🔑 API Access
@@ -20,9 +22,7 @@ No authentication token is required to access the data. However, please note:
 - Consider implementing caching for frequently accessed data
 
 ```python
-from pyBCRAdata import BCRAclient
-# You can import pyBCRAdata and methods directly. For example:
-# import pyBCRAdata as client
+from pyBCRA import BCRAclient
 
 # Initialize the client
 client = BCRAclient()
@@ -30,7 +30,6 @@ client = BCRAclient()
 # Make API calls
 df = client.get_monetary_data()
 ```
-
 
 ## 🏦 Monetary Data
 
@@ -92,13 +91,15 @@ print(usd_history.head())
 
 ### Initialization
 ```python
-from pyBCRAdata import BCRAclient
+from pyBCRA import BCRAclient
 
 # Basic initialization with system certificates
 client = BCRAclient()
 ```
 ```python
-import pyBCRAdata as client
+import pyBCRA as client
+# or
+# from pyBCRA import get_*
 ```
 
 - `BCRAclient(cert_path=None, verify_ssl=True)`
@@ -108,31 +109,31 @@ import pyBCRAdata as client
     - Custom certificates can be obtained from api.bcra.gob.ar
 
 ### Monetary Data Methods
-- `get_monetary_data(id_variable=None, desde=None, hasta=None, offset=None, limit=None, debug=False, return_json=False)`
+- `get_monetary_data(id_variable=None, desde=None, hasta=None, offset=None, limit=None, debug=False, json=False)`
     - Get monetary statistics with optional variable ID, date range and pagination
     - `id_variable`: Specific monetary variable ID
     - `desde`: Start date (YYYY-MM-DD)
     - `hasta`: End date (YYYY-MM-DD)
-    - `offset`: Pagination offset
+    - `offset`: Pagination offset.
     - `limit`: Maximum number of records
     - `debug`: Return URL instead of data
-    - `return_json`: Return data as JSON instead of DataFrame
+    - `json`: Return data as JSON instead of DataFrame
 
 ### Currency Data Methods
-- `get_currency_master(debug=False, return_json=False)`
+- `get_currency_master(debug=False, json=False)`
     - Get list of available currencies and their codes
     - `debug`: Return URL instead of data
-    - `return_json`: Return data as JSON instead of DataFrame
+    - `json`: Return data as JSON instead of DataFrame
 
-- `get_currency_quotes(fecha=None, offset=None, limit=None, debug=False, return_json=False)`
+- `get_currency_quotes(fecha=None, offset=None, limit=None, debug=False, json=False)`
     - Get exchange rates for all currencies
     - `fecha`: Specific date (YYYY-MM-DD)
     - `offset`: Pagination offset
     - `limit`: Maximum number of records
     - `debug`: Return URL instead of data
-    - `return_json`: Return data as JSON instead of DataFrame
+    - `json`: Return data as JSON instead of DataFrame
 
-- `get_currency_timeseries(moneda, fechadesde=None, fechahasta=None, offset=None, limit=None, debug=False, return_json=False)`
+- `get_currency_timeseries(moneda, fechadesde=None, fechahasta=None, offset=None, limit=None, debug=False, json=False)`
     - Get historical exchange rates for a specific currency
     - `moneda`: Currency ISO code (Required)
     - `fechadesde`: Start date (YYYY-MM-DD)
@@ -140,20 +141,19 @@ import pyBCRAdata as client
     - `offset`: Pagination offset
     - `limit`: Maximum number of records
     - `debug`: Return URL instead of data
-    - `return_json`: Return data as JSON instead of DataFrame
+    - `json`: Return data as JSON instead of DataFrame
 
 ## 🛠️ Data Response Format
 
-All methods return pandas DataFrames by default, but can return JSON if `return_json=True` is specified. For more information about the structure of the API's data, refer to the BCRA's documentation or test the methods directly.
+All methods return pandas DataFrames by default, but can return JSON if `json=True` is specified. For more information about the structure of the API's data, refer to the BCRA's documentation or test the methods directly.
 
 ## 🗺️ Roadmap
 
 Future versions will include:
 - SSL certificate manager
-- Type hints for all data queries
 - Integration with BCRA's Debtors and Checks APIs
+- Cache Manager
 - Examples in Google Colab
-- Additional data validation and error handling
 
 ## 👋 About
 
@@ -180,5 +180,3 @@ You are free to:
 Under the following terms:
 - Attribution: You must give appropriate credit
 - NonCommercial: You may not use the material for commercial purposes
-
-See the [LICENSE](LICENSE) file for more details.

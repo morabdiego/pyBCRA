@@ -3,12 +3,12 @@ requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pyBCRAdata"
-version = "0.1.2"
+name = "pyBCRA"
+version = "0.2.0"
 authors = [
     { name = "Diego Mora", email = "morabdiego@gmail.com" },
 ]
-description = "A Python client for accessing BCRA (Banco Central de la República Argentina) data"
+description = "A Python client for accessing BCRA (Banco Central de la República Argentina) "
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
@@ -28,15 +28,25 @@ classifiers = [
 dependencies = [
     "pandas>=1.0.0",
     "requests>=2.25.0",
+    "typing-extensions>=4.0.0",  # Added for better type hint support
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/morabdiego/pyBCRAdata"
-"Bug Tracker" = "https://github.com/morabdiego/pyBCRAdata/issues"
+"Homepage" = "https://github.com/morabdiego/pyBCRA"
+"Bug Tracker" = "https://github.com/morabdiego/pyBCRA/issues"
+"Documentation" = "https://github.com/morabdiego/pyBCRA#readme"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
-packages = ["pyBCRAdata"]
+packages = [
+    "pyBCRA",
+    "pyBCRA.api",
+    "pyBCRA.config",
+    "pyBCRA.utils"
+]
 
 [tool.setuptools.package-data]
-"pyBCRAdata" = ["cert/*.pem"]
+"pyBCRA" = [
+    "cert/*.pem",
+    "py.typed"  # Added for type hint support
+]
