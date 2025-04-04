@@ -7,6 +7,7 @@ import numpy as np  # Agregar esta importación
 from ..config.settings import DataFormat
 from ..utils.url import URLBuilder
 from ..config.constants import COLUMN_TYPES
+from ..utils.transformers import DataFrameTransformer
 
 class APIConnector:
     """Conector base para realizar llamadas a la API."""
@@ -90,54 +91,7 @@ class APIConnector:
     def _create_dataframe(self, data: Any, data_format: DataFormat) -> pd.DataFrame:
         """Crea DataFrame según el formato de datos."""
         try:
-            if data_format == DataFormat.CHECKS:
-                # Si no hay detalles, crear un DataFrame con una sola fila
-                base_data = {
-                    'numeroCheque': data['numeroCheque'],
-                    'denunciado': data['denunciado'],
-                    'fechaProcesamiento': data['fechaProcesamiento'],
-                    'denominacionEntidad': data['denominacionEntidad']
-                }
-                if not data['detalles']:
-                    # Caso cuando no hay denuncias
-                    df = pd.DataFrame([{
-                        **base_data,
-                        'sucursal': np.nan,
-                        'numeroCuenta': np.nan,
-                        'causal': np.nan
-                    }])
-                else:
-                    # Caso cuando hay denuncias - expandir detalles
-                    rows = []
-                    for detalle in data['detalles']:
-                        rows.append({
-                            **base_data,
-                            **detalle
-                        })
-                    df = pd.DataFrame(rows)
-
-            if data_format == DataFormat.CURRENCY and isinstance(data, dict):
-                df = pd.DataFrame(data.get('detalle', []))
-                if not df.empty:
-                    df['fecha'] = data.get('fecha')
-
-            elif data_format == DataFormat.TIMESERIES and isinstance(data, list):
-                flattened_data = [
-                    {**detalle, 'fecha': entry['fecha']}
-                    for entry in data
-                    for detalle in entry.get('detalle', [])
-                ]
-                df = pd.DataFrame(flattened_data)
-
-            elif data_format == DataFormat.DEFAULT:
-                df = pd.DataFrame(data)
-
-            else:
-                self.logger.warning(f"Formato de datos desconocido: {data_format}")
-                df = pd.DataFrame(data)
-
-            return df
-
+            return DataFrameTransformer.transform(data, data_format)
         except Exception as e:
             self.logger.error(f"Error creando DataFrame: {e}")
             return pd.DataFrame()

@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# Eliminar dist/ y las carpetas .egg-info
-echo "Eliminando dist/ y .egg-info..."
+# Eliminar dist/, carpetas .egg-info y __pycache__
+echo "Eliminando dist/, .egg-info y __pycache__..."
 rm -rf dist/ *.egg-info
+find . -type d -name "__pycache__" -exec rm -r {} +
 
 # Desinstalar pybcradata de pip
 echo "Desinstalando pybcradata..."
