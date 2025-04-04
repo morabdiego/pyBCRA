@@ -2,13 +2,8 @@ from pyBCRAdata import BCRAclient
 
 client = BCRAclient()
 
-url = client.get_currency_timeseries(
-    moneda='USD',
-    fechadesde='2023-01-01',
-    fechahasta='2023-10-01',
-    limit=10,
-    offset=0,
-    debug=True
+url = client.get_debts(
+    identificacion='23409233449'
 )
 
 print(url)

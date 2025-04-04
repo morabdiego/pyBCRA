@@ -9,6 +9,7 @@ class DataFormat(Enum):
     CURRENCY = auto()     # Para get_currency_quotes
     TIMESERIES = auto()   # Para get_currency_timeseries
     CHECKS = auto()      # Para get_checks_reported
+    DEBTS = auto()       # Para get_debts
 
 @dataclass(frozen=True)
 class EndpointConfig:
@@ -31,6 +32,7 @@ class APIEndpoints:
     CURRENCY_TIMESERIES = f"{CURRENCY_BASE}/Cotizaciones/{{moneda}}"
     CHECKS_MASTER = f"{CHECKS_BASE}/entidades"
     CHECKS_REPORTED = "cheques/v1.0/denunciados/{codigo_entidad}/{numero_cheque}"
+    DEBTS = 'CentralDeDeudores/v1.0/Deudas/{identificacion}'
 
 @dataclass(frozen=True)
 class APISettings:
@@ -77,4 +79,10 @@ class APISettings:
             params=set(),
             required_args={'codigo_entidad', 'numero_cheque'}
         ),
+        'debts': EndpointConfig(
+            endpoint=APIEndpoints.DEBTS,
+            format=DataFormat.DEFAULT,
+            params=set(),
+            required_args={'identificacion'}
+        )
     }

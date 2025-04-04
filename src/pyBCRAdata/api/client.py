@@ -117,6 +117,29 @@ class BCRAclient:
         # La validación de tipos se realiza automáticamente por el decorador
         pass
 
+    @api_response_handler
+    def get_debts(self, **kwargs) -> Union[str, pd.DataFrame, Dict[str, Any]]:
+        """
+        Obtiene información de deudas registradas.
+
+        Args:
+            cuit (str): CUIT/CUIL del titular a consultar
+            json (bool, optional): Si es True, retorna la respuesta JSON sin procesar
+            debug (bool, optional): Si es True, retorna la URL sin hacer la petición
+
+        Returns:
+            Union[str, pd.DataFrame, Dict[str, Any]]: Información de deudas registradas
+
+        Raises:
+            ValueError: Si faltan argumentos requeridos o son inválidos
+
+        Examples:
+            >>> client = BCRAclient()
+            >>> result = client.get_debts(cuit="20123456789")
+            >>> result = client.get_debts(cuit="20123456789", json=True)
+        """
+        pass
+
     def _setup_ssl(self, verify_ssl: bool) -> None:
         """Configura la verificación SSL."""
         if not verify_ssl:
