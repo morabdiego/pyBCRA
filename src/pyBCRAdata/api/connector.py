@@ -2,6 +2,7 @@ from typing import Optional, Dict, Any, Union
 import logging
 import requests
 import pandas as pd
+import numpy as np  # Agregar esta importación
 
 from ..config.settings import DataFormat
 from ..utils.url import URLBuilder
@@ -89,6 +90,32 @@ class APIConnector:
     def _create_dataframe(self, data: Any, data_format: DataFormat) -> pd.DataFrame:
         """Crea DataFrame según el formato de datos."""
         try:
+            if data_format == DataFormat.CHECKS:
+                # Si no hay detalles, crear un DataFrame con una sola fila
+                base_data = {
+                    'numeroCheque': data['numeroCheque'],
+                    'denunciado': data['denunciado'],
+                    'fechaProcesamiento': data['fechaProcesamiento'],
+                    'denominacionEntidad': data['denominacionEntidad']
+                }
+                if not data['detalles']:
+                    # Caso cuando no hay denuncias
+                    df = pd.DataFrame([{
+                        **base_data,
+                        'sucursal': np.nan,
+                        'numeroCuenta': np.nan,
+                        'causal': np.nan
+                    }])
+                else:
+                    # Caso cuando hay denuncias - expandir detalles
+                    rows = []
+                    for detalle in data['detalles']:
+                        rows.append({
+                            **base_data,
+                            **detalle
+                        })
+                    df = pd.DataFrame(rows)
+
             if data_format == DataFormat.CURRENCY and isinstance(data, dict):
                 df = pd.DataFrame(data.get('detalle', []))
                 if not df.empty:
@@ -102,10 +129,7 @@ class APIConnector:
                 ]
                 df = pd.DataFrame(flattened_data)
 
-            elif data_format == DataFormat.MONETARY:
-                df = pd.DataFrame(data)
-
-            elif data_format == DataFormat.MASTER:
+            elif data_format == DataFormat.DEFAULT:
                 df = pd.DataFrame(data)
 
             else:

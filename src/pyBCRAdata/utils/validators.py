@@ -2,8 +2,6 @@ from datetime import datetime
 from typing import Any, Dict, Set, Tuple
 
 class ParamValidator:
-    """Validador de parámetros de la API."""
-
     @staticmethod
     def validate_params(
         params: Dict[str, Any],  # Diccionario de parámetros a validar

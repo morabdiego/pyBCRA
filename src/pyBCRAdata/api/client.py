@@ -75,6 +75,48 @@ class BCRAclient:
         """
         pass
 
+    @api_response_handler
+    def get_checks_master(self, **kwargs) -> Union[str, pd.DataFrame, Dict[str, Any]]:
+        """
+        Obtiene el listado de entidades bancarias que operan con cheques.
+
+        Returns:
+            Union[str, pd.DataFrame, Dict[str, Any]]: DataFrame con las columnas:
+                - codigoEntidad: Código de la entidad bancaria
+                - denominacion: Nombre de la entidad bancaria
+
+        Examples:
+            >>> client = BCRAclient()
+            >>> df = client.get_checks_master()
+            >>> df = client.get_checks_master(json=True)  # para obtener respuesta JSON raw
+        """
+        pass
+
+    @api_response_handler
+    def get_checks_reported(self, **kwargs) -> Union[str, pd.DataFrame, Dict[str, Any]]:
+        """
+        Obtiene información de cheques denunciados.
+
+        Args:
+            codigo_entidad (int): Código de la entidad bancaria
+            numero_cheque (int): Número del cheque a consultar
+            json (bool, optional): Si es True, retorna la respuesta JSON sin procesar
+            debug (bool, optional): Si es True, retorna la URL sin hacer la petición
+
+        Returns:
+            Union[str, pd.DataFrame, Dict[str, Any]]: Información del cheque denunciado
+
+        Raises:
+            ValueError: Si faltan argumentos requeridos o son inválidos
+
+        Examples:
+            >>> client = BCRAclient()
+            >>> result = client.get_checks_reported(codigo_entidad=123, numero_cheque=456789)
+            >>> result = client.get_checks_reported(codigo_entidad=123, numero_cheque=456789, json=True)
+        """
+        # La validación de tipos se realiza automáticamente por el decorador
+        pass
+
     def _setup_ssl(self, verify_ssl: bool) -> None:
         """Configura la verificación SSL."""
         if not verify_ssl:

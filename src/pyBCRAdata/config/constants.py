@@ -20,5 +20,9 @@ COLUMN_TYPES = {
     'fecha': 'datetime64[ns]',
     'valor': 'float64',
     'tipoCotizacion': 'float64',
-    'tipoPase': 'float64'
+    'tipoPase': 'float64',
+    'codigoEntidad': 'int64',
+    'idVariable': 'int64',
+    'numeroCheque': 'int64',
+    'fechaProcesamiento': 'datetime64[ns]'
 }
