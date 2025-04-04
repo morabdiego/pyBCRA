@@ -71,12 +71,10 @@ class APIConnector:
 
     def build_url(self, endpoint: str, params: Dict[str, Any]) -> str:
         """Construye URL usando URLBuilder."""
-        currency = params.pop('moneda', None) if 'moneda' in params else None
         return URLBuilder.build_url(
             self.base_url,
             endpoint,
-            params,
-            currency=currency
+            params
         )
 
     def _handle_request_error(self, error: Exception) -> None:

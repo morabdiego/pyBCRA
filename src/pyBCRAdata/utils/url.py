@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 from urllib.parse import urlencode
 
 class URLBuilder:
@@ -7,7 +7,6 @@ class URLBuilder:
         base_url: str,
         endpoint: str,
         params: Dict[str, Any] = None,
-        currency: Optional[str] = None
     ) -> str:
         # Limpiar y combinar base_url y endpoint
         url = f"{base_url.rstrip('/')}/{endpoint.lstrip('/')}"
@@ -22,10 +21,6 @@ class URLBuilder:
             # Remover los parámetros usados del diccionario original
             if params:
                 params = {k: v for k, v in params.items() if k not in path_params}
-
-        # Agregar moneda al path si existe
-        if currency:
-            url = f"{url}/{currency}"
 
         # Agregar parámetros restantes como query params si existen
         if params:

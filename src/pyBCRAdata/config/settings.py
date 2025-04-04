@@ -28,6 +28,7 @@ class APIEndpoints:
     MONETARY = f"{MONETARY_BASE}/monetarias"
     CURRENCY_MASTER = f"{CURRENCY_BASE}/Maestros/Divisas"
     CURRENCY_QUOTES = f"{CURRENCY_BASE}/Cotizaciones"
+    CURRENCY_TIMESERIES = f"{CURRENCY_BASE}/Cotizaciones/{{moneda}}"
     CHECKS_MASTER = f"{CHECKS_BASE}/entidades"
     CHECKS_REPORTED = "cheques/v1.0/denunciados/{codigo_entidad}/{numero_cheque}"
 
@@ -60,7 +61,7 @@ class APISettings:
             params={"fecha"}
         ),
         'currency_timeseries': EndpointConfig(
-            endpoint=APIEndpoints.CURRENCY_QUOTES,
+            endpoint=APIEndpoints.CURRENCY_TIMESERIES,
             format=DataFormat.TIMESERIES,
             params={"fechadesde", "fechahasta", "limit", "offset"},
             required_args={"moneda"}
