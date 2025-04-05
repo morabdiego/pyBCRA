@@ -1,37 +1,29 @@
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 from urllib.parse import urlencode
 
 class URLBuilder:
-    """Constructor de URLs para la API."""
-
     @staticmethod
     def build_url(
         base_url: str,
         endpoint: str,
         params: Dict[str, Any] = None,
-        currency: Optional[str] = None
     ) -> str:
-        """
-        Construye una URL con los parámetros dados.
-
-        Args:
-            base_url: URL base de la API
-            endpoint: Ruta del endpoint
-            params: Parámetros de query
-            currency: Código de moneda (opcional)
-
-        Returns:
-            URL completa construida
-        """
-        # Limpiar y combinar base_url y endpoint
         url = f"{base_url.rstrip('/')}/{endpoint.lstrip('/')}"
 
-        # Agregar código de moneda si existe
-        if currency:
-            url = f"{url}/{currency}"
+        # Caso especial para endpoint monetario
+        url = url.replace('/monetarias/{id_variable}', '/monetarias') if '/monetarias/{id_variable}' in url and (not params or 'id_variable' not in params) else url
 
-        # Agregar parámetros de query si existen
-        if params:
-            url = f"{url}?{urlencode(params)}"
+        # Sin parámetros, retornar URL directamente
+        if not params:
+            return url
 
-        return url
+        # Reemplazar placeholders y preparar query params
+        query_params = {}
+        for k, v in params.items():
+            placeholder = f"{{{k}}}"
+            url = url.replace(placeholder, str(v)) if placeholder in url else url
+            query_params[k] = v if placeholder not in url else query_params.get(k)
+
+        # Filtrar None values y añadir query params si existen
+        query_params = {k: v for k, v in query_params.items() if v is not None}
+        return f"{url}?{urlencode(query_params)}" if query_params else url

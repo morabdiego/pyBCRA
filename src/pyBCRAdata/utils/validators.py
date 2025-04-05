@@ -2,35 +2,9 @@ from datetime import datetime
 from typing import Any, Dict, Set, Tuple
 
 class ParamValidator:
-    """Validador de parámetros de la API."""
-
-    @staticmethod
-    def validate_date(value: str) -> bool:
-        """
-        Valida formato de fecha YYYY-MM-DD.
-
-        Args:
-            value: Fecha a validar
-        """
-        try:
-            datetime.strptime(value, "%Y-%m-%d")
-            return True
-        except ValueError:
-            return False
-
-    @staticmethod
-    def validate_int(value: Any) -> bool:
-        """
-        Valida si un valor puede convertirse a entero.
-
-        Args:
-            value: Valor a validar
-        """
-        try:
-            int(value)
-            return True
-        except (ValueError, TypeError):
-            return False
+    # Conjuntos de campos que requieren validación específica
+    DATE_FIELDS = {'fecha', 'desde', 'hasta', 'fechadesde', 'fechahasta'}
+    INT_FIELDS = {'limit', 'offset'}
 
     @staticmethod
     def validate_params(
@@ -38,29 +12,20 @@ class ParamValidator:
         valid_api_params: Set[str],
         valid_func_params: Set[str] = {"json", "debug"}
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
-        """Valida y separa parámetros de API y función."""
-        api_params = {}
-        for k, v in params.items():
-            if k in valid_api_params:
-                # Validar fechas
-                if k in {'fecha', 'desde', 'hasta', 'fechadesde', 'fechahasta'}:
-                    if not ParamValidator.validate_date(v):
-                        raise ValueError(f"Formato de fecha inválido para {k}: {v}. Use YYYY-MM-DD")
-                # Validar enteros
-                elif k in {'limit', 'offset'}:
-                    if not ParamValidator.validate_int(v):
-                        raise ValueError(f"Valor entero inválido para {k}: {v}")
-                api_params[k] = v
-
-        func_params = {k: v for k, v in params.items() if k in valid_func_params}
+        """
+        Valida los parámetros de entrada y los separa en parámetros de API y de función.
+        Lanza ValueError si encuentra parámetros inválidos o valores incorrectos.
+        """
+        # Validar fechas e integers
+        for k, v in ((k, v) for k, v in params.items() if k in valid_api_params):
+            if k in ParamValidator.DATE_FIELDS and not all(c.isdigit() or c == '-' for c in v) or \
+            k in ParamValidator.DATE_FIELDS and len(v.split('-')) != 3:
+                raise ValueError(f"Formato de fecha inválido para {k}: {v}")
+            elif k in ParamValidator.INT_FIELDS and not str(v).isdigit():
+                raise ValueError(f"Valor entero inválido para {k}: {v}")
 
         # Verificar parámetros inválidos
-        invalid_params = set(params.keys()) - valid_api_params - valid_func_params
-        if invalid_params:
-            raise ValueError(
-                f"Parámetros inválidos: {', '.join(invalid_params)}.\n\n"
-                f"Parámetros API permitidos: {', '.join(valid_api_params) or 'Ninguno'}.\n"
-                f"Parámetros función permitidos: {', '.join(valid_func_params)}."
-            )
+        if invalid := set(params) - valid_api_params - valid_func_params:
+            raise ValueError(f"Parámetros inválidos: {', '.join(invalid)}.\n\nPermitidos API: {', '.join(valid_api_params) or 'Ninguno'}.\nPermitidos función: {', '.join(valid_func_params)}.")
 
-        return api_params, func_params
+        return {k: v for k, v in params.items() if k in valid_api_params}, {k: v for k, v in params.items() if k in valid_func_params}

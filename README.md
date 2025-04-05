@@ -1,180 +1,167 @@
-# pyBCRAdata v0.2.0
+# pyBCRAdata v0.3.0
 
-A Python client for accessing monetary statistics and foreign exchange data published by the Central Bank of Argentina (BCRA). Designed for economists, analysts, and developers working with macroeconomic data.
+[![PyPI version](https://img.shields.io/pypi/v/pyBCRAdata.svg?logo=pypi&logoColor=white)](https://badge.fury.io/py/pyBCRAdata)
+[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg?logo=creative-commons&logoColor=white)](http://creativecommons.org/licenses/by-nc/4.0/)
+[![pandas](https://img.shields.io/badge/pandas-dependency-brightgreen.svg?logo=pandas&logoColor=white)](https://pandas.pydata.org/)
+[![requests](https://img.shields.io/badge/requests-dependency-blue.svg?logo=python&logoColor=white)](https://docs.python-requests.org/)
+[![Argentina](https://img.shields.io/badge/Country-Argentina-blue.svg?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNTAwIj48cGF0aCBmaWxsPSIjNzRBQ0RGIiBkPSJNMCAwaDgwMHY1MDBIMHoiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMCAxNjdoODAwdjE2NkgweiIvPjxjaXJjbGUgZmlsbD0iI0ZDRDExNiIgY3g9IjQwMCIgY3k9IjI1MCIgcj0iNTgiLz48L3N2Zz4=)](https://www.bcra.gob.ar/)
+[![Documentation](https://img.shields.io/badge/docs-GitHub-yellow.svg?logo=github&logoColor=white)](https://github.com/morabdiego/pyBCRA/tree/main/docs)
 
-📍 **GitHub Repository**: [https://github.com/morabdiego/pyBCRA](https://github.com/morabdiego/pyBCRA)
+Cliente Python para acceder a estadísticas monetarias, datos de tipo de cambio e información de deudores publicados por el Banco Central de la República Argentina (BCRA).
+Diseñado para economistas, analistas y desarrolladores que trabajan con datos macroeconómicos.
 
-## 📦 Installation
+📍 **Repositorio GitHub**: [https://github.com/morabdiego/pyBCRA](https://github.com/morabdiego/pyBCRA)
+
+## 🛆 Instalación
 
 ```bash
 pip install pyBCRAdata
 ```
 
-## 🔑 API Access
+Requiere **Python 3.7+**, **requests** y **pandas**. Ver [documentación de instalación](docs/guides/installation.md) para más detalles.
 
-This client interacts with BCRA's public APIs available at [BCRA's API Catalog](https://www.bcra.gob.ar/BCRAyVos/catalogo-de-APIs-banco-central.asp).
-
-No authentication token is required to access the data. However, please note:
-- BCRA may implement rate limiting based on IP address
-- Be mindful of request frequency to avoid potential access restrictions
-- Consider implementing caching for frequently accessed data
+## 📊 Ejemplo Rápido
 
 ```python
 from pyBCRAdata import BCRAclient
 
-# Initialize the client
+# Inicializar cliente
 client = BCRAclient()
 
-# Make API calls
-df = client.get_monetary_data()
-```
-
-## 🏦 Monetary Data
-
-### Get Monetary Statistics
-```python
-# Basic monetary data query. Get all id_variables availables
-df = client.get_monetary_data()
-
-# With filters and pagination
+# Obtener tasa de política monetaria
 df = client.get_monetary_data(
     id_variable="6",  # Tasa de Política Monetaria (en % n.a.)
     desde="2024-01-01",
-    hasta="2024-03-21",
-    limit=100
+    hasta="2024-03-21"
 )
 print(df.head())
-```
 
-## 💱 Currency Data
-
-### 1. Get Currency Master Data
-```python
-# Get list of available currencies
-currencies = client.get_currency_master()
-print(currencies.head())
-
-# Debug mode
-api_url = client.get_currency_master(debug=True)
-```
-
-### 2. Get Currency Quotes
-```python
-# Get latest exchange rates
-latest_rates = client.get_currency_quotes()
-
-# Get historical rates with pagination
-historical_rates = client.get_currency_quotes(
-    fecha="2024-03-15",
-    offset=0,
-    limit=100
+# Obtener cotización histórica del dólar
+usd = client.get_currency_timeseries(
+    moneda="USD",
+    fechadesde="2024-01-01",
+    fechahasta="2024-03-21"
 )
-print(historical_rates)
+print(usd.head())
 ```
 
-### 3. Get Currency Time Series
-```python
-# Get historical data for a specific currency
-usd_history = client.get_currency_timeseries(
-    moneda="USD",  # Required parameter
-    fechadesde="2023-01-01",
-    fechahasta="2024-01-01",
-    offset=0,
-    limit=500
-)
-print(usd_history.head())
+## 📚 Documentación
+
+La documentación completa está disponible en la carpeta [docs](docs/):
+
+- **[Guías de Usuario](docs/guides/)** - Instrucciones paso a paso para tareas comunes
+- **[Referencia de API](docs/api/)** - Información detallada sobre cada método
+- **[Ejemplos Prácticos](docs/examples/)** - Casos de uso para implementaciones específicas
+
+> **Nota**: Toda la documentación está disponible en español e inglés. Cada archivo incluye ambos idiomas con una separación clara.
+
+### Principales áreas de datos
+
+- **[Datos Monetarios](docs/guides/monetary_data.md)** - Estadísticas monetarias y financieras
+- **[Datos de Divisas](docs/guides/currency_data.md)** - Cotizaciones y series históricas
+- **[Información de Deudores](docs/guides/debtors_data.md)** - Consultas sobre deudas y cheques rechazados
+
+## 🔑 Acceso a la API
+
+Este cliente interactúa con las APIs públicas del BCRA disponibles en el [Catálogo de APIs del BCRA](https://www.bcra.gob.ar/BCRAyVos/catalogo-de-APIs-banco-central.asp).
+
+No se requiere token de autenticación, pero tenga en cuenta que:
+- El BCRA puede implementar limitaciones de tasa basadas en dirección IP
+- Considere implementar caché para datos de acceso frecuente
+
+Para información detallada sobre manejo de errores, respuestas del servidor y avisos legales, consulte directamente la página del [Catálogo de APIs del BCRA](https://www.bcra.gob.ar/BCRAyVos/catalogo-de-APIs-banco-central.asp). Este proyecto es únicamente un cliente para facilitar el acceso a los datos y toda responsabilidad legal corresponde al BCRA como proveedor de la API.
+
+## 👋 Acerca de
+
+Creado por Diego Mora — Economista y Desarrollador Python.
+
+- [LinkedIn](https://www.linkedin.com/in/morabdiego)
+- [GitHub](https://github.com/morabdiego)
+- 📧 Email: morabdiego@gmail.com
+
+## 📜 Licencia
+
+Este proyecto está licenciado bajo [Creative Commons Attribution-NonCommercial 4.0 International License](http://creativecommons.org/licenses/by-nc/4.0/).
+
+---
+
+---
+
+# pyBCRAdata v0.3.0 [English]
+
+Python client to access monetary statistics, exchange rate data, and debtor information published by the Central Bank of the Argentine Republic (BCRA).
+Designed for economists, analysts, and developers working with macroeconomic data.
+
+📍 **GitHub Repository**: [https://github.com/morabdiego/pyBCRA](https://github.com/morabdiego/pyBCRA)
+
+## 🛆 Installation
+
+```bash
+pip install pyBCRAdata
 ```
 
-## 📚 API Reference
+Requires **Python 3.7+**, **requests**, and **pandas**. See [installation documentation](docs/guides/installation.md) for more details.
 
-### Initialization
+## 📊 Quick Example
+
 ```python
 from pyBCRAdata import BCRAclient
 
-# Basic initialization with system certificates
+# Initialize client
 client = BCRAclient()
+
+# Get monetary policy rate
+df = client.get_monetary_data(
+    id_variable="6",  # Monetary Policy Rate (in % p.a.)
+    desde="2024-01-01",
+    hasta="2024-03-21"
+)
+print(df.head())
+
+# Get historical USD exchange rate
+usd = client.get_currency_timeseries(
+    moneda="USD",
+    fechadesde="2024-01-01",
+    fechahasta="2024-03-21"
+)
+print(usd.head())
 ```
-```python
-import pyBCRAdata as client
-# or
-# from pyBCRAdata import get_*
-```
 
-- `BCRAclient(cert_path=None, verify_ssl=True)`
-    - `cert_path`: If you need to use a custom SSL certificate, specify its path here. Use this only if the default certificate has expired.
-    - `verify_ssl`: If SSL certificate has expired you can disable SSL verification. Not recommended for production environments
-    - If using a custom certificate, ensure it includes all required certificates (root, intermediate, server)
-    - Custom certificates can be obtained from api.bcra.gob.ar
+## 📚 Documentation
 
-### Monetary Data Methods
-- `get_monetary_data(id_variable=None, desde=None, hasta=None, offset=None, limit=None, debug=False, json=False)`
-    - Get monetary statistics with optional variable ID, date range and pagination
-    - `id_variable`: Specific monetary variable ID
-    - `desde`: Start date (YYYY-MM-DD)
-    - `hasta`: End date (YYYY-MM-DD)
-    - `offset`: Pagination offset.
-    - `limit`: Maximum number of records
-    - `debug`: Return URL instead of data
-    - `json`: Return data as JSON instead of DataFrame
+Complete documentation is available in the [docs](docs/) folder:
 
-### Currency Data Methods
-- `get_currency_master(debug=False, json=False)`
-    - Get list of available currencies and their codes
-    - `debug`: Return URL instead of data
-    - `json`: Return data as JSON instead of DataFrame
+- **[User Guides](docs/guides/)** - Step-by-step instructions for common tasks
+- **[API Reference](docs/api/)** - Detailed information about each method
+- **[Practical Examples](docs/examples/)** - Use cases for specific implementations
 
-- `get_currency_quotes(fecha=None, offset=None, limit=None, debug=False, json=False)`
-    - Get exchange rates for all currencies
-    - `fecha`: Specific date (YYYY-MM-DD)
-    - `offset`: Pagination offset
-    - `limit`: Maximum number of records
-    - `debug`: Return URL instead of data
-    - `json`: Return data as JSON instead of DataFrame
+> **Note**: All documentation is available in both Spanish and English. Each file includes both languages with clear separation.
 
-- `get_currency_timeseries(moneda, fechadesde=None, fechahasta=None, offset=None, limit=None, debug=False, json=False)`
-    - Get historical exchange rates for a specific currency
-    - `moneda`: Currency ISO code (Required)
-    - `fechadesde`: Start date (YYYY-MM-DD)
-    - `fechahasta`: End date (YYYY-MM-DD)
-    - `offset`: Pagination offset
-    - `limit`: Maximum number of records
-    - `debug`: Return URL instead of data
-    - `json`: Return data as JSON instead of DataFrame
+### Main Data Areas
 
-## 🛠️ Data Response Format
+- **[Monetary Data](docs/guides/monetary_data.md)** - Monetary and financial statistics
+- **[Currency Data](docs/guides/currency_data.md)** - Exchange rates and historical series
+- **[Debtor Information](docs/guides/debtors_data.md)** - Queries about debts and rejected checks
 
-All methods return pandas DataFrames by default, but can return JSON if `json=True` is specified. For more information about the structure of the API's data, refer to the BCRA's documentation or test the methods directly.
+## 🔑 API Access
 
-## 🗺️ Roadmap
+This client interacts with the public BCRA APIs available in the [BCRA API Catalog](https://www.bcra.gob.ar/BCRAyVos/catalogo-de-APIs-banco-central.asp).
 
-Future versions will include:
-- SSL certificate manager
-- Integration with BCRA's Debtors and Checks APIs
-- Cache Manager
-- Examples in Google Colab
+No authentication token is required, but please note that:
+- The BCRA may implement rate limitations based on IP address
+- Consider implementing caching for frequently accessed data
+
+For detailed information on error handling, server responses, and legal notices, please refer directly to the [BCRA API Catalog](https://www.bcra.gob.ar/BCRAyVos/catalogo-de-APIs-banco-central.asp) page. This project is solely a client to facilitate data access, and all legal responsibility belongs to the BCRA as the API provider.
 
 ## 👋 About
 
 Created by Diego Mora — Economist and Python Developer.
+
 - [LinkedIn](https://www.linkedin.com/in/morabdiego)
 - [GitHub](https://github.com/morabdiego)
-- Email: morabdiego@gmail.com
-
-## 🤝 Contributing
-
-Issues, suggestions, and contributions are welcome! Feel free to:
-- Report issues via GitHub Issues
-- Send suggestions or feedback to morabdiego@gmail.com
-- Submit pull requests with improvements
+- 📧 Email: morabdiego@gmail.com
 
 ## 📜 License
 
-This project is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International License](http://creativecommons.org/licenses/by-nc/4.0/).
-
-You are free to:
-- Share: Copy and redistribute the material in any medium or format
-- Adapt: Remix, transform, and build upon the material
-
-Under the following terms:
-- Attribution: You must give appropriate credit
-- NonCommercial: You may not use the material for commercial purposes
+This project is licensed under [Creative Commons Attribution-NonCommercial 4.0 International License](http://creativecommons.org/licenses/by-nc/4.0/).
