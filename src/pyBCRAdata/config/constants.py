@@ -24,5 +24,6 @@ COLUMN_TYPES = {
     'codigoEntidad': 'int64',
     'idVariable': 'int64',
     'numeroCheque': 'int64',
-    'fechaProcesamiento': 'datetime64[ns]'
+    'fechaProcesamiento': 'datetime64[ns]',
+    'fechaSit1': 'datetime64[ns]'
 }

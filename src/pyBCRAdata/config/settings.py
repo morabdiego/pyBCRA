@@ -31,8 +31,8 @@ class APIEndpoints:
     CURRENCY_QUOTES = f"{CURRENCY_BASE}/Cotizaciones"
     CURRENCY_TIMESERIES = f"{CURRENCY_BASE}/Cotizaciones/{{moneda}}"
     CHECKS_MASTER = f"{CHECKS_BASE}/entidades"
-    CHECKS_REPORTED = "cheques/v1.0/denunciados/{codigo_entidad}/{numero_cheque}"
-    DEBTS = 'CentralDeDeudores/v1.0/Deudas/{identificacion}'
+    CHECKS_REPORTED = f"{CHECKS_BASE}/denunciados/{{codigo_entidad}}/{{numero_cheque}}"
+    DEBTS = f"CentralDeDeudores/v1.0/Deudas/{{identificacion}}"
 
 @dataclass(frozen=True)
 class APISettings:
@@ -81,7 +81,7 @@ class APISettings:
         ),
         'debts': EndpointConfig(
             endpoint=APIEndpoints.DEBTS,
-            format=DataFormat.DEFAULT,
+            format=DataFormat.DEBTS,
             params=set(),
             required_args={'identificacion'}
         )

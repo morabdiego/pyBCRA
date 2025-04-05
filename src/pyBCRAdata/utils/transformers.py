@@ -61,24 +61,48 @@ class DataFrameTransformer:
     @staticmethod
     def _transform_debts(data: Dict) -> pd.DataFrame:
         """Transforma datos de deudas en DataFrame."""
+        # Lista para almacenar los datos aplanados
         flattened_data = []
-        results = data.get('results', {})
 
-        # Datos comunes para todas las filas
+        # Si no hay datos, devolver DataFrame vacío
+        if not data:
+            return pd.DataFrame()
+
+        # Datos base para todas las filas
         common_data = {
-            'identificacion': results.get('identificacion'),
-            'denominacion': results.get('denominacion')
+            'identificacion': data.get('identificacion', np.nan),
+            'denominacion': data.get('denominacion', np.nan)
         }
 
-        # Iterar a través de los periodos y entidades
-        for periodo in results.get('periodos', []):
-            for entidad in periodo.get('entidades', []):
-                # Combinar datos comunes con periodo y entidad
+        # Procesar los períodos y entidades
+        periodos = data.get('periodos', [])
+
+        # Si no hay períodos, devolver solo datos comunes
+        if not periodos:
+            return pd.DataFrame([common_data])
+
+        # Iterar por cada período y entidad
+        for periodo in periodos:
+            periodo_value = periodo.get('periodo', np.nan)
+
+            # Obtener las entidades del período
+            entidades = periodo.get('entidades', [])
+
+            # Si no hay entidades, crear fila con solo período
+            if not entidades:
+                row = {**common_data, 'periodo': periodo_value}
+                flattened_data.append(row)
+                continue
+
+            # Procesar cada entidad
+            for entidad in entidades:
+                # Crear fila combinando datos comunes, período y entidad
                 row = {
                     **common_data,
-                    'periodo': periodo.get('periodo'),
-                    **entidad  # Incluir todos los campos de la entidad automáticamente
+                    'periodo': periodo_value,
+                    **entidad
                 }
                 flattened_data.append(row)
 
+        # Convertir a DataFrame
         return pd.DataFrame(flattened_data)
