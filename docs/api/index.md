@@ -34,7 +34,7 @@ La API provee acceso a las siguientes categorías de datos:
 - [`get_checks_master`](checks.md#método-get_checks_master) - Listado de entidades bancarias
 - [`get_checks_reported`](checks.md#método-get_checks_reported) - Información de cheques denunciados
 
-### [Datos de Deudas](debts.md)
+### [Datos de Central de Deudores](debts.md)
 - [`get_debts`](debts.md#método-get_debts) - Información de deudas registradas por CUIT/CUIL
 - [`get_debts_historical`](debts.md#método-get_debts_historical) - Histórico de deudas por CUIT/CUIL
 - [`get_debts_rejected_checks`](debts.md#método-get_debts_rejected_checks) - Cheques rechazados asociados a un CUIT/CUIL
