@@ -65,3 +65,73 @@ print(monthly_change)
 ```
 
 Este ejemplo muestra cómo obtener, visualizar y realizar un análisis básico de la tasa de política monetaria. Puede adaptarse fácilmente para otras variables monetarias cambiando el `id_variable`.
+
+---
+
+# 🌐 Example: Monetary Data Analysis
+
+In this example, we'll show how to retrieve and visualize the BCRA's monetary policy rate over time.
+
+## Retrieving the data
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+from pyBCRAdata import BCRAclient
+
+# Initialize the client
+client = BCRAclient()
+
+# Get the monetary policy rate (variable ID=6)
+df = client.get_monetary_data(
+    id_variable="6",  # Monetary Policy Rate (in % p.a.)
+    desde="2023-01-01",
+    hasta="2024-03-21"
+)
+
+# Convert date to datetime format
+df['fecha'] = pd.to_datetime(df['fecha'])
+
+# Sort by date
+df = df.sort_values('fecha')
+```
+
+## Visualizing the data
+
+```python
+# Set up the plot
+plt.figure(figsize=(12, 6))
+plt.plot(df['fecha'], df['valor'], linewidth=2)
+
+# Add titles and labels
+plt.title('BCRA Monetary Policy Rate', fontsize=16)
+plt.xlabel('Date', fontsize=12)
+plt.ylabel('Rate (% p.a.)', fontsize=12)
+plt.grid(True, alpha=0.3)
+
+# Improve Y-axis format
+plt.gca().yaxis.set_major_formatter(plt.matplotlib.ticker.PercentFormatter(100))
+
+# Display the plot
+plt.tight_layout()
+plt.show()
+```
+
+## Basic statistical analysis
+
+```python
+# Calculate descriptive statistics
+stats = df['valor'].describe()
+print("Descriptive statistics:")
+print(stats)
+
+# Calculate month-over-month percentage change
+df['mes'] = df['fecha'].dt.to_period('M')
+monthly_avg = df.groupby('mes')['valor'].mean()
+monthly_change = monthly_avg.pct_change() * 100
+
+print("\nMonth-over-month percentage change:")
+print(monthly_change)
+```
+
+This example shows how to retrieve, visualize, and perform a basic analysis of the monetary policy rate. It can be easily adapted for other monetary variables by changing the `id_variable`.
