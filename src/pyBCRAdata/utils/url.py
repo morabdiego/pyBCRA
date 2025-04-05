@@ -8,25 +8,22 @@ class URLBuilder:
         endpoint: str,
         params: Dict[str, Any] = None,
     ) -> str:
-        # Combinar base_url y endpoint
         url = f"{base_url.rstrip('/')}/{endpoint.lstrip('/')}"
 
         # Caso especial para endpoint monetario
-        if '/monetarias/{id_variable}' in url and (params is None or 'id_variable' not in params):
-            url = url.replace('/monetarias/{id_variable}', '/monetarias')
+        url = url.replace('/monetarias/{id_variable}', '/monetarias') if '/monetarias/{id_variable}' in url and (not params or 'id_variable' not in params) else url
 
-        # Manejar los parámetros
-        if params:
-            # Reemplazar placeholders en la URL
-            path_params = {k: v for k, v in params.items() if f"{{{k}}}" in url}
-            for key, value in path_params.items():
-                url = url.replace(f"{{{key}}}", str(value))
+        # Sin parámetros, retornar URL directamente
+        if not params:
+            return url
 
-            # Preparar query params (excluyendo los ya usados en path)
-            query_params = {k: v for k, v in params.items() if k not in path_params}
+        # Reemplazar placeholders y preparar query params
+        query_params = {}
+        for k, v in params.items():
+            placeholder = f"{{{k}}}"
+            url = url.replace(placeholder, str(v)) if placeholder in url else url
+            query_params[k] = v if placeholder not in url else query_params.get(k)
 
-            # Añadir query params si existen
-            if query_params:
-                url = f"{url}?{urlencode(query_params)}"
-
-        return url
+        # Filtrar None values y añadir query params si existen
+        query_params = {k: v for k, v in query_params.items() if v is not None}
+        return f"{url}?{urlencode(query_params)}" if query_params else url

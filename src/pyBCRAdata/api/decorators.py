@@ -10,27 +10,17 @@ def api_response_handler(func: Callable):
 
     @wraps(func)  # Preserva los metadatos de la función original
     def wrapper(self, **kwargs) -> Union[str, pd.DataFrame, Dict[str, Any]]:
-        # Obtener configuración del endpoint basado en el nombre de la función
+        # Obtener configuración y verificar argumentos requeridos
         endpoint_name = func.__name__.replace('get_', '')
         endpoint_config = APISettings.ENDPOINTS[endpoint_name]
 
-        # Verificar argumentos requeridos
-        if endpoint_config.required_args and (missing_args := endpoint_config.required_args - kwargs.keys()):
-            raise ValueError(f"Faltan argumentos requeridos: {', '.join(missing_args)}")
+        if missing := endpoint_config.required_args - kwargs.keys():
+            raise ValueError(f"Faltan argumentos requeridos: {', '.join(missing)}")
 
-        # Validar parámetros y construir URL
-        valid_params = endpoint_config.params | endpoint_config.required_args
-        api_params, func_params = self._validate_params(kwargs, valid_params)
+        # Validar, construir URL y retornar resultado
+        api_params, func_params = self._validate_params(kwargs, endpoint_config.params | endpoint_config.required_args)
         url = self.api_connector.build_url(endpoint_config.endpoint, api_params)
 
-        # Retornar JSON directo o datos procesados según formato
-        return (
-            self.api_connector.connect_to_api(url) if func_params.get("json", False)
-            else self.api_connector.fetch_data(
-                url=url,
-                data_format=endpoint_config.format,
-                debug=func_params.get("debug", False)
-            )
-        )
-
+        return self.api_connector.connect_to_api(url) if func_params.get("json", False) else \
+               self.api_connector.fetch_data(url=url, data_format=endpoint_config.format, debug=func_params.get("debug", False))
     return wrapper
