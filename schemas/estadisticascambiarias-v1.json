@@ -1,0 +1,436 @@
+{
+	"openapi": "3.0.1",
+	  "info": {
+		"title": "Estadísticas Cambiarias",
+		"description": "La API de Estadísticas Cambiarias proporciona acceso a recursos relacionados con la información de los tipos de cambio publicados por el BCRA.",
+		"contact": {
+		  "name": "API BCRA Consultas Técnicas",
+		  "email": "api@bcra.gob.ar"
+		},
+		"version": "v1.0"
+	  },
+	  "servers": [
+		{
+		  "url": "https://api.bcra.gob.ar"
+		}
+    ],
+    "paths": {
+        "/estadisticascambiarias/v1.0/Maestros/Divisas": {
+            "get": {
+                "tags": [
+                    "Maestros"
+                ],
+                "operationId": "Divisas",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DivisaResponse"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DivisaResponse"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DivisaResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/estadisticascambiarias/v1.0/Cotizaciones": {
+            "get": {
+                "tags": [
+                    "Cotizaciones"
+                ],
+                "parameters": [
+                    {
+                        "name": "fecha",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CotizacionResponse"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CotizacionResponse"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CotizacionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/estadisticascambiarias/v1.0/Cotizaciones/{codMoneda}": {
+            "get": {
+                "tags": [
+                    "Cotizaciones"
+                ],
+                "parameters": [
+                    {
+                        "name": "codMoneda",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "fechaDesde",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "fechaHasta",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CotizacionesResponse"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CotizacionesResponse"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CotizacionesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CotizacionesDetalle": {
+                "type": "object",
+                "properties": {
+                    "codigoMoneda": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "tipoPase": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "tipoCotizacion": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CotizacionesFecha": {
+                "type": "object",
+                "properties": {
+                    "fecha": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true,
+                        "example": "2024-07-30"
+                    },
+                    "detalle": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CotizacionesDetalle"
+                        },
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CotizacionesResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "metadata": {
+                        "$ref": "#/components/schemas/Metadata"
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CotizacionesFecha"
+                        },
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CotizacionResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "results": {
+                        "$ref": "#/components/schemas/CotizacionesFecha"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "Divisa": {
+                "type": "object",
+                "properties": {
+                    "codigo": {
+                        "maxLength": 3,
+                        "minLength": 0,
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "denominacion": {
+                        "maxLength": 50,
+                        "minLength": 0,
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DivisaResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Divisa"
+                        },
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "errorMessages": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "Metadata": {
+                "type": "object",
+                "properties": {
+                    "resultset": {
+                        "$ref": "#/components/schemas/Resultset"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "Resultset": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "additionalProperties": false
+            }
+        }
+    }
+}

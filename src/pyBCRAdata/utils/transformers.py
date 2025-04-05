@@ -22,155 +22,199 @@ class DataFrameTransformer:
         return transformer(data)
 
     @staticmethod
+    def _extract_results(data: Dict) -> Any:
+        """Extrae el campo 'results' de la respuesta si existe."""
+        if isinstance(data, dict) and 'results' in data:
+            return data['results']
+        return data
+
+    @staticmethod
     def _transform_nested_data(
         data: Union[Dict, List],
-        common_fields: List[str] = None,
-        level1_field: str = None,
-        level1_key: str = None,
-        level2_field: str = None,
-        level2_key: str = None,
-        level3_field: str = None,
-        extract_common_to_all: bool = True
+        schema_config: Dict = None
         ) -> pd.DataFrame:
         """
-        Método genérico para transformar datos anidados en DataFrame.
+        Método genérico optimizado para transformar datos anidados en DataFrame
+        según la configuración de schema.
 
         Parameters:
         -----------
         data: Dict o List - Los datos a transformar
-        common_fields: List[str] - Campos comunes a extraer del primer nivel
-        level1_field: str - Campo que contiene los items del primer nivel
-        level1_key: str - Clave para extraer valor del primer nivel
-        level2_field: str - Campo que contiene los items del segundo nivel
-        level2_key: str - Clave para extraer valor del segundo nivel
-        level3_field: str - Campo que contiene los items del tercer nivel
-        extract_common_to_all: bool - Si se deben extraer campos comunes a todas las filas
+        schema_config: Dict - Configuración de transformación basada en el schema
+            {
+                'common_fields': Lista de campos comunes a extraer,
+                'levels': [
+                    {
+                        'field': Nombre del campo que contiene los items,
+                        'key': Clave para identificar el valor del nivel
+                    },
+                    ...
+                ]
+            }
         """
+        # Si no hay datos, retornar DataFrame vacío
         if not data:
             return pd.DataFrame()
 
-        # Manejar listas como caso especial para timeseries
-        if isinstance(data, list):
-            flattened_data = []
+        # Extraer 'results' si es necesario (muchas APIs lo tienen como contenedor principal)
+        data = DataFrameTransformer._extract_results(data)
+
+        # Si no hay configuración de schema, retornar DataFrame simple
+        if not schema_config:
+            if isinstance(data, list) and all(isinstance(item, dict) for item in data):
+                return pd.DataFrame(data)
+            elif isinstance(data, dict):
+                return pd.DataFrame([data])
+            return pd.DataFrame()
+
+        # Lista simple
+        if isinstance(data, list) and all(isinstance(item, dict) for item in data) and not schema_config.get('levels'):
+            return pd.DataFrame(data)
+
+        # Inicializar datos
+        common_fields = schema_config.get('common_fields', [])
+        levels = schema_config.get('levels', [])
+
+        # Manejar respuesta plana (sin niveles)
+        if isinstance(data, dict) and not levels:
+            if common_fields:
+                root_data = {field: data.get(field) for field in common_fields if field in data}
+                return pd.DataFrame([root_data]) if root_data else pd.DataFrame()
+            return pd.DataFrame([data])
+
+        # Manejar caso de un solo nivel (como cotizaciones)
+        if isinstance(data, dict) and len(levels) == 1 and levels[0]['field'] in data:
+            level_field = levels[0]['field']
+            level_key = levels[0].get('key')
+
+            df = pd.DataFrame(data.get(level_field, []))
+            if not df.empty and level_key and level_key in data:
+                df[level_key] = data[level_key]
+            return df
+
+        # Procesar datos para estructura de series de tiempo
+        if isinstance(data, list) and len(levels) == 1:
+            level_field = levels[0]['field']
+            level_key = levels[0].get('key')
+
+            rows = []
             for entry in data:
-                if level1_field and level1_field in entry:
-                    for item in entry.get(level1_field, []):
-                        # Añadir el campo común (fecha) a cada item
-                        if level1_key and level1_key in entry:
-                            item[level1_key] = entry[level1_key]
-                        flattened_data.append(item)
-            return pd.DataFrame(flattened_data)
-
-        # Caso de diccionario (resto de formatos)
-        common_data = {}
-        if common_fields and extract_common_to_all:
-            common_data = {field: data.get(field, np.nan) for field in common_fields}
-
-        # Si no hay campo de primer nivel, es un caso simple
-        if not level1_field:
-            if level2_field and level2_field in data:
-                # Caso currency: solo detalle con fecha común
-                df = pd.DataFrame(data.get(level2_field, []))
-                if not df.empty and level1_key and level1_key in data:
-                    df[level1_key] = data[level1_key]
-                return df
-            return pd.DataFrame([common_data]) if common_data else pd.DataFrame()
-
-        # Si hay campo de primer nivel pero no existe en data, retornar datos comunes
-        level1_items = data.get(level1_field, [])
-        if not level1_items and common_data:
-            return pd.DataFrame([common_data])
-
-        flattened_data = []
-
-        # Procesar el primer nivel
-        for item1 in level1_items:
-            item1_value = item1.get(level1_key, np.nan) if level1_key else None
-            level1_data = {**common_data}
-            if level1_key and item1_value is not None:
-                level1_data[level1_key] = item1_value
-
-            # Si no hay segundo nivel, añadir datos del primer nivel
-            if not level2_field or level2_field not in item1:
-                # Para checks, añadir valores por defecto
-                if not level2_field and not level2_key and level1_field == 'detalles' and not level1_items:
-                    default_values = {'sucursal': np.nan, 'numeroCuenta': np.nan, 'causal': np.nan}
-                    flattened_data.append({**level1_data, **default_values})
-                else:
-                    flattened_data.append(level1_data)
-                continue
-
-            # Procesar el segundo nivel
-            for item2 in item1.get(level2_field, []):
-                if not level2_key:
-                    # Si no hay clave específica, usar todo el objeto
-                    row = {**level1_data, **item2}
-                    flattened_data.append(row)
+                if level_field not in entry:
                     continue
 
-                item2_value = item2.get(level2_key, np.nan)
-                level2_data = {**level1_data, level2_key: item2_value}
+                for detail in entry.get(level_field, []):
+                    row = dict(detail)
+                    if level_key and level_key in entry:
+                        row[level_key] = entry[level_key]
+                    rows.append(row)
+            return pd.DataFrame(rows)
 
-                # Si no hay tercer nivel, añadir datos del segundo nivel
-                if not level3_field or level3_field not in item2:
-                    flattened_data.append(level2_data)
-                    continue
+        # Procesar estructuras jerárquicas multinivel
+        if isinstance(data, dict):
+            # Extraer campos comunes
+            root_data = {}
+            if common_fields:
+                root_data = {field: data.get(field) for field in common_fields if field in data}
 
-                # Procesar el tercer nivel
-                for item3 in item2.get(level3_field, []):
-                    row = {**level2_data, **item3}
-                    flattened_data.append(row)
+            # Verificar primer nivel
+            if not levels or levels[0]['field'] not in data:
+                return pd.DataFrame([root_data]) if root_data else pd.DataFrame()
 
-        return pd.DataFrame(flattened_data)
+            # Procesar niveles jerárquicos
+            rows = []
+            current_data = data
+
+            # Función recursiva para procesar niveles
+            def process_level(level_idx, parent_data, accumulated_data):
+                if level_idx >= len(levels):
+                    # Hemos llegado al final de los niveles, agregar datos acumulados
+                    rows.append({**accumulated_data, **{k: v for k, v in parent_data.items()
+                                                       if k != levels[level_idx-1]['field']}})
+                    return
+
+                level_config = levels[level_idx]
+                level_field = level_config['field']
+                level_key = level_config.get('key')
+
+                if level_field not in parent_data:
+                    # Si no hay campo de nivel, agregar datos actuales
+                    rows.append(accumulated_data)
+                    return
+
+                for item in parent_data.get(level_field, []):
+                    new_data = {**accumulated_data}
+
+                    # Agregar clave del nivel si existe
+                    if level_key and level_key in item:
+                        new_data[level_key] = item[level_key]
+
+                    # Verificar si hay siguiente nivel
+                    if level_idx + 1 < len(levels) and levels[level_idx + 1]['field'] in item:
+                        process_level(level_idx + 1, item, new_data)
+                    else:
+                        # Último nivel o no hay más niveles anidados
+                        item_data = {k: v for k, v in item.items() if k != level_field}
+                        rows.append({**new_data, **item_data})
+
+            # Iniciar procesamiento recursivo con el primer nivel
+            process_level(0, current_data, root_data)
+            return pd.DataFrame(rows)
+
+        # Fallback: retornar DataFrame con datos originales
+        return pd.DataFrame([data]) if isinstance(data, dict) else pd.DataFrame(data)
 
     @staticmethod
     def _transform_checks(data: Dict) -> pd.DataFrame:
         """Transforma datos de cheques en DataFrame."""
-        common_fields = ['numeroCheque', 'denunciado', 'fechaProcesamiento', 'denominacionEntidad']
-        return DataFrameTransformer._transform_nested_data(
-            data=data,
-            common_fields=common_fields,
-            level1_field='detalles'
-        )
+        schema_config = {
+            'common_fields': ['numeroCheque', 'denunciado', 'fechaProcesamiento', 'denominacionEntidad'],
+            'levels': [
+                {'field': 'detalles'}
+            ]
+        }
+        return DataFrameTransformer._transform_nested_data(data, schema_config)
 
     @staticmethod
     def _transform_currency(data: Dict) -> pd.DataFrame:
         """Transforma datos de divisas en DataFrame."""
-        return DataFrameTransformer._transform_nested_data(
-            data=data,
-            level1_key='fecha',
-            level2_field='detalle'
-        )
+        schema_config = {
+            'levels': [
+                {'field': 'detalle', 'key': 'fecha'}
+            ]
+        }
+        return DataFrameTransformer._transform_nested_data(data, schema_config)
 
     @staticmethod
     def _transform_timeseries(data: List) -> pd.DataFrame:
         """Transforma series temporales en DataFrame."""
-        return DataFrameTransformer._transform_nested_data(
-            data=data,
-            level1_field='detalle',
-            level1_key='fecha'
-        )
+        schema_config = {
+            'levels': [
+                {'field': 'detalle', 'key': 'fecha'}
+            ]
+        }
+        return DataFrameTransformer._transform_nested_data(data, schema_config)
 
     @staticmethod
     def _transform_debts(data: Dict) -> pd.DataFrame:
         """Transforma datos de deudas en DataFrame."""
-        return DataFrameTransformer._transform_nested_data(
-            data=data,
-            common_fields=['identificacion', 'denominacion'],
-            level1_field='periodos',
-            level1_key='periodo',
-            level2_field='entidades'
-        )
+        schema_config = {
+            'common_fields': ['identificacion', 'denominacion'],
+            'levels': [
+                {'field': 'periodos', 'key': 'periodo'},
+                {'field': 'entidades'}
+            ]
+        }
+        return DataFrameTransformer._transform_nested_data(data, schema_config)
 
     @staticmethod
     def _transform_rejected_checks(data: Dict) -> pd.DataFrame:
         """Transforma datos de cheques rechazados en DataFrame."""
-        return DataFrameTransformer._transform_nested_data(
-            data=data,
-            common_fields=['identificacion', 'denominacion'],
-            level1_field='causales',
-            level1_key='causal',
-            level2_field='entidades',
-            level2_key='entidad',
-            level3_field='detalle'
-        )
+        schema_config = {
+            'common_fields': ['identificacion', 'denominacion'],
+            'levels': [
+                {'field': 'causales', 'key': 'causal'},
+                {'field': 'entidades', 'key': 'entidad'},
+                {'field': 'detalle'}
+            ]
+        }
+        return DataFrameTransformer._transform_nested_data(data, schema_config)

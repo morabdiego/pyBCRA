@@ -19,10 +19,14 @@ class URLBuilder:
 
         # Reemplazar placeholders y preparar query params
         query_params = {}
+        used_placeholders = set()
         for k, v in params.items():
             placeholder = f"{{{k}}}"
-            url = url.replace(placeholder, str(v)) if placeholder in url else url
-            query_params[k] = v if placeholder not in url else query_params.get(k)
+            if placeholder in url:
+                url = url.replace(placeholder, str(v))
+                used_placeholders.add(k)
+            else:
+                query_params[k] = v
 
         # Filtrar None values y añadir query params si existen
         query_params = {k: v for k, v in query_params.items() if v is not None}
