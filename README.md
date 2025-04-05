@@ -1,4 +1,4 @@
-# pyBCRAdata v0.3.3
+# pyBCRAdata v0.3.4
 
 [![PyPI version](https://img.shields.io/pypi/v/pyBCRAdata.svg?logo=pypi&logoColor=white)](https://badge.fury.io/py/pyBCRAdata)
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
@@ -19,7 +19,7 @@ Diseñado para economistas, analistas y desarrolladores que trabajan con datos m
 pip install pyBCRAdata
 ```
 
-Requiere **Python 3.7+**, **requests** y **pandas**. Ver [documentación de instalación](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/installation.md) para más detalles.
+Requiere **Python 3.7+**, **requests** y **pandas**. Ver [documentación de instalación](https://github.com/morabdiego/pyBCRA/blob/main/docs/installation/installation.md) para más detalles.
 
 ## 📊 Ejemplo Rápido
 
@@ -50,17 +50,17 @@ print(usd.head())
 
 La documentación completa está disponible en la carpeta [docs](https://github.com/morabdiego/pyBCRA/tree/main/docs/):
 
-- **[Guías de Usuario](https://github.com/morabdiego/pyBCRA/tree/main/docs/guides/)** - Instrucciones paso a paso para tareas comunes
+- **[Documentación de Instalación](https://github.com/morabdiego/pyBCRA/tree/main/docs/installation/)** - Instrucciones para la instalación
 - **[Referencia de API](https://github.com/morabdiego/pyBCRA/tree/main/docs/api/)** - Información detallada sobre cada método
-- **[Ejemplos Prácticos](https://github.com/morabdiego/pyBCRA/tree/main/docs/examples/)** - Casos de uso para implementaciones específicas
 
 > **Nota**: Toda la documentación está disponible en español e inglés. Cada archivo incluye ambos idiomas con una separación clara.
 
 ### Principales áreas de datos
 
-- **[Datos Monetarios](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/monetary_data.md)** - Estadísticas monetarias y financieras
-- **[Datos de Divisas](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/currency_data.md)** - Cotizaciones y series históricas
-- **[Información de Deudores](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/debtors_data.md)** - Consultas sobre deudas y cheques rechazados
+- **[Datos Monetarios](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/monetary.md)** - Estadísticas monetarias y financieras
+- **[Datos de Divisas](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/currency.md)** - Cotizaciones y series históricas
+- **[Información de Deudores](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/debts.md)** - Consultas sobre deudas
+- **[Cheques Rechazados](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/checks.md)** - Información sobre cheques rechazados
 
 ## 🔑 Acceso a la API
 
@@ -88,7 +88,7 @@ Este proyecto está licenciado bajo [Creative Commons Attribution-NonCommercial 
 
 ---
 
-# pyBCRAdata v0.3.3 [English]
+# pyBCRAdata v0.3.4 [English]
 
 Python client to access monetary statistics, exchange rate data, and debtor information published by the Central Bank of the Argentine Republic (BCRA).
 Designed for economists, analysts, and developers working with macroeconomic data.
@@ -101,7 +101,7 @@ Designed for economists, analysts, and developers working with macroeconomic dat
 pip install pyBCRAdata
 ```
 
-Requires **Python 3.7+**, **requests**, and **pandas**. See [installation documentation](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/installation.md) for more details.
+Requires **Python 3.7+**, **requests**, and **pandas**. See [installation documentation](https://github.com/morabdiego/pyBCRA/blob/main/docs/installation/installation.md) for more details.
 
 ## 📊 Quick Example
 
@@ -132,17 +132,17 @@ print(usd.head())
 
 Complete documentation is available in the [docs](https://github.com/morabdiego/pyBCRA/tree/main/docs/) folder:
 
-- **[User Guides](https://github.com/morabdiego/pyBCRA/tree/main/docs/guides/)** - Step-by-step instructions for common tasks
+- **[Installation Documentation](https://github.com/morabdiego/pyBCRA/tree/main/docs/installation/)** - Installation instructions
 - **[API Reference](https://github.com/morabdiego/pyBCRA/tree/main/docs/api/)** - Detailed information about each method
-- **[Practical Examples](https://github.com/morabdiego/pyBCRA/tree/main/docs/examples/)** - Use cases for specific implementations
 
 > **Note**: All documentation is available in both Spanish and English. Each file includes both languages with clear separation.
 
 ### Main Data Areas
 
-- **[Monetary Data](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/monetary_data.md)** - Monetary and financial statistics
-- **[Currency Data](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/currency_data.md)** - Exchange rates and historical series
-- **[Debtor Information](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/debtors_data.md)** - Queries about debts and rejected checks
+- **[Monetary Data](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/monetary.md)** - Monetary and financial statistics
+- **[Currency Data](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/currency.md)** - Exchange rates and historical series
+- **[Debtor Information](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/debts.md)** - Queries about debts
+- **[Rejected Checks](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/checks.md)** - Information about rejected checks
 
 ## 🔑 API Access
 
