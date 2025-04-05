@@ -1,4 +1,4 @@
-from typing import Dict, Any, Union
+from typing import Dict, Any, Union, Set
 import logging
 import requests
 import pandas as pd
@@ -42,9 +42,15 @@ class APIConnector:
         df = self._create_dataframe(data.get('results', data), data_format)
         return self._assign_column_types(df) if not df.empty else df
 
-    def build_url(self, endpoint: str, params: Dict[str, Any]) -> str:
+    def build_url(self, endpoint: str, params: Dict[str, Any], path_params: Set[str] = None, query_params: Set[str] = None) -> str:
         """Construye URL usando URLBuilder."""
-        return URLBuilder.build_url(self.base_url, endpoint, params)
+        return URLBuilder.build_url(
+            base_url=self.base_url,
+            endpoint=endpoint,
+            params=params,
+            path_params=path_params,
+            query_params=query_params
+        )
 
     def _handle_request_error(self, error: Exception) -> None:
         """Maneja errores de peticiones HTTP categorizándolos por tipo."""

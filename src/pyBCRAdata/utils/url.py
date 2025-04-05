@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, Set
 from urllib.parse import urlencode
 
 class URLBuilder:
@@ -7,27 +7,42 @@ class URLBuilder:
         base_url: str,
         endpoint: str,
         params: Dict[str, Any] = None,
+        path_params: Set[str] = None,
+        query_params: Set[str] = None,
     ) -> str:
+        # Normalizar URL base
         url = f"{base_url.rstrip('/')}/{endpoint.lstrip('/')}"
 
         # Caso especial para endpoint monetario
-        url = url.replace('/monetarias/{id_variable}', '/monetarias') if '/monetarias/{id_variable}' in url and (not params or 'id_variable' not in params) else url
+        if '/monetarias/{id_variable}' in url and (not params or 'id_variable' not in params):
+            url = url.replace('/monetarias/{id_variable}', '/monetarias')
 
         # Sin parámetros, retornar URL directamente
         if not params:
             return url
 
-        # Reemplazar placeholders y preparar query params
-        query_params = {}
-        used_placeholders = set()
-        for k, v in params.items():
-            placeholder = f"{{{k}}}"
-            if placeholder in url:
-                url = url.replace(placeholder, str(v))
-                used_placeholders.add(k)
-            else:
-                query_params[k] = v
+        # Procesar parámetros de ruta (path)
+        if path_params:
+            for key in path_params:
+                if key in params:
+                    placeholder = f"{{{key}}}"
+                    if placeholder in url:
+                        url = url.replace(placeholder, str(params[key]))
 
-        # Filtrar None values y añadir query params si existen
-        query_params = {k: v for k, v in query_params.items() if v is not None}
-        return f"{url}?{urlencode(query_params)}" if query_params else url
+        # Procesar parámetros de consulta (query)
+        query_dict = {}
+
+        # Determinar los parámetros de consulta
+        effective_query_params = query_params if query_params is not None else (
+            set(params.keys()) - (path_params or set())
+        )
+
+        # Añadir solo parámetros relevantes a query_dict
+        for key in effective_query_params:
+            if key in params and params[key] is not None:
+                placeholder = f"{{{key}}}"
+                if placeholder not in url:
+                    query_dict[key] = params[key]
+
+        # Añadir query params si existen
+        return f"{url}?{urlencode(query_dict)}" if query_dict else url

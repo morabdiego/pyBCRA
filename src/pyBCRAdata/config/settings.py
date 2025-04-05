@@ -12,8 +12,9 @@ class EndpointConfig:
     """Configuración de un endpoint de la API."""
     endpoint: str
     format: DataFormat
-    params: Set[str] = field(default_factory=set)
-    required_args: Set[str] = field(default_factory=set)
+    path_params: Set[str] = field(default_factory=set)  # Parámetros que van en la ruta
+    query_params: Set[str] = field(default_factory=set)  # Parámetros que van como query string
+    required_args: Set[str] = field(default_factory=set)  # Argumentos requeridos (pueden ser path o query)
 
 class APIEndpoints:
     """Endpoints y configuraciones de la API BCRA."""
@@ -48,7 +49,8 @@ class APISettings:
         'monetary_data': EndpointConfig(
             endpoint=APIEndpoints.MONETARY,
             format=DataFormat.DEFAULT,
-            params={"id_variable", "desde", "hasta", "limit", "offset"}
+            path_params={"id_variable"},
+            query_params={"desde", "hasta", "limit", "offset"},
         ),
         'currency_master': EndpointConfig(
             endpoint=APIEndpoints.CURRENCY_MASTER,
@@ -57,12 +59,13 @@ class APISettings:
         'currency_quotes': EndpointConfig(
             endpoint=APIEndpoints.CURRENCY_QUOTES,
             format=DataFormat.CURRENCY,
-            params={"fecha"}
+            query_params={"fecha"}
         ),
         'currency_timeseries': EndpointConfig(
             endpoint=APIEndpoints.CURRENCY_TIMESERIES,
             format=DataFormat.TIMESERIES,
-            params={"fechadesde", "fechahasta", "limit", "offset"},
+            path_params={"moneda"},
+            query_params={"fechadesde", "fechahasta", "limit", "offset"},
             required_args={"moneda"}
         ),
         'checks_master': EndpointConfig(
@@ -72,21 +75,25 @@ class APISettings:
         'checks_reported': EndpointConfig(
             endpoint=APIEndpoints.CHECKS_REPORTED,
             format=DataFormat.CHECKS,
+            path_params={'codigo_entidad', 'numero_cheque'},
             required_args={'codigo_entidad', 'numero_cheque'}
         ),
         'debts': EndpointConfig(
             endpoint=APIEndpoints.DEBTS,
             format=DataFormat.DEBTS,
+            path_params={'identificacion'},
             required_args={'identificacion'}
         ),
         'debts_historical': EndpointConfig(
             endpoint=APIEndpoints.DEBTS_HISTORICAL,
             format=DataFormat.DEBTS,
+            path_params={'identificacion'},
             required_args={'identificacion'}
         ),
         'debts_rejected_checks': EndpointConfig(
             endpoint=APIEndpoints.DEBTS_REJECTED_CHECKS,
             format=DataFormat.REJECTED_CHECKS,
+            path_params={'identificacion'},
             required_args={'identificacion'}
         )
     }

@@ -17,9 +17,23 @@ def api_response_handler(func: Callable):
         if missing := endpoint_config.required_args - kwargs.keys():
             raise ValueError(f"Faltan argumentos requeridos: {', '.join(missing)}")
 
+        # Obtener parámetros de path y query
+        path_params = getattr(endpoint_config, 'path_params', set())
+        query_params = getattr(endpoint_config, 'query_params', set())
+
+        # Para compatibilidad con versiones anteriores
+        all_api_params = path_params | query_params
+        if not all_api_params and hasattr(endpoint_config, 'params'):
+            all_api_params = endpoint_config.params
+
         # Validar, construir URL y retornar resultado
-        api_params, func_params = self._validate_params(kwargs, endpoint_config.params | endpoint_config.required_args)
-        url = self.api_connector.build_url(endpoint_config.endpoint, api_params)
+        api_params, func_params = self._validate_params(kwargs, all_api_params | endpoint_config.required_args)
+        url = self.api_connector.build_url(
+            endpoint=endpoint_config.endpoint,
+            params=api_params,
+            path_params=path_params,
+            query_params=query_params
+        )
 
         return self.api_connector.connect_to_api(url) if func_params.get("json", False) else \
                self.api_connector.fetch_data(url=url, data_format=endpoint_config.format, debug=func_params.get("debug", False))

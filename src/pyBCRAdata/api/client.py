@@ -42,13 +42,13 @@ class BCRAclient:
         Parameters
         ----------
         id_variable : int
-            ID de la variable monetaria
-        desde : str
-            Fecha inicio (YYYY-MM-DD)
-        hasta : str
-            Fecha fin (YYYY-MM-DD)
+            ID de la variable monetaria (parámetro de ruta)
+        desde : str, optional
+            Fecha inicio (YYYY-MM-DD) (parámetro de consulta)
+        hasta : str, optional
+            Fecha fin (YYYY-MM-DD) (parámetro de consulta)
         limit, offset : int, optional
-            Paginación de resultados
+            Paginación de resultados (parámetros de consulta)
         """ + COMMON_PARAMS_DOC + """
         Returns
         -------
@@ -82,8 +82,8 @@ class BCRAclient:
 
         Parameters
         ----------
-        fecha : str
-            Fecha de cotización (YYYY-MM-DD)
+        fecha : str, optional
+            Fecha de cotización (YYYY-MM-DD) (parámetro de consulta)
         """ + COMMON_PARAMS_DOC + """
         Returns
         -------
@@ -103,11 +103,11 @@ class BCRAclient:
         Parameters
         ----------
         moneda : str
-            Código de moneda ISO (ej: "USD") (obligatorio)
+            Código de moneda ISO (ej: "USD") (parámetro de ruta, obligatorio)
         fechadesde, fechahasta : str, optional
-            Rango de fechas (YYYY-MM-DD)
+            Rango de fechas (YYYY-MM-DD) (parámetros de consulta)
         limit, offset : int, optional
-            Paginación de resultados
+            Paginación de resultados (parámetros de consulta)
         """ + COMMON_PARAMS_DOC + """
         Returns
         -------
@@ -142,9 +142,9 @@ class BCRAclient:
         Parameters
         ----------
         codigo_entidad : int
-            Código de la entidad bancaria (obligatorio)
+            Código de la entidad bancaria (parámetro de ruta, obligatorio)
         numero_cheque : int
-            Número del cheque a consultar (obligatorio)
+            Número del cheque a consultar (parámetro de ruta, obligatorio)
         """ + COMMON_PARAMS_DOC + """
         Returns
         -------
@@ -164,7 +164,7 @@ class BCRAclient:
         Parameters
         ----------
         identificacion : str
-            CUIT/CUIL del titular a consultar (obligatorio)
+            CUIT/CUIL del titular a consultar (parámetro de ruta, obligatorio)
         """ + COMMON_PARAMS_DOC + """
         Returns
         -------
@@ -184,7 +184,7 @@ class BCRAclient:
         Parameters
         ----------
         identificacion : str
-            CUIT/CUIL del titular a consultar (obligatorio)
+            CUIT/CUIL del titular a consultar (parámetro de ruta, obligatorio)
         """ + COMMON_PARAMS_DOC + """
         Returns
         -------
@@ -204,7 +204,7 @@ class BCRAclient:
         Parameters
         ----------
         identificacion : str
-            CUIT/CUIL del titular a consultar (obligatorio)
+            CUIT/CUIL del titular a consultar (parámetro de ruta, obligatorio)
         """ + COMMON_PARAMS_DOC + """
         Returns
         -------
