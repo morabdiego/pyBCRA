@@ -34,21 +34,32 @@ class BCRAclient:
         """
         Obtiene datos monetarios del BCRA.
 
-        Args:
-            id_variable (int): ID de la variable monetaria
-            desde (str): Fecha inicio (YYYY-MM-DD)
-            hasta (str): Fecha fin (YYYY-MM-DD)
-            limit (int, optional): Límite de resultados
-            offset (int, optional): Desplazamiento para paginación
-            json (bool, optional): Devuelve respuesta JSON sin procesar
-            debug (bool, optional): Devuelve la URL sin hacer la petición
+        Parameters
+        ----------
+        id_variable : int
+            ID de la variable monetaria
+        desde : str
+            Fecha inicio (YYYY-MM-DD)
+        hasta : str
+            Fecha fin (YYYY-MM-DD)
+        limit : int, optional
+            Límite de resultados
+        offset : int, optional
+            Desplazamiento para paginación
+        json : bool, optional
+            Devuelve respuesta JSON sin procesar
+        debug : bool, optional
+            Devuelve la URL sin hacer la petición
 
-        Returns:
+        Returns
+        -------
+        Union[str, pd.DataFrame, Dict[str, Any]]
             Serie temporal de datos monetarios para la variable solicitada
 
-        Examples:
-            >>> client = BCRAclient()
-            >>> df = client.get_monetary_data(id_variable=1, desde="2020-01-01", hasta="2020-12-31")
+        Examples
+        --------
+        >>> client = BCRAclient()
+        >>> df = client.get_monetary_data(id_variable=1, desde="2020-01-01", hasta="2020-12-31")
         """
         pass
 
@@ -57,16 +68,22 @@ class BCRAclient:
         """
         Obtiene el maestro de divisas (catálogo de monedas).
 
-        Args:
-            json (bool, optional): Devuelve respuesta JSON sin procesar
-            debug (bool, optional): Devuelve la URL sin hacer la petición
+        Parameters
+        ----------
+        json : bool, optional
+            Devuelve respuesta JSON sin procesar
+        debug : bool, optional
+            Devuelve la URL sin hacer la petición
 
-        Returns:
+        Returns
+        -------
+        Union[str, pd.DataFrame, Dict[str, Any]]
             Listado de divisas con sus códigos ISO y descripción
 
-        Examples:
-            >>> client = BCRAclient()
-            >>> df = client.get_currency_master()
+        Examples
+        --------
+        >>> client = BCRAclient()
+        >>> df = client.get_currency_master()
         """
         pass
 
@@ -75,17 +92,24 @@ class BCRAclient:
         """
         Obtiene cotizaciones de divisas para una fecha específica.
 
-        Args:
-            fecha (str): Fecha de cotización (YYYY-MM-DD)
-            json (bool, optional): Devuelve respuesta JSON sin procesar
-            debug (bool, optional): Devuelve la URL sin hacer la petición
+        Parameters
+        ----------
+        fecha : str
+            Fecha de cotización (YYYY-MM-DD)
+        json : bool, optional
+            Devuelve respuesta JSON sin procesar
+        debug : bool, optional
+            Devuelve la URL sin hacer la petición
 
-        Returns:
+        Returns
+        -------
+        Union[str, pd.DataFrame, Dict[str, Any]]
             Cotizaciones de todas las divisas para la fecha especificada
 
-        Examples:
-            >>> client = BCRAclient()
-            >>> df = client.get_currency_quotes(fecha="2023-01-15")
+        Examples
+        --------
+        >>> client = BCRAclient()
+        >>> df = client.get_currency_quotes(fecha="2023-01-15")
         """
         pass
 
@@ -97,21 +121,32 @@ class BCRAclient:
         """
         Obtiene series temporales de cotizaciones para una divisa específica.
 
-        Args:
-            moneda (str): Código de moneda ISO (ej: "USD") (obligatorio)
-            fechadesde (str, optional): Fecha inicio (YYYY-MM-DD)
-            fechahasta (str, optional): Fecha fin (YYYY-MM-DD)
-            limit (int, optional): Límite de resultados
-            offset (int, optional): Desplazamiento para paginación
-            json (bool, optional): Devuelve respuesta JSON sin procesar
-            debug (bool, optional): Devuelve la URL sin hacer la petición
+        Parameters
+        ----------
+        moneda : str
+            Código de moneda ISO (ej: "USD") (obligatorio)
+        fechadesde : str, optional
+            Fecha inicio (YYYY-MM-DD)
+        fechahasta : str, optional
+            Fecha fin (YYYY-MM-DD)
+        limit : int, optional
+            Límite de resultados
+        offset : int, optional
+            Desplazamiento para paginación
+        json : bool, optional
+            Devuelve respuesta JSON sin procesar
+        debug : bool, optional
+            Devuelve la URL sin hacer la petición
 
-        Returns:
+        Returns
+        -------
+        Union[str, pd.DataFrame, Dict[str, Any]]
             Serie temporal de cotizaciones para la divisa solicitada
 
-        Examples:
-            >>> client = BCRAclient()
-            >>> df = client.get_currency_timeseries(moneda="USD", fechadesde="2023-01-01", fechahasta="2023-12-31")
+        Examples
+        --------
+        >>> client = BCRAclient()
+        >>> df = client.get_currency_timeseries(moneda="USD", fechadesde="2023-01-01", fechahasta="2023-12-31")
         """
         pass
 
@@ -120,18 +155,25 @@ class BCRAclient:
         """
         Obtiene el listado de entidades bancarias que operan con cheques.
 
-        Args:
-            json (bool, optional): Devuelve respuesta JSON sin procesar
-            debug (bool, optional): Devuelve la URL sin hacer la petición
+        Parameters
+        ----------
+        json : bool, optional
+            Devuelve respuesta JSON sin procesar
+        debug : bool, optional
+            Devuelve la URL sin hacer la petición
 
-        Returns:
+        Returns
+        -------
+        Union[str, pd.DataFrame, Dict[str, Any]]
             DataFrame con:
-                - codigoEntidad: Código de la entidad bancaria
-                - denominacion: Nombre de la entidad bancaria
 
-        Examples:
-            >>> client = BCRAclient()
-            >>> df = client.get_checks_master()
+            - codigoEntidad : Código de la entidad bancaria
+            - denominacion : Nombre de la entidad bancaria
+
+        Examples
+        --------
+        >>> client = BCRAclient()
+        >>> df = client.get_checks_master()
         """
         pass
 
@@ -140,19 +182,27 @@ class BCRAclient:
         """
         Obtiene información de cheques denunciados.
 
-        Args:
-            codigo_entidad (int): Código de la entidad bancaria (obligatorio)
-            numero_cheque (int): Número del cheque a consultar (obligatorio)
-            json (bool, optional): Devuelve respuesta JSON sin procesar
-            debug (bool, optional): Devuelve la URL sin hacer la petición
+        Parameters
+        ----------
+        codigo_entidad : int
+            Código de la entidad bancaria (obligatorio)
+        numero_cheque : int
+            Número del cheque a consultar (obligatorio)
+        json : bool, optional
+            Devuelve respuesta JSON sin procesar
+        debug : bool, optional
+            Devuelve la URL sin hacer la petición
 
-        Returns:
+        Returns
+        -------
+        Union[str, pd.DataFrame, Dict[str, Any]]
             Información del cheque denunciado, incluyendo detalles de denuncia
             y entidad bancaria
 
-        Examples:
-            >>> client = BCRAclient()
-            >>> result = client.get_checks_reported(codigo_entidad=123, numero_cheque=456789)
+        Examples
+        --------
+        >>> client = BCRAclient()
+        >>> result = client.get_checks_reported(codigo_entidad=123, numero_cheque=456789)
         """
         pass
 
@@ -161,25 +211,119 @@ class BCRAclient:
         """
         Obtiene información de deudas registradas por CUIT/CUIL.
 
-        Args:
-            identificacion (str): CUIT/CUIL del titular a consultar (obligatorio)
-            json (bool, optional): Devuelve respuesta JSON sin procesar
-            debug (bool, optional): Devuelve la URL sin hacer la petición
+        Parameters
+        ----------
+        identificacion : str
+            CUIT/CUIL del titular a consultar (obligatorio)
+        json : bool, optional
+            Devuelve respuesta JSON sin procesar
+        debug : bool, optional
+            Devuelve la URL sin hacer la petición
 
-        Returns:
+        Returns
+        -------
+        Union[str, pd.DataFrame, Dict[str, Any]]
             Información de deudas registradas con columnas:
-                - identificacion: CUIT/CUIL consultado
-                - denominacion: Nombre del titular
-                - periodo: Periodo informado (YYYYMM)
-                - entidad: Nombre de la entidad financiera
-                - situacion: Situación deudora (1-6, donde 1 es mejor)
-                - monto: Monto de la deuda
-                - diversos indicadores booleanos sobre refinanciaciones,
-                  procesos judiciales, etc.
 
-        Examples:
-            >>> client = BCRAclient()
-            >>> result = client.get_debts(identificacion="20123456789")
+            - identificacion : CUIT/CUIL consultado
+            - denominacion : Nombre del titular
+            - periodo : Periodo informado (YYYYMM)
+            - entidad : Nombre de la entidad financiera
+            - situacion : Situación deudora (1-6, donde 1 es mejor)
+            - monto : Monto de la deuda
+            - diversos indicadores booleanos sobre refinanciaciones,
+              procesos judiciales, etc.
+
+        Examples
+        --------
+        >>> client = BCRAclient()
+        >>> result = client.get_debts(identificacion="20123456789")
+        """
+        pass
+
+    @api_response_handler
+    def get_debts_historical(self, **kwargs) -> Union[str, pd.DataFrame, Dict[str, Any]]:
+        """
+        Obtiene información histórica de deudas registradas por CUIT/CUIL.
+
+        Parameters
+        ----------
+        identificacion : str
+            CUIT/CUIL del titular a consultar (obligatorio)
+        json : bool, optional
+            Devuelve respuesta JSON sin procesar
+        debug : bool, optional
+            Devuelve la URL sin hacer la petición
+
+        Returns
+        -------
+        Union[str, pd.DataFrame, Dict[str, Any]]
+            Información histórica de deudas registradas con columnas:
+
+            - identificacion : CUIT/CUIL consultado
+            - denominacion : Nombre del titular
+            - periodo : Periodo informado (YYYYMM)
+            - entidad : Nombre de la entidad financiera
+            - situacion : Situación deudora (1-6, donde 1 es mejor)
+            - monto : Monto de la deuda
+            - enRevision : Si está en revisión
+            - procesoJud : Si tiene proceso judicial
+
+        Notes
+        -----
+        Este endpoint devuelve un historial de deudas a través de múltiples períodos,
+        a diferencia del endpoint básico que devuelve información del período actual.
+
+        Examples
+        --------
+        >>> client = BCRAclient()
+        >>> result = client.get_debts_historical(identificacion="20123456789")
+        """
+        pass
+
+    @api_response_handler
+    def get_debts_rejected_checks(self, **kwargs) -> Union[str, pd.DataFrame, Dict[str, Any]]:
+        """
+        Obtiene información sobre cheques rechazados asociados a un CUIT/CUIL.
+
+        Parameters
+        ----------
+        identificacion : str
+            CUIT/CUIL del titular a consultar (obligatorio)
+        json : bool, optional
+            Devuelve respuesta JSON sin procesar
+        debug : bool, optional
+            Devuelve la URL sin hacer la petición
+
+        Returns
+        -------
+        Union[str, pd.DataFrame, Dict[str, Any]]
+            Información de cheques rechazados con columnas:
+
+            - identificacion : CUIT/CUIL consultado
+            - denominacion : Nombre del titular
+            - causal : Motivo del rechazo (ej: "SIN FONDOS")
+            - entidad : Código de la entidad bancaria
+            - nroCheque : Número del cheque rechazado
+            - fechaRechazo : Fecha de rechazo del cheque
+            - monto : Monto del cheque
+            - fechaPago : Fecha de pago, si fue pagado
+            - fechaPagoMulta : Fecha de pago de la multa
+            - estadoMulta : Estado de la multa (ej: "IMPAGA")
+            - ctaPersonal : Si es cuenta personal
+            - denomJuridica : Denominación jurídica
+            - enRevision : Si está en revisión
+            - procesoJud : Si tiene proceso judicial
+
+        Notes
+        -----
+        Este endpoint proporciona información detallada sobre los cheques rechazados
+        asociados al CUIT/CUIL consultado, agrupados por causal de rechazo y entidad.
+
+        Examples
+        --------
+        >>> client = BCRAclient()
+        >>> result = client.get_debts_rejected_checks(identificacion="20123456789")
         """
         pass
 

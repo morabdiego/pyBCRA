@@ -16,6 +16,8 @@ class DataFrameTransformer:
             return DataFrameTransformer._transform_timeseries(data)
         elif data_format == DataFormat.DEBTS:
             return DataFrameTransformer._transform_debts(data)
+        elif data_format == DataFormat.REJECTED_CHECKS:
+            return DataFrameTransformer._transform_rejected_checks(data)
         elif data_format == DataFormat.DEFAULT:
             return pd.DataFrame(data)
         else:
@@ -103,6 +105,73 @@ class DataFrameTransformer:
                     **entidad
                 }
                 flattened_data.append(row)
+
+        # Convertir a DataFrame
+        return pd.DataFrame(flattened_data)
+
+    @staticmethod
+    def _transform_rejected_checks(data: Dict) -> pd.DataFrame:
+        """Transforma datos de cheques rechazados en DataFrame."""
+        # Lista para almacenar los datos aplanados
+        flattened_data = []
+
+        # Si no hay datos, devolver DataFrame vacío
+        if not data:
+            return pd.DataFrame()
+
+        # Datos base para todas las filas
+        common_data = {
+            'identificacion': data.get('identificacion', np.nan),
+            'denominacion': data.get('denominacion', np.nan)
+        }
+
+        # Procesar los causales
+        causales = data.get('causales', [])
+
+        # Si no hay causales, devolver solo datos comunes
+        if not causales:
+            return pd.DataFrame([common_data])
+
+        # Iterar por cada causal
+        for causal in causales:
+            causal_value = causal.get('causal', np.nan)
+
+            # Obtener las entidades del causal
+            entidades = causal.get('entidades', [])
+
+            # Si no hay entidades, crear fila con solo causal
+            if not entidades:
+                row = {**common_data, 'causal': causal_value}
+                flattened_data.append(row)
+                continue
+
+            # Procesar cada entidad
+            for entidad in entidades:
+                entidad_value = entidad.get('entidad', np.nan)
+
+                # Obtener los detalles de la entidad
+                detalles = entidad.get('detalle', [])
+
+                # Si no hay detalles, crear fila con solo entidad y causal
+                if not detalles:
+                    row = {
+                        **common_data,
+                        'causal': causal_value,
+                        'entidad': entidad_value
+                    }
+                    flattened_data.append(row)
+                    continue
+
+                # Procesar cada detalle
+                for detalle in detalles:
+                    # Crear fila completa
+                    row = {
+                        **common_data,
+                        'causal': causal_value,
+                        'entidad': entidad_value,
+                        **detalle
+                    }
+                    flattened_data.append(row)
 
         # Convertir a DataFrame
         return pd.DataFrame(flattened_data)

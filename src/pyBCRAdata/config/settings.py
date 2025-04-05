@@ -10,6 +10,7 @@ class DataFormat(Enum):
     TIMESERIES = auto()   # Para get_currency_timeseries
     CHECKS = auto()      # Para get_checks_reported
     DEBTS = auto()       # Para get_debts
+    REJECTED_CHECKS = auto()  # Para get_debts_rejected_checks
 
 @dataclass(frozen=True)
 class EndpointConfig:
@@ -33,6 +34,8 @@ class APIEndpoints:
     CHECKS_MASTER = f"{CHECKS_BASE}/entidades"
     CHECKS_REPORTED = f"{CHECKS_BASE}/denunciados/{{codigo_entidad}}/{{numero_cheque}}"
     DEBTS = f"CentralDeDeudores/v1.0/Deudas/{{identificacion}}"
+    DEBTS_HISTORICAL = f"CentralDeDeudores/v1.0/Deudas/Historicas/{{identificacion}}"
+    DEBTS_REJECTED_CHECKS = f"CentralDeDeudores/v1.0/Deudas/ChequesRechazados/{{identificacion}}"
 
 @dataclass(frozen=True)
 class APISettings:
@@ -82,6 +85,18 @@ class APISettings:
         'debts': EndpointConfig(
             endpoint=APIEndpoints.DEBTS,
             format=DataFormat.DEBTS,
+            params=set(),
+            required_args={'identificacion'}
+        ),
+        'debts_historical': EndpointConfig(
+            endpoint=APIEndpoints.DEBTS_HISTORICAL,
+            format=DataFormat.DEBTS,
+            params=set(),
+            required_args={'identificacion'}
+        ),
+        'debts_rejected_checks': EndpointConfig(
+            endpoint=APIEndpoints.DEBTS_REJECTED_CHECKS,
+            format=DataFormat.REJECTED_CHECKS,
             params=set(),
             required_args={'identificacion'}
         )
