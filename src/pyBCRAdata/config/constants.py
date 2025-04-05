@@ -15,15 +15,14 @@ ERROR_MESSAGES = {
     'unknown_format': "Formato de datos desconocido: {format}"
 }
 
-# Tipos de columnas
+# Tipos de columnas agrupados por tipo de dato
 COLUMN_TYPES = {
-    'fecha': 'datetime64[ns]',
-    'valor': 'float64',
-    'tipoCotizacion': 'float64',
-    'tipoPase': 'float64',
-    'codigoEntidad': 'int64',
-    'idVariable': 'int64',
-    'numeroCheque': 'int64',
-    'fechaProcesamiento': 'datetime64[ns]',
-    'fechaSit1': 'datetime64[ns]'
+    # Fechas
+    'fecha': 'datetime64[ns]', 'fechaProcesamiento': 'datetime64[ns]', 'fechaSit1': 'datetime64[ns]',
+
+    # Valores numéricos de punto flotante
+    'valor': 'float64', 'tipoCotizacion': 'float64', 'tipoPase': 'float64',
+
+    # Valores enteros
+    'codigoEntidad': 'int64', 'idVariable': 'int64', 'numeroCheque': 'int64'
 }

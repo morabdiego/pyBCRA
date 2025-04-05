@@ -1,16 +1,11 @@
 from dataclasses import dataclass, field
-from typing import Dict, Set, Optional, ClassVar
+from typing import Dict, Set, ClassVar
 from enum import Enum, auto
 from pathlib import Path
 
 class DataFormat(Enum):
     """Formatos de datos soportados por la API."""
-    DEFAULT = auto()     # Para get_monetary_data
-    CURRENCY = auto()     # Para get_currency_quotes
-    TIMESERIES = auto()   # Para get_currency_timeseries
-    CHECKS = auto()      # Para get_checks_reported
-    DEBTS = auto()       # Para get_debts
-    REJECTED_CHECKS = auto()  # Para get_debts_rejected_checks
+    DEFAULT, CURRENCY, TIMESERIES, CHECKS, DEBTS, REJECTED_CHECKS = auto(), auto(), auto(), auto(), auto(), auto()
 
 @dataclass(frozen=True)
 class EndpointConfig:
@@ -21,34 +16,34 @@ class EndpointConfig:
     required_args: Set[str] = field(default_factory=set)
 
 class APIEndpoints:
-    """Endpoints base de la API."""
+    """Endpoints y configuraciones de la API BCRA."""
+    # Bases
     BASE = 'api.bcra.gob.ar'
     MONETARY_BASE = 'estadisticas/v3.0'
     CURRENCY_BASE = 'estadisticascambiarias/v1.0'
     CHECKS_BASE = 'cheques/v1.0'
+    DEBTS_BASE = 'CentralDeDeudores/v1.0/Deudas'
 
-    MONETARY = f"{MONETARY_BASE}/monetarias"
+    # Endpoints específicos
+    MONETARY = f"{MONETARY_BASE}/monetarias/{{id_variable}}"
     CURRENCY_MASTER = f"{CURRENCY_BASE}/Maestros/Divisas"
     CURRENCY_QUOTES = f"{CURRENCY_BASE}/Cotizaciones"
     CURRENCY_TIMESERIES = f"{CURRENCY_BASE}/Cotizaciones/{{moneda}}"
     CHECKS_MASTER = f"{CHECKS_BASE}/entidades"
     CHECKS_REPORTED = f"{CHECKS_BASE}/denunciados/{{codigo_entidad}}/{{numero_cheque}}"
-    DEBTS = f"CentralDeDeudores/v1.0/Deudas/{{identificacion}}"
-    DEBTS_HISTORICAL = f"CentralDeDeudores/v1.0/Deudas/Historicas/{{identificacion}}"
-    DEBTS_REJECTED_CHECKS = f"CentralDeDeudores/v1.0/Deudas/ChequesRechazados/{{identificacion}}"
+    DEBTS = f"{DEBTS_BASE}/{{identificacion}}"
+    DEBTS_HISTORICAL = f"{DEBTS_BASE}/Historicas/{{identificacion}}"
+    DEBTS_REJECTED_CHECKS = f"{DEBTS_BASE}/ChequesRechazados/{{identificacion}}"
 
 @dataclass(frozen=True)
 class APISettings:
     """Configuración global de la API."""
-
-    # URLs base
+    # URLs base y parámetros comunes
     BASE_URL: ClassVar[str] = f'https://{APIEndpoints.BASE}'
     CERT_PATH: ClassVar[str] = str(Path(__file__).parent.parent / 'cert' / 'ca.pem')
-
-    # Parámetros comunes como variable de clase
     COMMON_FUNC_PARAMS: ClassVar[Set[str]] = {"json", "debug"}
 
-    # Configuración de endpoints como variable de clase
+    # Configuración de endpoints
     ENDPOINTS: ClassVar[Dict[str, EndpointConfig]] = {
         'monetary_data': EndpointConfig(
             endpoint=APIEndpoints.MONETARY,
@@ -57,8 +52,7 @@ class APISettings:
         ),
         'currency_master': EndpointConfig(
             endpoint=APIEndpoints.CURRENCY_MASTER,
-            format=DataFormat.DEFAULT,
-            params=set()
+            format=DataFormat.DEFAULT
         ),
         'currency_quotes': EndpointConfig(
             endpoint=APIEndpoints.CURRENCY_QUOTES,
@@ -73,31 +67,26 @@ class APISettings:
         ),
         'checks_master': EndpointConfig(
             endpoint=APIEndpoints.CHECKS_MASTER,
-            format=DataFormat.DEFAULT,
-            params=set()
+            format=DataFormat.DEFAULT
         ),
         'checks_reported': EndpointConfig(
             endpoint=APIEndpoints.CHECKS_REPORTED,
             format=DataFormat.CHECKS,
-            params=set(),
             required_args={'codigo_entidad', 'numero_cheque'}
         ),
         'debts': EndpointConfig(
             endpoint=APIEndpoints.DEBTS,
             format=DataFormat.DEBTS,
-            params=set(),
             required_args={'identificacion'}
         ),
         'debts_historical': EndpointConfig(
             endpoint=APIEndpoints.DEBTS_HISTORICAL,
             format=DataFormat.DEBTS,
-            params=set(),
             required_args={'identificacion'}
         ),
         'debts_rejected_checks': EndpointConfig(
             endpoint=APIEndpoints.DEBTS_REJECTED_CHECKS,
             format=DataFormat.REJECTED_CHECKS,
-            params=set(),
             required_args={'identificacion'}
         )
     }

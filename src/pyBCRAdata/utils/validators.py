@@ -2,56 +2,61 @@ from datetime import datetime
 from typing import Any, Dict, Set, Tuple
 
 class ParamValidator:
+    # Conjuntos de campos que requieren validación específica
+    DATE_FIELDS = {'fecha', 'desde', 'hasta', 'fechadesde', 'fechahasta'}
+    INT_FIELDS = {'limit', 'offset'}
+
     @staticmethod
     def validate_params(
-        params: Dict[str, Any],  # Diccionario de parámetros a validar
-        valid_api_params: Set[str],  # Conjunto de parámetros válidos de API
-        valid_func_params: Set[str] = {"json", "debug"}  # Parámetros de función por defecto
+        params: Dict[str, Any],
+        valid_api_params: Set[str],
+        valid_func_params: Set[str] = {"json", "debug"}
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+        """
+        Valida los parámetros de entrada y los separa en parámetros de API y de función.
+        Lanza ValueError si encuentra parámetros inválidos o valores incorrectos.
+        """
+        api_params = {}
 
-        api_params = {}  # Diccionario para almacenar parámetros de API válidos
-
-        # Itera sobre los parámetros recibidos
+        # Procesar parámetros de API
         for k, v in params.items():
             if k in valid_api_params:
-                # Valida fechas para campos específicos
-                if k in {'fecha', 'desde', 'hasta', 'fechadesde', 'fechahasta'}:
-                    if not ParamValidator.validate_date(v):
-                        raise ValueError(f"Formato de fecha inválido para {k}: {v}")
+                # Validar según el tipo de campo
+                if k in ParamValidator.DATE_FIELDS and not ParamValidator.validate_date(v):
+                    raise ValueError(f"Formato de fecha inválido para {k}: {v}")
+                elif k in ParamValidator.INT_FIELDS and not ParamValidator.validate_int(v):
+                    raise ValueError(f"Valor entero inválido para {k}: {v}")
 
-                # Valida enteros para campos específicos
-                elif k in {'limit', 'offset'}:
-                    if not ParamValidator.validate_int(v):
-                        raise ValueError(f"Valor entero inválido para {k}: {v}")
+                api_params[k] = v
 
-                api_params[k] = v  # Almacena el parámetro válido
-
-        # Filtra y almacena los parámetros de función válidos
+        # Extraer parámetros de función
         func_params = {k: v for k, v in params.items() if k in valid_func_params}
 
-        # Verifica si hay parámetros inválidos
+        # Verificar parámetros inválidos
         invalid_params = set(params.keys()) - valid_api_params - valid_func_params
         if invalid_params:
-            raise ValueError(  # Lanza error con mensaje detallado
+            raise ValueError(
                 f"Parámetros inválidos: {', '.join(invalid_params)}.\n\n"
                 f"Parámetros API permitidos: {', '.join(valid_api_params) or 'Ninguno'}.\n"
                 f"Parámetros función permitidos: {', '.join(valid_func_params)}."
             )
 
-        return api_params, func_params  # Retorna tupla con parámetros validados
+        return api_params, func_params
 
-    @staticmethod  # Decorator para método estático (no requiere instancia)
+    @staticmethod
     def validate_date(value: str) -> bool:
+        """Valida que el valor sea una fecha en formato YYYY-MM-DD."""
         try:
-            datetime.strptime(value, "%Y-%m-%d")  # Intenta parsear la fecha en formato YYYY-MM-DD
-            return True  # Retorna True si el formato es válido
+            datetime.strptime(value, "%Y-%m-%d")
+            return True
         except ValueError:
-            return False  # Retorna False si hay error en el formato
+            return False
 
     @staticmethod
     def validate_int(value: Any) -> bool:
+        """Valida que el valor pueda convertirse a entero."""
         try:
-            int(value)  # Intenta convertir el valor a entero
-            return True  # Retorna True si la conversión es exitosa
+            int(value)
+            return True
         except (ValueError, TypeError):
-            return False  # Retorna False si hay error en la conversión
+            return False
