@@ -19,7 +19,7 @@ Diseñado para economistas, analistas y desarrolladores que trabajan con datos m
 pip install pyBCRAdata
 ```
 
-Requiere **Python 3.7+**, **requests** y **pandas**. Ver [documentación de instalación](docs/guides/installation.md) para más detalles.
+Requiere **Python 3.7+**, **requests** y **pandas**. Ver [documentación de instalación](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/installation.md) para más detalles.
 
 ## 📊 Ejemplo Rápido
 
@@ -48,19 +48,19 @@ print(usd.head())
 
 ## 📚 Documentación
 
-La documentación completa está disponible en la carpeta [docs](docs/):
+La documentación completa está disponible en la carpeta [docs](https://github.com/morabdiego/pyBCRA/tree/main/docs/):
 
-- **[Guías de Usuario](docs/guides/)** - Instrucciones paso a paso para tareas comunes
-- **[Referencia de API](docs/api/)** - Información detallada sobre cada método
-- **[Ejemplos Prácticos](docs/examples/)** - Casos de uso para implementaciones específicas
+- **[Guías de Usuario](https://github.com/morabdiego/pyBCRA/tree/main/docs/guides/)** - Instrucciones paso a paso para tareas comunes
+- **[Referencia de API](https://github.com/morabdiego/pyBCRA/tree/main/docs/api/)** - Información detallada sobre cada método
+- **[Ejemplos Prácticos](https://github.com/morabdiego/pyBCRA/tree/main/docs/examples/)** - Casos de uso para implementaciones específicas
 
 > **Nota**: Toda la documentación está disponible en español e inglés. Cada archivo incluye ambos idiomas con una separación clara.
 
 ### Principales áreas de datos
 
-- **[Datos Monetarios](docs/guides/monetary_data.md)** - Estadísticas monetarias y financieras
-- **[Datos de Divisas](docs/guides/currency_data.md)** - Cotizaciones y series históricas
-- **[Información de Deudores](docs/guides/debtors_data.md)** - Consultas sobre deudas y cheques rechazados
+- **[Datos Monetarios](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/monetary_data.md)** - Estadísticas monetarias y financieras
+- **[Datos de Divisas](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/currency_data.md)** - Cotizaciones y series históricas
+- **[Información de Deudores](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/debtors_data.md)** - Consultas sobre deudas y cheques rechazados
 
 ## 🔑 Acceso a la API
 
@@ -101,7 +101,7 @@ Designed for economists, analysts, and developers working with macroeconomic dat
 pip install pyBCRAdata
 ```
 
-Requires **Python 3.7+**, **requests**, and **pandas**. See [installation documentation](docs/guides/installation.md) for more details.
+Requires **Python 3.7+**, **requests**, and **pandas**. See [installation documentation](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/installation.md) for more details.
 
 ## 📊 Quick Example
 
@@ -130,19 +130,19 @@ print(usd.head())
 
 ## 📚 Documentation
 
-Complete documentation is available in the [docs](docs/) folder:
+Complete documentation is available in the [docs](https://github.com/morabdiego/pyBCRA/tree/main/docs/) folder:
 
-- **[User Guides](docs/guides/)** - Step-by-step instructions for common tasks
-- **[API Reference](docs/api/)** - Detailed information about each method
-- **[Practical Examples](docs/examples/)** - Use cases for specific implementations
+- **[User Guides](https://github.com/morabdiego/pyBCRA/tree/main/docs/guides/)** - Step-by-step instructions for common tasks
+- **[API Reference](https://github.com/morabdiego/pyBCRA/tree/main/docs/api/)** - Detailed information about each method
+- **[Practical Examples](https://github.com/morabdiego/pyBCRA/tree/main/docs/examples/)** - Use cases for specific implementations
 
 > **Note**: All documentation is available in both Spanish and English. Each file includes both languages with clear separation.
 
 ### Main Data Areas
 
-- **[Monetary Data](docs/guides/monetary_data.md)** - Monetary and financial statistics
-- **[Currency Data](docs/guides/currency_data.md)** - Exchange rates and historical series
-- **[Debtor Information](docs/guides/debtors_data.md)** - Queries about debts and rejected checks
+- **[Monetary Data](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/monetary_data.md)** - Monetary and financial statistics
+- **[Currency Data](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/currency_data.md)** - Exchange rates and historical series
+- **[Debtor Information](https://github.com/morabdiego/pyBCRA/blob/main/docs/guides/debtors_data.md)** - Queries about debts and rejected checks
 
 ## 🔑 API Access
 
