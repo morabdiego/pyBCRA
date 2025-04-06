@@ -3,7 +3,6 @@ from typing import Callable, Any, Dict, Union
 import pandas as pd
 
 from ..config.settings import APISettings
-from ..config.constants import ERROR_MESSAGES
 
 def api_response_handler(func: Callable):
     """Decorador que maneja toda la lógica de las llamadas a la API"""
@@ -36,5 +35,5 @@ def api_response_handler(func: Callable):
         )
 
         return self.api_connector.connect_to_api(url) if func_params.get("json", False) else \
-               self.api_connector.fetch_data(url=url, data_format=endpoint_config.format, debug=func_params.get("debug", False))
+               self.api_connector.fetch_data(url=url, debug=func_params.get("debug", False))
     return wrapper

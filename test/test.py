@@ -2,7 +2,7 @@ from pyBCRAdata import BCRAclient
 
 client = BCRAclient()
 
-switch = True
+switch = False
 
 df_1 = client.get_monetary_data(id_variable=6, debug=switch)
 df_2 = client.get_monetary_data(debug=switch)

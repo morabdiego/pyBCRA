@@ -2,11 +2,9 @@ from typing import Dict, Any, Union, Set
 import logging
 import requests
 import pandas as pd
-import numpy as np
 
-from ..config.settings import DataFormat
 from ..utils.url import URLBuilder
-from ..config.constants import COLUMN_TYPES, ERROR_MESSAGES
+from ..config.constants import COLUMN_TYPES
 from ..utils.transformers import DataFrameTransformer
 
 class APIConnector:
@@ -28,8 +26,8 @@ class APIConnector:
             self._handle_request_error(e)
             return {}
 
-    def fetch_data(self, url: str, data_format: DataFormat, debug: bool = False) -> Union[str, pd.DataFrame]:
-        """Obtiene y procesa datos de la API en el formato especificado."""
+    def fetch_data(self, url: str, debug: bool = False) -> Union[str, pd.DataFrame]:
+        """Obtiene y procesa datos de la API."""
         if debug:
             return url
 
@@ -39,7 +37,7 @@ class APIConnector:
             return pd.DataFrame()
 
         # Crear DataFrame y asignar tipos de columna
-        df = self._create_dataframe(data.get('results', data), data_format)
+        df = self._create_dataframe(data)
         return self._assign_column_types(df) if not df.empty else df
 
     def build_url(self, endpoint: str, params: Dict[str, Any], path_params: Set[str] = None, query_params: Set[str] = None) -> str:
@@ -59,10 +57,10 @@ class APIConnector:
                     "inesperado"
         self.logger.error(f"Error {error_type}: {error}")
 
-    def _create_dataframe(self, data: Any, data_format: DataFormat) -> pd.DataFrame:
-        """Crea DataFrame según el formato de datos especificado."""
+    def _create_dataframe(self, data: Any) -> pd.DataFrame:
+        """Crea DataFrame usando el transformador."""
         try:
-            return DataFrameTransformer.transform(data, data_format)
+            return DataFrameTransformer.transform(data)
         except Exception as e:
             self.logger.error(f"Error creando DataFrame: {e}")
             return pd.DataFrame()
