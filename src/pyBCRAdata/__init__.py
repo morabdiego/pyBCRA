@@ -6,7 +6,7 @@ from .client import BCRAclient, MonetaryAPI, CurrencyAPI, ChecksAPI, DebtorsAPI
 from .connector import APIConnector
 from .settings import APISettings
 
-__version__ = "0.3.5"
+__version__ = "0.4.0"
 __author__ = "Diego Mora"
 
 # Create default client instance

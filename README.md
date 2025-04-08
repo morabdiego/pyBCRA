@@ -1,4 +1,4 @@
-# pyBCRAdata v0.3.5
+# pyBCRAdata v0.4.0
 
 [![PyPI version](https://img.shields.io/pypi/v/pyBCRAdata.svg?logo=pypi&logoColor=white)](https://badge.fury.io/py/pyBCRAdata)
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
@@ -68,7 +68,7 @@ print(usd.head())
 
 La documentación completa está disponible en la carpeta [docs](https://github.com/morabdiego/pyBCRA/tree/main/docs/):
 
-- **[Documentación de Instalación](https://github.com/morabdiego/pyBCRA/tree/main/docs/installation/)** - Instrucciones para la instalación
+- **[Documentación de Instalación](https://github.com/morabdiego/pyBCRA/tree/main/docs/installation/installation.md)** - Instrucciones para la instalación
 - **[Referencia de API](https://github.com/morabdiego/pyBCRA/tree/main/docs/api/)** - Información detallada sobre cada método
 
 > **Nota**: Toda la documentación está disponible en español e inglés. Cada archivo incluye ambos idiomas con una separación clara.
@@ -104,7 +104,7 @@ Este proyecto está licenciado bajo [Creative Commons Attribution-NonCommercial 
 
 ---
 
-# pyBCRAdata v0.3.5 [English]
+# pyBCRAdata v0.4.0 [English]
 
 Python client to access monetary statistics, exchange rate data, and debtor information published by the Central Bank of the Argentine Republic (BCRA).
 Designed for economists, analysts, and developers working with macroeconomic data.
