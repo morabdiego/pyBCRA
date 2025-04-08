@@ -2,7 +2,6 @@ from dataclasses import dataclass, field
 from typing import Dict, Set, ClassVar
 from pathlib import Path
 
-# Formatos y mensajes
 DATE_FORMAT = "%Y-%m-%d"
 ERROR_MESSAGES = {
     'ssl_disabled': "Verificación SSL desactivada - no recomendado para producción",
@@ -15,7 +14,6 @@ ERROR_MESSAGES = {
     'unknown_format': "Formato de datos desconocido: {format}"
 }
 
-# Tipos de columnas
 COLUMN_TYPES = {
     'fecha': 'datetime64[ns]', 'fechaProcesamiento': 'datetime64[ns]', 'fechaSit1': 'datetime64[ns]',
     'valor': 'float64', 'tipoCotizacion': 'float64', 'tipoPase': 'float64',
@@ -38,7 +36,6 @@ class APIEndpoints:
     CHECKS_BASE = 'cheques/v1.0'
     DEBTS_BASE = 'CentralDeDeudores/v1.0/Deudas'
 
-    # Endpoints específicos
     MONETARY = f"{MONETARY_BASE}/monetarias/{{id_variable}}"
     MONETARY_MASTER = f"{MONETARY_BASE}/monetarias"
     CURRENCY_MASTER = f"{CURRENCY_BASE}/Maestros/Divisas"
@@ -55,16 +52,14 @@ class APISettings:
     """Configuración global de la API."""
     BASE_URL: ClassVar[str] = f'https://{APIEndpoints.BASE}'
 
-    # Buscar el certificado en múltiples ubicaciones posibles
     CERT_PATH: ClassVar[str] = str(
-        Path(__file__).parent / 'cert' / 'ca.pem'  # Para desarrollo
+        Path(__file__).parent / 'cert' / 'ca.pem'
         if (Path(__file__).parent / 'cert' / 'ca.pem').exists()
-        else Path(__file__).parent.parent / 'cert' / 'ca.pem'  # Para instalación
+        else Path(__file__).parent.parent / 'cert' / 'ca.pem'
     )
 
     COMMON_FUNC_PARAMS: ClassVar[Set[str]] = {"json", "debug"}
 
-    # Configuración unificada de APIs y endpoints
     API_CONFIG: ClassVar[Dict[str, Dict[str, EndpointConfig]]] = {
         'monetary': {
             'variables': EndpointConfig(

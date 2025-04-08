@@ -9,13 +9,10 @@ from .settings import APISettings
 __version__ = "0.4.0"
 __author__ = "Diego Mora"
 
-# Create default client instance
 _default_client = BCRAclient()
 
-# Expose the client and its API submodules
 __all__ = ['BCRAclient', 'monetary', 'currency', 'checks', 'debtors']
 
-# Crear instancias de las APIs individuales
 _connector = APIConnector(
     base_url=APISettings.BASE_URL,
     cert_path=APISettings.CERT_PATH

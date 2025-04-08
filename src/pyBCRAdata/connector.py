@@ -6,36 +6,37 @@ from urllib.parse import urlencode
 
 from .settings import COLUMN_TYPES
 
-def build_url(base_url: str, endpoint: str, params: Dict[str, Any] = None,
-             path_params: Set[str] = None, query_params: Set[str] = None) -> str:
-    """Construye una URL completa a partir de la URL base, el endpoint y los parámetros."""
+def build_url(
+        base_url: str,
+        endpoint: str, params: Dict[str, Any] = None,
+        path_params: Set[str] = None,
+        query_params: Set[str] = None
+        ) -> str:
+
     url = f"{base_url.rstrip('/')}/{endpoint.lstrip('/')}"
 
     if not params:
         return url
 
-    # Procesar parámetros de ruta
     if path_params:
         for key in path_params:
             if key in params:
                 url = url.replace(f"{{{key}}}", str(params[key]))
 
-    # Procesar parámetros de consulta
-    query_dict = {k: v for k, v in params.items()
-                 if k in (query_params or set()) and v is not None}
+    query_dict = {
+        k: v for k, v in params.items()
+        if k in (query_params or set()) and v is not None
+            }
 
     return f"{url}?{urlencode(query_dict)}" if query_dict else url
 
 class APIConnector:
-    """Conector base para realizar llamadas a la API."""
-
     def __init__(self, base_url: str, cert_path: Union[str, bool, None]):
         self.base_url = base_url.rstrip('/')
         self.cert_path = cert_path
         self.logger = logging.getLogger(self.__class__.__name__)
 
     def connect_to_api(self, url: str) -> tuple[int, Dict[str, Any]]:
-        """Realiza la conexión a la API y retorna una tupla con el código de estado y la respuesta JSON."""
         try:
             response = requests.get(url, verify=self.cert_path)
             return response.status_code, response.json()
@@ -44,7 +45,6 @@ class APIConnector:
             return 0, {}
 
     def fetch_data(self, url: str) -> pd.DataFrame:
-        """Obtiene y procesa datos de la API."""
         status_code, data = self.connect_to_api(url)
 
         if status_code != 200:
@@ -61,20 +61,17 @@ class APIConnector:
             return pd.DataFrame()
 
     def _handle_request_error(self, error: Exception) -> None:
-        """Maneja errores de peticiones HTTP."""
         error_type = "SSL" if isinstance(error, requests.exceptions.SSLError) else \
                     "HTTP" if isinstance(error, requests.exceptions.HTTPError) else "inesperado"
         self.logger.error(f"Error {error_type}: {error}")
 
     def _assign_column_types(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Asigna tipos de datos a las columnas del DataFrame."""
         for col, dtype in COLUMN_TYPES.items():
             if col in df.columns:
                 df[col] = df[col].astype(dtype)
         return df
 
     def _transform_to_dataframe(self, data: Any) -> pd.DataFrame:
-        """Transforma datos JSON en DataFrame."""
         if isinstance(data, dict) and 'results' in data:
             data = data['results']
         if not data:
@@ -82,7 +79,6 @@ class APIConnector:
         return self._json_to_df(data)
 
     def _flatten_dict(self, d: dict, parent_key: str = '', sep: str = '_') -> dict:
-        """Aplana un diccionario anidado."""
         items = []
         for k, v in d.items():
             new_key = f"{parent_key}{sep}{k}" if parent_key else k
@@ -96,7 +92,6 @@ class APIConnector:
         return dict(items)
 
     def _json_to_df(self, json_data: Union[Dict, List]) -> pd.DataFrame:
-        """Convierte datos JSON en DataFrame."""
         if isinstance(json_data, dict):
             return pd.DataFrame([self._flatten_dict(json_data)])
         elif isinstance(json_data, list):
