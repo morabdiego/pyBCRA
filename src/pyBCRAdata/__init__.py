@@ -2,7 +2,7 @@
 pyBCRAdata - Cliente Python para la API del Banco Central de la República Argentina
 """
 
-from .api.client import BCRAclient
+from .client import BCRAclient
 
 __version__ = "0.3.4"
 __author__ = "Diego Mora"

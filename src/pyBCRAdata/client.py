@@ -1,14 +1,11 @@
-from typing import Dict, Any, Union, Optional, Set, Tuple
+from typing import Dict, Any, Union, Optional
 import pandas as pd
 import warnings
 import requests
-from functools import wraps
 
-from ..config.settings import APISettings
+from .settings import APISettings, ERROR_MESSAGES
 from .connector import APIConnector
-from .decorators import api_response_handler
-from ..utils.validators import ParamValidator
-from ..config.constants import ERROR_MESSAGES
+from .api_call import api_call
 
 # Tipo para resultados de API
 APIResult = Union[str, pd.DataFrame, Dict[str, Any]]
@@ -31,10 +28,15 @@ class BCRAclient:
         verify_ssl: bool = True
     ):
         """Inicializa el cliente BCRA con opciones de conexión."""
-        self._setup_ssl(verify_ssl)
-        self.api_connector = self._create_connector(base_url, cert_path, verify_ssl)
+        if not verify_ssl:
+            warnings.warn(ERROR_MESSAGES['ssl_disabled'], UserWarning)
+            requests.packages.urllib3.disable_warnings()
 
-    @api_response_handler
+        # Crear conector de API
+        final_cert_path = cert_path or (APISettings.CERT_PATH if verify_ssl else False)
+        self.api_connector = APIConnector(base_url=base_url, cert_path=final_cert_path)
+
+    @api_call
     def get_monetary_data(self, **kwargs) -> APIResult:
         """
         Obtiene datos monetarios del BCRA.
@@ -60,7 +62,7 @@ class BCRAclient:
         """
         pass
 
-    @api_response_handler
+    @api_call
     def get_currency_master(self, **kwargs) -> APIResult:
         """
         Obtiene el maestro de divisas (catálogo de monedas).
@@ -75,7 +77,7 @@ class BCRAclient:
         """
         pass
 
-    @api_response_handler
+    @api_call
     def get_currency_quotes(self, **kwargs) -> APIResult:
         """
         Obtiene cotizaciones de divisas para una fecha específica.
@@ -95,7 +97,7 @@ class BCRAclient:
         """
         pass
 
-    @api_response_handler
+    @api_call
     def get_currency_timeseries(self, **kwargs) -> APIResult:
         """
         Obtiene series temporales de cotizaciones para una divisa específica.
@@ -119,7 +121,7 @@ class BCRAclient:
         """
         pass
 
-    @api_response_handler
+    @api_call
     def get_checks_master(self, **kwargs) -> APIResult:
         """
         Obtiene el listado de entidades bancarias que operan con cheques.
@@ -134,7 +136,7 @@ class BCRAclient:
         """
         pass
 
-    @api_response_handler
+    @api_call
     def get_checks_reported(self, **kwargs) -> APIResult:
         """
         Obtiene información de cheques denunciados.
@@ -156,7 +158,7 @@ class BCRAclient:
         """
         pass
 
-    @api_response_handler
+    @api_call
     def get_debts(self, **kwargs) -> APIResult:
         """
         Obtiene información de deudas registradas por CUIT/CUIL.
@@ -176,7 +178,7 @@ class BCRAclient:
         """
         pass
 
-    @api_response_handler
+    @api_call
     def get_debts_historical(self, **kwargs) -> APIResult:
         """
         Obtiene información histórica de deudas registradas por CUIT/CUIL.
@@ -196,7 +198,7 @@ class BCRAclient:
         """
         pass
 
-    @api_response_handler
+    @api_call
     def get_debts_rejected_checks(self, **kwargs) -> APIResult:
         """
         Obtiene información sobre cheques rechazados asociados a un CUIT/CUIL.
@@ -215,20 +217,3 @@ class BCRAclient:
         >>> df = client.get_debts_rejected_checks(identificacion="20123456789")
         """
         pass
-
-    def _setup_ssl(self, verify_ssl: bool) -> None:
-        """Configura la verificación SSL."""
-        if not verify_ssl:
-            warnings.warn(ERROR_MESSAGES['ssl_disabled'], UserWarning)
-            requests.packages.urllib3.disable_warnings()
-
-    def _create_connector(self, base_url: str, cert_path: Optional[str], verify_ssl: bool) -> APIConnector:
-        """Crea y configura el conector de API."""
-        return APIConnector(
-            base_url=base_url,
-            cert_path=cert_path or (APISettings.CERT_PATH if verify_ssl else False)
-        )
-
-    def _validate_params(self, params: Dict[str, Any], valid_api_params: Set[str]) -> Tuple[Dict[str, Any], Dict[str, Any]]:
-        """Valida parámetros usando ParamValidator."""
-        return ParamValidator.validate_params(params, valid_api_params, APISettings.COMMON_FUNC_PARAMS)

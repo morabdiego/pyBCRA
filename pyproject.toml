@@ -40,14 +40,11 @@ dependencies = [
 [tool.setuptools]
 package-dir = {"" = "src"}
 packages = [
-    "pyBCRAdata",
-    "pyBCRAdata.api",
-    "pyBCRAdata.config",
-    "pyBCRAdata.utils"
+    "pyBCRAdata"
 ]
 
 [tool.setuptools.package-data]
-"pyBCRdata" = [
+"pyBCRAdata" = [
     "cert/*.pem",
     "py.typed"  # Added for type hint support
 ]
