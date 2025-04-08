@@ -1,219 +1,94 @@
-from typing import Dict, Any, Union, Optional
+from typing import Dict, Any, Union, Optional, Callable
 import pandas as pd
 import warnings
 import requests
+from functools import wraps
 
 from .settings import APISettings, ERROR_MESSAGES
-from .connector import APIConnector
-from .api_call import api_call
+from .connector import APIConnector, build_url
 
 # Tipo para resultados de API
 APIResult = Union[str, pd.DataFrame, Dict[str, Any]]
 
-# Parámetros comunes en todos los métodos
-COMMON_PARAMS_DOC = """
-        json : bool, optional
-            Devuelve respuesta JSON sin procesar
-        debug : bool, optional
-            Devuelve la URL sin hacer la petición
-"""
+def endpoint(endpoint_name: str) -> Callable:
+    """Decorador para métodos que usan un endpoint específico."""
+    def decorator(func: Callable) -> Callable:
+        @wraps(func)
+        def wrapper(self, **kwargs) -> APIResult:
+            self._current_endpoint = endpoint_name
+            return self._make_api_call(**kwargs)
+        return wrapper
+    return decorator
 
 class BCRAclient:
     """Cliente para acceder a los datos de la API del BCRA."""
 
-    def __init__(
-        self,
-        base_url: str = APISettings.BASE_URL,
-        cert_path: Optional[str] = None,
-        verify_ssl: bool = True
-    ):
+    def __init__(self, base_url: str = APISettings.BASE_URL,
+                cert_path: Optional[str] = None, verify_ssl: bool = True):
         """Inicializa el cliente BCRA con opciones de conexión."""
         if not verify_ssl:
             warnings.warn(ERROR_MESSAGES['ssl_disabled'], UserWarning)
             requests.packages.urllib3.disable_warnings()
 
-        # Crear conector de API
-        final_cert_path = cert_path or (APISettings.CERT_PATH if verify_ssl else False)
-        self.api_connector = APIConnector(base_url=base_url, cert_path=final_cert_path)
+        self.api_connector = APIConnector(
+            base_url=base_url,
+            cert_path=cert_path or (APISettings.CERT_PATH if verify_ssl else False)
+        )
 
-    @api_call
-    def get_monetary_data(self, **kwargs) -> APIResult:
-        """
-        Obtiene datos monetarios del BCRA.
+        # Generar métodos dinámicamente
+        self._generate_methods()
 
-        Parameters
-        ----------
-        id_variable : int
-            ID de la variable monetaria (parámetro de ruta)
-        desde : str, optional
-            Fecha inicio (YYYY-MM-DD) (parámetro de consulta)
-        hasta : str, optional
-            Fecha fin (YYYY-MM-DD) (parámetro de consulta)
-        limit, offset : int, optional
-            Paginación de resultados (parámetros de consulta)
-        """ + COMMON_PARAMS_DOC + """
-        Returns
-        -------
-        DataFrame con serie temporal de datos monetarios
+    def _generate_methods(self) -> None:
+        """Genera los métodos get_* dinámicamente basados en los endpoints configurados."""
+        # Generar todos los métodos incluyendo los monetarios
+        for endpoint_name in APISettings.ENDPOINTS:
+            method_name = f"get_{endpoint_name}"
+            docstring = f"Obtiene {endpoint_name.replace('_', ' ')}."
 
-        Examples
-        --------
-        >>> df = client.get_monetary_data(id_variable=1, desde="2020-01-01", hasta="2020-12-31")
-        """
-        pass
+            def create_method(name: str, doc: str):
+                @endpoint(name)
+                def method(self, **kwargs) -> APIResult:
+                    return self._make_api_call(**kwargs)
+                method.__doc__ = doc
+                return method
 
-    @api_call
-    def get_currency_master(self, **kwargs) -> APIResult:
-        """
-        Obtiene el maestro de divisas (catálogo de monedas).
-        """ + COMMON_PARAMS_DOC + """
-        Returns
-        -------
-        DataFrame con listado de divisas y sus códigos ISO
+            setattr(self.__class__, method_name, create_method(endpoint_name, docstring))
 
-        Examples
-        --------
-        >>> df = client.get_currency_master()
-        """
-        pass
+    def _make_api_call(self, **kwargs) -> APIResult:
+        """Realiza la llamada a la API con los parámetros dados."""
+        endpoint_config = APISettings.ENDPOINTS[self._current_endpoint]
 
-    @api_call
-    def get_currency_quotes(self, **kwargs) -> APIResult:
-        """
-        Obtiene cotizaciones de divisas para una fecha específica.
+        # Validar argumentos requeridos
+        if missing := endpoint_config.required_args - kwargs.keys():
+            raise ValueError(f"Faltan argumentos requeridos: {', '.join(missing)}")
 
-        Parameters
-        ----------
-        fecha : str, optional
-            Fecha de cotización (YYYY-MM-DD) (parámetro de consulta)
-        """ + COMMON_PARAMS_DOC + """
-        Returns
-        -------
-        DataFrame con cotizaciones de todas las divisas para la fecha
+        # Validar parámetros
+        valid_api_params = endpoint_config.path_params | endpoint_config.query_params
+        valid_func_params = APISettings.COMMON_FUNC_PARAMS
 
-        Examples
-        --------
-        >>> df = client.get_currency_quotes(fecha="2023-01-15")
-        """
-        pass
+        if invalid := set(kwargs) - valid_api_params - valid_func_params:
+            raise ValueError(
+                f"Parámetros inválidos: {', '.join(invalid)}.\n\n"
+                f"Permitidos API: {', '.join(valid_api_params) or 'Ninguno'}.\n"
+                f"Permitidos función: {', '.join(valid_func_params)}."
+            )
 
-    @api_call
-    def get_currency_timeseries(self, **kwargs) -> APIResult:
-        """
-        Obtiene series temporales de cotizaciones para una divisa específica.
+        # Separar parámetros
+        api_params = {k: v for k, v in kwargs.items() if k in valid_api_params}
+        func_params = {k: v for k, v in kwargs.items() if k in valid_func_params}
 
-        Parameters
-        ----------
-        moneda : str
-            Código de moneda ISO (ej: "USD") (parámetro de ruta, obligatorio)
-        fechadesde, fechahasta : str, optional
-            Rango de fechas (YYYY-MM-DD) (parámetros de consulta)
-        limit, offset : int, optional
-            Paginación de resultados (parámetros de consulta)
-        """ + COMMON_PARAMS_DOC + """
-        Returns
-        -------
-        DataFrame con serie temporal de cotizaciones para la divisa
+        # Construir URL
+        url = build_url(
+            base_url=self.api_connector.base_url,
+            endpoint=endpoint_config.endpoint,
+            params=api_params,
+            path_params=endpoint_config.path_params,
+            query_params=endpoint_config.query_params
+        )
 
-        Examples
-        --------
-        >>> df = client.get_currency_timeseries(moneda="USD", fechadesde="2023-01-01", fechahasta="2023-12-31")
-        """
-        pass
-
-    @api_call
-    def get_checks_master(self, **kwargs) -> APIResult:
-        """
-        Obtiene el listado de entidades bancarias que operan con cheques.
-        """ + COMMON_PARAMS_DOC + """
-        Returns
-        -------
-        DataFrame con códigos y nombres de entidades bancarias
-
-        Examples
-        --------
-        >>> df = client.get_checks_master()
-        """
-        pass
-
-    @api_call
-    def get_checks_reported(self, **kwargs) -> APIResult:
-        """
-        Obtiene información de cheques denunciados.
-
-        Parameters
-        ----------
-        codigo_entidad : int
-            Código de la entidad bancaria (parámetro de ruta, obligatorio)
-        numero_cheque : int
-            Número del cheque a consultar (parámetro de ruta, obligatorio)
-        """ + COMMON_PARAMS_DOC + """
-        Returns
-        -------
-        DataFrame con información del cheque denunciado
-
-        Examples
-        --------
-        >>> df = client.get_checks_reported(codigo_entidad=123, numero_cheque=456789)
-        """
-        pass
-
-    @api_call
-    def get_debts(self, **kwargs) -> APIResult:
-        """
-        Obtiene información de deudas registradas por CUIT/CUIL.
-
-        Parameters
-        ----------
-        identificacion : str
-            CUIT/CUIL del titular a consultar (parámetro de ruta, obligatorio)
-        """ + COMMON_PARAMS_DOC + """
-        Returns
-        -------
-        DataFrame con información de deudas registradas
-
-        Examples
-        --------
-        >>> df = client.get_debts(identificacion="20123456789")
-        """
-        pass
-
-    @api_call
-    def get_debts_historical(self, **kwargs) -> APIResult:
-        """
-        Obtiene información histórica de deudas registradas por CUIT/CUIL.
-
-        Parameters
-        ----------
-        identificacion : str
-            CUIT/CUIL del titular a consultar (parámetro de ruta, obligatorio)
-        """ + COMMON_PARAMS_DOC + """
-        Returns
-        -------
-        DataFrame con histórico de deudas a través de múltiples períodos
-
-        Examples
-        --------
-        >>> df = client.get_debts_historical(identificacion="20123456789")
-        """
-        pass
-
-    @api_call
-    def get_debts_rejected_checks(self, **kwargs) -> APIResult:
-        """
-        Obtiene información sobre cheques rechazados asociados a un CUIT/CUIL.
-
-        Parameters
-        ----------
-        identificacion : str
-            CUIT/CUIL del titular a consultar (parámetro de ruta, obligatorio)
-        """ + COMMON_PARAMS_DOC + """
-        Returns
-        -------
-        DataFrame con información detallada de cheques rechazados
-
-        Examples
-        --------
-        >>> df = client.get_debts_rejected_checks(identificacion="20123456789")
-        """
-        pass
+        # Realizar petición
+        if func_params.get("debug", False):
+            return url
+        elif func_params.get("json", False):
+            return self.api_connector.connect_to_api(url)
+        return self.api_connector.fetch_data(url)
