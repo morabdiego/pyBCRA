@@ -4,15 +4,15 @@ pyBCRAdata - Cliente Python para la API del Banco Central de la República Argen
 
 from .client import BCRAclient
 
-__version__ = "0.3.4"
+__version__ = "0.3.5"
 __author__ = "Diego Mora"
 
 # Create default client instance and expose its methods
 _default_client = BCRAclient()
 for method in [
-    'get_monetary_data', 'get_currency_master', 'get_currency_quotes',
-    'get_currency_timeseries', 'get_checks_master', 'get_checks_reported',
-    'get_debts', 'get_debts_historical', 'get_debts_rejected_checks'
+    'get_monetary_series', 'get_monetary_variables', 'get_currencies', 'get_exchange_rates',
+    'get_currency_series', 'get_banks', 'get_reported_checks', 'get_debtors',
+    'get_debtors_history', 'get_rejected_checks'
 ]:
     globals()[method] = getattr(_default_client, method)
 

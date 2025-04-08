@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyBCRAdata"
-version = "0.3.4"
+version = "0.3.5"
 authors = [
     { name = "Diego Mora", email = "morabdiego@gmail.com" },
 ]
@@ -28,7 +28,8 @@ classifiers = [
 dependencies = [
     "pandas>=1.0.0",
     "requests>=2.25.0",
-    "typing-extensions>=4.0.0",  # Added for better type hint support
+    "typing-extensions>=4.0.0",
+    "pydantic>=2.0.0",  # Added for schema validation
 ]
 
 [project.urls]
@@ -46,5 +47,11 @@ packages = [
 [tool.setuptools.package-data]
 "pyBCRAdata" = [
     "cert/*.pem",
-    "py.typed"  # Added for type hint support
+    "py.typed",
+    "schemas/*.json"  # Added for schema files
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=pyBCRAdata --cov-report=term-missing"

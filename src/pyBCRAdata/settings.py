@@ -54,52 +54,59 @@ class APIEndpoints:
 class APISettings:
     """Configuración global de la API."""
     BASE_URL: ClassVar[str] = f'https://{APIEndpoints.BASE}'
-    CERT_PATH: ClassVar[str] = str(Path(__file__).parent.parent / 'cert' / 'ca.pem')
+
+    # Buscar el certificado en múltiples ubicaciones posibles
+    CERT_PATH: ClassVar[str] = str(
+        Path(__file__).parent / 'cert' / 'ca.pem'  # Para desarrollo
+        if (Path(__file__).parent / 'cert' / 'ca.pem').exists()
+        else Path(__file__).parent.parent / 'cert' / 'ca.pem'  # Para instalación
+    )
+
     COMMON_FUNC_PARAMS: ClassVar[Set[str]] = {"json", "debug"}
 
     # Configuración de endpoints
     ENDPOINTS: ClassVar[Dict[str, EndpointConfig]] = {
-        'monetary_master': EndpointConfig(
+        'monetary_variables': EndpointConfig(
             endpoint=APIEndpoints.MONETARY_MASTER
         ),
-        'monetary_data': EndpointConfig(
+        'monetary_series': EndpointConfig(
             endpoint=APIEndpoints.MONETARY,
             path_params={"id_variable"},
             query_params={"desde", "hasta", "limit", "offset"},
             required_args={"id_variable"}
         ),
-        'currency_master': EndpointConfig(
+        'currencies': EndpointConfig(
             endpoint=APIEndpoints.CURRENCY_MASTER
         ),
-        'currency_quotes': EndpointConfig(
+        'exchange_rates': EndpointConfig(
             endpoint=APIEndpoints.CURRENCY_QUOTES,
             query_params={"fecha"}
         ),
-        'currency_timeseries': EndpointConfig(
+        'currency_series': EndpointConfig(
             endpoint=APIEndpoints.CURRENCY_TIMESERIES,
             path_params={"moneda"},
             query_params={"fechadesde", "fechahasta", "limit", "offset"},
             required_args={"moneda"}
         ),
-        'checks_master': EndpointConfig(
+        'banks': EndpointConfig(
             endpoint=APIEndpoints.CHECKS_MASTER
         ),
-        'checks_reported': EndpointConfig(
+        'reported_checks': EndpointConfig(
             endpoint=APIEndpoints.CHECKS_REPORTED,
             path_params={'codigo_entidad', 'numero_cheque'},
             required_args={'codigo_entidad', 'numero_cheque'}
         ),
-        'debts': EndpointConfig(
+        'debtors': EndpointConfig(
             endpoint=APIEndpoints.DEBTS,
             path_params={'identificacion'},
             required_args={'identificacion'}
         ),
-        'debts_historical': EndpointConfig(
+        'debtors_history': EndpointConfig(
             endpoint=APIEndpoints.DEBTS_HISTORICAL,
             path_params={'identificacion'},
             required_args={'identificacion'}
         ),
-        'debts_rejected_checks': EndpointConfig(
+        'rejected_checks': EndpointConfig(
             endpoint=APIEndpoints.DEBTS_REJECTED_CHECKS,
             path_params={'identificacion'},
             required_args={'identificacion'}

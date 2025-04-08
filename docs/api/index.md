@@ -13,9 +13,9 @@ client = BCRAclient()
 También puede usar directamente los métodos exportados:
 
 ```python
-from pyBCRAdata import get_monetary_data, get_currency_master
+from pyBCRAdata import get_monetary_series, get_currencies
 
-df = get_monetary_data(id_variable=1)
+df = get_monetary_series(id_variable=1)
 ```
 
 ## Categorías de Datos
@@ -23,21 +23,22 @@ df = get_monetary_data(id_variable=1)
 La API provee acceso a las siguientes categorías de datos:
 
 ### [Datos Monetarios](monetary.md)
-- [`get_monetary_data`](monetary.md#método-get_monetary_data) - Estadísticas monetarias con filtros opcionales
+- [`get_monetary_variables`](monetary.md#método-get_monetary_variables) - Listado de variables monetarias disponibles
+- [`get_monetary_series`](monetary.md#método-get_monetary_series) - Series temporales de variables monetarias
 
 ### [Datos de Divisas](currency.md)
-- [`get_currency_master`](currency.md#método-get_currency_master) - Catálogo maestro de divisas
-- [`get_currency_quotes`](currency.md#método-get_currency_quotes) - Cotizaciones de divisas para una fecha específica
-- [`get_currency_timeseries`](currency.md#método-get_currency_timeseries) - Series temporales de cotizaciones para una divisa específica
+- [`get_currencies`](currency.md#método-get_currencies) - Catálogo maestro de divisas
+- [`get_exchange_rates`](currency.md#método-get_exchange_rates) - Cotizaciones de divisas para una fecha específica
+- [`get_currency_series`](currency.md#método-get_currency_series) - Series temporales de cotizaciones para una divisa específica
 
 ### [Datos de Cheques](checks.md)
-- [`get_checks_master`](checks.md#método-get_checks_master) - Listado de entidades bancarias
-- [`get_checks_reported`](checks.md#método-get_checks_reported) - Información de cheques denunciados
+- [`get_banks`](checks.md#método-get_banks) - Listado de entidades bancarias
+- [`get_reported_checks`](checks.md#método-get_reported_checks) - Información de cheques denunciados
 
 ### [Datos de Central de Deudores](debts.md)
-- [`get_debts`](debts.md#método-get_debts) - Información de deudas registradas por CUIT/CUIL
-- [`get_debts_historical`](debts.md#método-get_debts_historical) - Histórico de deudas por CUIT/CUIL
-- [`get_debts_rejected_checks`](debts.md#método-get_debts_rejected_checks) - Cheques rechazados asociados a un CUIT/CUIL
+- [`get_debtors`](debts.md#método-get_debtors) - Información de deudas registradas por CUIT/CUIL
+- [`get_debtors_history`](debts.md#método-get_debtors_history) - Histórico de deudas por CUIT/CUIL
+- [`get_rejected_checks`](debts.md#método-get_rejected_checks) - Cheques rechazados asociados a un CUIT/CUIL
 
 ## Parámetros Comunes
 
@@ -65,9 +66,9 @@ client = BCRAclient()
 You can also use the directly exported methods:
 
 ```python
-from pyBCRAdata import get_monetary_data, get_currency_master
+from pyBCRAdata import get_monetary_series, get_currencies
 
-df = get_monetary_data(id_variable=1)
+df = get_monetary_series(id_variable=1)
 ```
 
 ## Data Categories
@@ -75,21 +76,22 @@ df = get_monetary_data(id_variable=1)
 The API provides access to the following data categories:
 
 ### [Monetary Data](monetary.md)
-- [`get_monetary_data`](monetary.md#method-get_monetary_data) - Monetary statistics with optional filters
+- [`get_monetary_variables`](monetary.md#method-get_monetary_variables) - List of available monetary variables
+- [`get_monetary_series`](monetary.md#method-get_monetary_series) - Time series of monetary variables
 
 ### [Currency Data](currency.md)
-- [`get_currency_master`](currency.md#method-get_currency_master) - Currency master catalog
-- [`get_currency_quotes`](currency.md#method-get_currency_quotes) - Currency quotes for a specific date
-- [`get_currency_timeseries`](currency.md#method-get_currency_timeseries) - Time series of quotes for a specific currency
+- [`get_currencies`](currency.md#method-get_currencies) - Currency master catalog
+- [`get_exchange_rates`](currency.md#method-get_exchange_rates) - Currency quotes for a specific date
+- [`get_currency_series`](currency.md#method-get_currency_series) - Time series of quotes for a specific currency
 
 ### [Check Data](checks.md)
-- [`get_checks_master`](checks.md#method-get_checks_master) - List of banking entities
-- [`get_checks_reported`](checks.md#method-get_checks_reported) - Information on reported checks
+- [`get_banks`](checks.md#method-get_banks) - List of banking entities
+- [`get_reported_checks`](checks.md#method-get_reported_checks) - Information on reported checks
 
 ### [Debt Data](debts.md)
-- [`get_debts`](debts.md#method-get_debts) - Debt information registered by tax ID (CUIT/CUIL)
-- [`get_debts_historical`](debts.md#method-get_debts_historical) - Historical debt by tax ID (CUIT/CUIL)
-- [`get_debts_rejected_checks`](debts.md#method-get_debts_rejected_checks) - Rejected checks associated with a tax ID (CUIT/CUIL)
+- [`get_debtors`](debts.md#method-get_debtors) - Debt information registered by tax ID (CUIT/CUIL)
+- [`get_debtors_history`](debts.md#method-get_debtors_history) - Historical debt by tax ID (CUIT/CUIL)
+- [`get_rejected_checks`](debts.md#method-get_rejected_checks) - Rejected checks associated with a tax ID (CUIT/CUIL)
 
 ## Common Parameters
 

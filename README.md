@@ -1,4 +1,4 @@
-# pyBCRAdata v0.3.4
+# pyBCRAdata v0.3.5
 
 [![PyPI version](https://img.shields.io/pypi/v/pyBCRAdata.svg?logo=pypi&logoColor=white)](https://badge.fury.io/py/pyBCRAdata)
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
@@ -30,7 +30,7 @@ from pyBCRAdata import BCRAclient
 client = BCRAclient()
 
 # Obtener tasa de política monetaria
-df = client.get_monetary_data(
+df = client.get_monetary_series(
     id_variable="6",  # Tasa de Política Monetaria (en % n.a.)
     desde="2024-01-01",
     hasta="2024-03-21"
@@ -38,7 +38,7 @@ df = client.get_monetary_data(
 print(df.head())
 
 # Obtener cotización histórica del dólar
-usd = client.get_currency_timeseries(
+usd = client.get_currency_series(
     moneda="USD",
     fechadesde="2024-01-01",
     fechahasta="2024-03-21"
@@ -57,10 +57,10 @@ La documentación completa está disponible en la carpeta [docs](https://github.
 
 ### Principales áreas de datos
 
-- **[Datos Monetarios](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/monetary.md)** - Estadísticas monetarias y financieras
-- **[Datos de Divisas](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/currency.md)** - Cotizaciones y series históricas
-- **[Información de Deudores](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/debts.md)** - Consultas sobre deudas
-- **[Cheques Rechazados](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/checks.md)** - Información sobre cheques rechazados
+- **[Estadísticas Monetarias](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/monetary.md)** - Variables monetarias y series históricas
+- **[Estadísticas Cambiarias](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/currency.md)** - Monedas, cotizaciones y series históricas
+- **[Central de Deudores](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/debts.md)** - Deudores, historial y cheques rechazados
+- **[Cheques Denunciados](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/checks.md)** - Bancos y cheques denunciados
 
 ## 🔑 Acceso a la API
 
@@ -88,7 +88,7 @@ Este proyecto está licenciado bajo [Creative Commons Attribution-NonCommercial 
 
 ---
 
-# pyBCRAdata v0.3.4 [English]
+# pyBCRAdata v0.3.5 [English]
 
 Python client to access monetary statistics, exchange rate data, and debtor information published by the Central Bank of the Argentine Republic (BCRA).
 Designed for economists, analysts, and developers working with macroeconomic data.
@@ -112,7 +112,7 @@ from pyBCRAdata import BCRAclient
 client = BCRAclient()
 
 # Get monetary policy rate
-df = client.get_monetary_data(
+df = client.get_monetary_series(
     id_variable="6",  # Monetary Policy Rate (in % p.a.)
     desde="2024-01-01",
     hasta="2024-03-21"
@@ -120,7 +120,7 @@ df = client.get_monetary_data(
 print(df.head())
 
 # Get historical USD exchange rate
-usd = client.get_currency_timeseries(
+usd = client.get_currency_series(
     moneda="USD",
     fechadesde="2024-01-01",
     fechahasta="2024-03-21"
@@ -139,10 +139,10 @@ Complete documentation is available in the [docs](https://github.com/morabdiego/
 
 ### Main Data Areas
 
-- **[Monetary Data](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/monetary.md)** - Monetary and financial statistics
-- **[Currency Data](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/currency.md)** - Exchange rates and historical series
-- **[Debtor Information](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/debts.md)** - Queries about debts
-- **[Rejected Checks](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/checks.md)** - Information about rejected checks
+- **[Monetary Statistics](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/monetary.md)** - Monetary variables and historical series
+- **[Exchange Rate Statistics](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/currency.md)** - Currencies, exchange rates and historical series
+- **[Debtors Central](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/debts.md)** - Debtors, history and rejected checks
+- **[Reported Checks](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/checks.md)** - Banks and reported checks
 
 ## 🔑 API Access
 

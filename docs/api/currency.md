@@ -1,311 +1,137 @@
-# Referencia de API: Datos de Divisas
+# Estadísticas Cambiarias / Exchange Rate Statistics
 
-## Método `get_currency_master`
+## Español
 
+### Descripción
+Acceso a las estadísticas cambiarias publicadas por el BCRA, incluyendo el listado de monedas, cotizaciones diarias y series históricas.
+
+### Métodos Disponibles
+
+#### `get_currencies()`
+Obtiene el listado de monedas disponibles.
+
+**Retorna:**
+- `pandas.DataFrame`: DataFrame con las monedas disponibles
+
+**Ejemplo:**
 ```python
-client.get_currency_master(
-    debug=False,
-    json=False
-)
+from pyBCRAdata import BCRAclient
+
+client = BCRAclient()
+monedas = client.get_currencies()
+print(monedas.head())
 ```
 
-Obtiene el maestro de divisas (catálogo de monedas).
+#### `get_exchange_rates(fecha=None)`
+Obtiene las cotizaciones de todas las monedas para una fecha específica.
 
-### Parámetros
+**Parámetros:**
+- `fecha` (str, opcional): Fecha de consulta (formato YYYY-MM-DD). Si no se especifica, se usa la fecha actual.
 
-| Parámetro | Tipo | Descripción | Requerido |
-|-----------|------|-------------|-----------|
-| `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
-| `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
+**Retorna:**
+- `pandas.DataFrame`: DataFrame con las cotizaciones
 
-### Retorno
-
-Por defecto, devuelve un `pandas.DataFrame` con las siguientes columnas:
-
-- `codigo`: Código ISO de la moneda
-- `nombre`: Nombre completo de la divisa
-
-### Ejemplos
-
-#### Consulta básica: obtener todas las monedas disponibles
-
+**Ejemplo:**
 ```python
-df = client.get_currency_master()
-print(df.head())
+from pyBCRAdata import BCRAclient
+
+client = BCRAclient()
+cotizaciones = client.get_exchange_rates(fecha="2024-03-21")
+print(cotizaciones.head())
 ```
 
-#### Modo de depuración: obtener la URL de la API
+#### `get_currency_series(moneda, fechadesde=None, fechahasta=None, limit=None, offset=None)`
+Obtiene la serie histórica de cotizaciones para una moneda específica.
 
+**Parámetros:**
+- `moneda` (str): Código de la moneda (ej: "USD")
+- `fechadesde` (str, opcional): Fecha de inicio (formato YYYY-MM-DD)
+- `fechahasta` (str, opcional): Fecha de fin (formato YYYY-MM-DD)
+- `limit` (int, opcional): Límite de registros
+- `offset` (int, opcional): Desplazamiento de registros
+
+**Retorna:**
+- `pandas.DataFrame`: DataFrame con la serie histórica
+
+**Ejemplo:**
 ```python
-api_url = client.get_currency_master(debug=True)
-print(api_url)
-```
+from pyBCRAdata import BCRAclient
 
----
-
-## Método `get_currency_quotes`
-
-```python
-client.get_currency_quotes(
-    fecha=None,
-    debug=False,
-    json=False
-)
-```
-
-Obtiene cotizaciones de divisas para una fecha específica.
-
-### Parámetros
-
-| Parámetro | Tipo | Descripción | Requerido |
-|-----------|------|-------------|-----------|
-| `fecha` | `str` | Fecha de cotización (YYYY-MM-DD) | No |
-| `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
-| `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
-
-### Retorno
-
-Por defecto, devuelve un `pandas.DataFrame` con las siguientes columnas:
-
-- `moneda`: Código ISO de la moneda
-- `fecha`: Fecha de la cotización (YYYY-MM-DD)
-- `valor`: Valor de la cotización en pesos argentinos
-- `nombre`: Nombre completo de la divisa
-
-### Ejemplos
-
-#### Consulta de cotizaciones para una fecha específica
-
-```python
-df = client.get_currency_quotes(fecha="2023-01-15")
-print(df.head())
-```
-
-#### Modo de depuración: obtener la URL de la API
-
-```python
-api_url = client.get_currency_quotes(fecha="2023-01-15", debug=True)
-print(api_url)
-```
-
----
-
-## Método `get_currency_timeseries`
-
-```python
-client.get_currency_timeseries(
-    moneda=None,
-    fechadesde=None,
-    fechahasta=None,
-    offset=None,
-    limit=None,
-    debug=False,
-    json=False
-)
-```
-
-Obtiene series temporales de cotizaciones para una divisa específica.
-
-### Parámetros
-
-| Parámetro | Tipo | Descripción | Requerido |
-|-----------|------|-------------|-----------|
-| `moneda` | `str` | Código de moneda ISO (ej: "USD") | Sí |
-| `fechadesde` | `str` | Fecha de inicio (YYYY-MM-DD) | No |
-| `fechahasta` | `str` | Fecha final (YYYY-MM-DD) | No |
-| `offset` | `int` | Desplazamiento para paginación | No |
-| `limit` | `int` | Número máximo de registros | No |
-| `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
-| `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
-
-### Retorno
-
-Por defecto, devuelve un `pandas.DataFrame` con las siguientes columnas:
-
-- `moneda`: Código ISO de la moneda
-- `fecha`: Fecha de la cotización (YYYY-MM-DD)
-- `valor`: Valor de la cotización en pesos argentinos
-- `nombre`: Nombre completo de la divisa
-
-### Ejemplos
-
-#### Consulta de serie temporal para una divisa
-
-```python
-df = client.get_currency_timeseries(
+client = BCRAclient()
+# Obtener serie histórica del dólar
+usd = client.get_currency_series(
     moneda="USD",
-    fechadesde="2023-01-01",
-    fechahasta="2023-01-31"
+    fechadesde="2024-01-01",
+    fechahasta="2024-03-21"
 )
-print(df.head())
-```
-
-#### Con filtros y paginación
-
-```python
-df = client.get_currency_timeseries(
-    moneda="USD",
-    fechadesde="2023-01-01",
-    fechahasta="2023-02-01",
-    limit=12,
-    offset=2
-)
-print(df.head())
+print(usd.head())
 ```
 
 ---
 
-# 🌐 API Reference: Currency Data
+## English
 
-## Method `get_currency_master`
+### Description
+Access to exchange rate statistics published by the BCRA, including the list of currencies, daily quotes and historical series.
 
+### Available Methods
+
+#### `get_currencies()`
+Gets the list of available currencies.
+
+**Returns:**
+- `pandas.DataFrame`: DataFrame with available currencies
+
+**Example:**
 ```python
-client.get_currency_master(
-    debug=False,
-    json=False
-)
+from pyBCRAdata import BCRAclient
+
+client = BCRAclient()
+currencies = client.get_currencies()
+print(currencies.head())
 ```
 
-Retrieves the currency master catalog.
+#### `get_exchange_rates(fecha=None)`
+Gets the exchange rates for all currencies on a specific date.
 
-### Parameters
+**Parameters:**
+- `fecha` (str, optional): Query date (format YYYY-MM-DD). If not specified, current date is used.
 
-| Parameter | Type | Description | Required |
-|-----------|------|-------------|----------|
-| `debug` | `bool` | Returns the URL instead of the data | No |
-| `json` | `bool` | Returns data as JSON instead of DataFrame | No |
+**Returns:**
+- `pandas.DataFrame`: DataFrame with exchange rates
 
-### Return
-
-By default, returns a `pandas.DataFrame` with the following columns:
-
-- `codigo`: Currency ISO code
-- `nombre`: Full name of the currency
-
-### Examples
-
-#### Basic query: get all available currencies
-
+**Example:**
 ```python
-df = client.get_currency_master()
-print(df.head())
+from pyBCRAdata import BCRAclient
+
+client = BCRAclient()
+rates = client.get_exchange_rates(fecha="2024-03-21")
+print(rates.head())
 ```
 
-#### Debug mode: get the API URL
+#### `get_currency_series(moneda, fechadesde=None, fechahasta=None, limit=None, offset=None)`
+Gets the historical series of exchange rates for a specific currency.
 
+**Parameters:**
+- `moneda` (str): Currency code (e.g. "USD")
+- `fechadesde` (str, optional): Start date (format YYYY-MM-DD)
+- `fechahasta` (str, optional): End date (format YYYY-MM-DD)
+- `limit` (int, optional): Record limit
+- `offset` (int, optional): Record offset
+
+**Returns:**
+- `pandas.DataFrame`: DataFrame with the historical series
+
+**Example:**
 ```python
-api_url = client.get_currency_master(debug=True)
-print(api_url)
-```
+from pyBCRAdata import BCRAclient
 
----
-
-## Method `get_currency_quotes`
-
-```python
-client.get_currency_quotes(
-    fecha=None,
-    debug=False,
-    json=False
-)
-```
-
-Retrieves currency quotes for a specific date.
-
-### Parameters
-
-| Parameter | Type | Description | Required |
-|-----------|------|-------------|----------|
-| `fecha` | `str` | Quote date (YYYY-MM-DD) | No |
-| `debug` | `bool` | Returns the URL instead of the data | No |
-| `json` | `bool` | Returns data as JSON instead of DataFrame | No |
-
-### Return
-
-By default, returns a `pandas.DataFrame` with the following columns:
-
-- `moneda`: Currency ISO code
-- `fecha`: Quote date (YYYY-MM-DD)
-- `valor`: Quote value in Argentine pesos
-- `nombre`: Full name of the currency
-
-### Examples
-
-#### Query quotes for a specific date
-
-```python
-df = client.get_currency_quotes(fecha="2023-01-15")
-print(df.head())
-```
-
-#### Debug mode: get the API URL
-
-```python
-api_url = client.get_currency_quotes(fecha="2023-01-15", debug=True)
-print(api_url)
-```
-
----
-
-## Method `get_currency_timeseries`
-
-```python
-client.get_currency_timeseries(
-    moneda=None,
-    fechadesde=None,
-    fechahasta=None,
-    offset=None,
-    limit=None,
-    debug=False,
-    json=False
-)
-```
-
-Retrieves time series of quotes for a specific currency.
-
-### Parameters
-
-| Parameter | Type | Description | Required |
-|-----------|------|-------------|----------|
-| `moneda` | `str` | Currency ISO code (e.g., "USD") | Yes |
-| `fechadesde` | `str` | Start date (YYYY-MM-DD) | No |
-| `fechahasta` | `str` | End date (YYYY-MM-DD) | No |
-| `offset` | `int` | Offset for pagination | No |
-| `limit` | `int` | Maximum number of records | No |
-| `debug` | `bool` | Returns the URL instead of the data | No |
-| `json` | `bool` | Returns data as JSON instead of DataFrame | No |
-
-### Return
-
-By default, returns a `pandas.DataFrame` with the following columns:
-
-- `moneda`: Currency ISO code
-- `fecha`: Quote date (YYYY-MM-DD)
-- `valor`: Quote value in Argentine pesos
-- `nombre`: Full name of the currency
-
-### Examples
-
-#### Query time series for a currency
-
-```python
-df = client.get_currency_timeseries(
+client = BCRAclient()
+# Get USD historical series
+usd = client.get_currency_series(
     moneda="USD",
-    fechadesde="2023-01-01",
-    fechahasta="2023-01-31"
+    fechadesde="2024-01-01",
+    fechahasta="2024-03-21"
 )
-print(df.head())
-```
-
-#### With filters and pagination
-
-```python
-df = client.get_currency_timeseries(
-    moneda="USD",
-    fechadesde="2023-01-01",
-    fechahasta="2023-02-01",
-    limit=12,
-    offset=2
-)
-print(df.head())
+print(usd.head())
 ```

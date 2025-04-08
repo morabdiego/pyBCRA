@@ -38,8 +38,18 @@ class APIConnector:
         """Realiza la conexión a la API y retorna la respuesta JSON."""
         try:
             response = requests.get(url, verify=self.cert_path)
-            response.raise_for_status()
-            return response.json()
+
+            if response.status_code == 200:
+                return response.json()
+            elif response.status_code in [400, 404, 500]:
+                error_data = response.json()
+                error_message = f"Error {error_data.get('status', response.status_code)}"
+                if 'errorMessages' in error_data:
+                    error_message += f". {'.'.join(error_data['errorMessages'])}"
+                raise Exception(error_message)
+            else:
+                response.raise_for_status()
+                return response.json()
         except Exception as e:
             self._handle_request_error(e)
             return {}

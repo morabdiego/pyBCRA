@@ -5,7 +5,7 @@ client = BCRAclient()
 switch = False
 
 df_1 = client.get_monetary_data(id_variable=6, debug=switch)
-df_2 = client.get_monetary_data(debug=switch)
+df_2 = client.get_monetary_master(debug=switch)
 df_3 = client.get_monetary_data(id_variable=6, desde='2023-01-01', hasta='2023-01-31', limit=12, offset=2, debug=switch)
 
 df_4 = client.get_currency_master(debug=switch)
