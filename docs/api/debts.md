@@ -1,125 +1,135 @@
-# Central de Deudores / Debtors Central
+# Debtors API
 
-## Español
+La API de deudores proporciona acceso a información sobre deudores y cheques rechazados.
 
-### Descripción
-Acceso a la información de deudores del BCRA, incluyendo deudas actuales, historial de deudas y cheques rechazados.
+## Método `debtors`
 
-### Métodos Disponibles
+```python
+client.debtors.debtors(
+    identificacion=None,
+    debug=False,
+    json=False
+)
+```
 
-#### `get_debtors(identificacion)`
 Obtiene información sobre las deudas actuales de un deudor.
 
-**Parámetros:**
-- `identificacion` (str): Número de CUIT/CUIL/DNI del deudor
+### Parámetros
 
-**Retorna:**
-- `pandas.DataFrame`: DataFrame con la información de deudas
+| Parámetro | Tipo | Descripción | Requerido |
+|-----------|------|-------------|-----------|
+| `identificacion` | `str` | CUIT/CUIL del deudor | No |
+| `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
+| `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
 
-**Ejemplo:**
+### Retorno
+
+Por defecto, devuelve un `pandas.DataFrame`.
+
+En caso de error del servidor (status_code != 200), se retornará el JSON de respuesta del servidor con el mensaje de error correspondiente.
+
+### Ejemplos
+
+#### Consulta básica: obtener deudas actuales
+
 ```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-deudas = client.get_debtors(identificacion="20123456789")
-print(deudas.head())
+df = client.debtors.debtors(identificacion="12345678")
+print(df.head())
 ```
 
-#### `get_debtors_history(identificacion)`
+#### Modo de depuración: obtener la URL de la API
+
+```python
+api_url = client.debtors.debtors(identificacion="12345678", debug=True)
+print(api_url)
+```
+
+## Método `history`
+
+```python
+client.debtors.history(
+    identificacion=None,
+    debug=False,
+    json=False
+)
+```
+
 Obtiene el historial de deudas de un deudor.
 
-**Parámetros:**
-- `identificacion` (str): Número de CUIT/CUIL/DNI del deudor
+### Parámetros
 
-**Retorna:**
-- `pandas.DataFrame`: DataFrame con el historial de deudas
+| Parámetro | Tipo | Descripción | Requerido |
+|-----------|------|-------------|-----------|
+| `identificacion` | `str` | CUIT/CUIL del deudor | No |
+| `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
+| `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
 
-**Ejemplo:**
+### Retorno
+
+Por defecto, devuelve un `pandas.DataFrame`.
+
+En caso de error del servidor (status_code != 200), se retornará el JSON de respuesta del servidor con el mensaje de error correspondiente.
+
+### Ejemplos
+
+#### Consulta básica: obtener historial de deudas
+
 ```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-historial = client.get_debtors_history(identificacion="20123456789")
-print(historial.head())
+df = client.debtors.history(identificacion="12345678")
+print(df.head())
 ```
 
-#### `get_rejected_checks(identificacion)`
-Obtiene información sobre cheques rechazados de un deudor.
+#### Modo de depuración: obtener la URL de la API
 
-**Parámetros:**
-- `identificacion` (str): Número de CUIT/CUIL/DNI del deudor
-
-**Retorna:**
-- `pandas.DataFrame`: DataFrame con la información de cheques rechazados
-
-**Ejemplo:**
 ```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-cheques = client.get_rejected_checks(identificacion="20123456789")
-print(cheques.head())
+api_url = client.debtors.history(identificacion="12345678", debug=True)
+print(api_url)
 ```
 
----
+## Método `rejected`
 
-## English
-
-### Description
-Access to BCRA's debtor information, including current debts, debt history and rejected checks.
-
-### Available Methods
-
-#### `get_debtors(identificacion)`
-Gets information about a debtor's current debts.
-
-**Parameters:**
-- `identificacion` (str): CUIT/CUIL/DNI number of the debtor
-
-**Returns:**
-- `pandas.DataFrame`: DataFrame with debt information
-
-**Example:**
 ```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-debts = client.get_debtors(identificacion="20123456789")
-print(debts.head())
+client.debtors.rejected(
+    identificacion=None,
+    debug=False,
+    json=False
+)
 ```
 
-#### `get_debtors_history(identificacion)`
-Gets a debtor's debt history.
+Obtiene información sobre cheques rechazados asociados a un deudor.
 
-**Parameters:**
-- `identificacion` (str): CUIT/CUIL/DNI number of the debtor
+### Parámetros
 
-**Returns:**
-- `pandas.DataFrame`: DataFrame with debt history
+| Parámetro | Tipo | Descripción | Requerido |
+|-----------|------|-------------|-----------|
+| `identificacion` | `str` | CUIT/CUIL del deudor | No |
+| `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
+| `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
 
-**Example:**
+### Retorno
+
+Por defecto, devuelve un `pandas.DataFrame`.
+
+En caso de error del servidor (status_code != 200), se retornará el JSON de respuesta del servidor con el mensaje de error correspondiente.
+
+### Ejemplos
+
+#### Consulta básica: obtener cheques rechazados
+
 ```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-history = client.get_debtors_history(identificacion="20123456789")
-print(history.head())
+df = client.debtors.rejected(identificacion="12345678")
+print(df.head())
 ```
 
-#### `get_rejected_checks(identificacion)`
-Gets information about a debtor's rejected checks.
+#### Modo de depuración: obtener la URL de la API
 
-**Parameters:**
-- `identificacion` (str): CUIT/CUIL/DNI number of the debtor
-
-**Returns:**
-- `pandas.DataFrame`: DataFrame with rejected checks information
-
-**Example:**
 ```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-checks = client.get_rejected_checks(identificacion="20123456789")
-print(checks.head())
+api_url = client.debtors.rejected(identificacion="12345678", debug=True)
+print(api_url)
 ```
+
+### Notas
+
+- La validación de parámetros (tipos, formatos, etc.) es gestionada por el paquete.
+- Los errores del servidor (status_code != 200) se manejan devolviendo el JSON de respuesta del servidor.
+- La identificación debe ser un CUIT/CUIL válido.

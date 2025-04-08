@@ -1,91 +1,145 @@
-# Cheques Denunciados / Reported Checks
+# Checks API
 
-## Español
+La API de cheques proporciona acceso a información sobre cheques y entidades bancarias.
 
-### Descripción
-Acceso a la información sobre cheques denunciados publicada por el BCRA, incluyendo el listado de entidades bancarias y cheques denunciados.
+## Método `banks`
 
-### Métodos Disponibles
-
-#### `get_banks()`
-Obtiene el listado de entidades bancarias emisoras.
-
-**Retorna:**
-- `pandas.DataFrame`: DataFrame con las entidades bancarias
-
-**Ejemplo:**
 ```python
 from pyBCRAdata import BCRAclient
 
 client = BCRAclient()
-bancos = client.get_banks()
-print(bancos.head())
-```
 
-#### `get_reported_checks(codigo_entidad, numero_cheque)`
-Obtiene información sobre un cheque denunciado específico.
-
-**Parámetros:**
-- `codigo_entidad` (str): Código de la entidad bancaria emisora
-- `numero_cheque` (str): Número del cheque
-
-**Retorna:**
-- `pandas.DataFrame`: DataFrame con la información del cheque denunciado
-
-**Ejemplo:**
-```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-cheque = client.get_reported_checks(
-    codigo_entidad="072",
-    numero_cheque="12345678"
+client.checks.banks(
+    debug=False,
+    json=False
 )
-print(cheque.head())
 ```
 
----
+Obtiene el listado de entidades bancarias.
 
-## English
+### Parámetros
 
-### Description
-Access to information about reported checks published by the BCRA, including the list of issuing banks and reported checks.
+| Parámetro | Tipo | Descripción | Requerido |
+|-----------|------|-------------|-----------|
+| `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
+| `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
 
-### Available Methods
+### Retorno
 
-#### `get_banks()`
-Gets the list of issuing banks.
+Por defecto, devuelve un `pandas.DataFrame`.
 
-**Returns:**
-- `pandas.DataFrame`: DataFrame with the banks
+En caso de error del servidor (status_code != 200), se retornará el JSON de respuesta del servidor con el mensaje de error correspondiente.
 
-**Example:**
+### Ejemplos
+
+#### Consulta básica: obtener todas las entidades bancarias
+
 ```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-banks = client.get_banks()
-print(banks.head())
+df = client.checks.banks()
+print(df.head())
 ```
 
-#### `get_reported_checks(codigo_entidad, numero_cheque)`
-Gets information about a specific reported check.
+#### Modo de depuración: obtener la URL de la API
 
-**Parameters:**
-- `codigo_entidad` (str): Code of the issuing bank
-- `numero_cheque` (str): Check number
-
-**Returns:**
-- `pandas.DataFrame`: DataFrame with the reported check information
-
-**Example:**
 ```python
-from pyBCRAdata import BCRAclient
+api_url = client.checks.banks(debug=True)
+print(api_url)
+```
 
-client = BCRAclient()
-check = client.get_reported_checks(
-    codigo_entidad="072",
-    numero_cheque="12345678"
+## Método `reported`
+
+```python
+client.checks.reported(
+    codigo_entidad=None,
+    numero_cheque=None,
+    debug=False,
+    json=False
 )
-print(check.head())
+```
+
+Obtiene información sobre un cheque denunciado.
+
+### Parámetros
+
+| Parámetro | Tipo | Descripción | Requerido |
+|-----------|------|-------------|-----------|
+| `codigo_entidad` | `int` | Código de la entidad bancaria | No |
+| `numero_cheque` | `int` | Número de cheque | No |
+| `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
+| `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
+
+### Retorno
+
+Por defecto, devuelve un `pandas.DataFrame`.
+
+En caso de error del servidor (status_code != 200), se retornará el JSON de respuesta del servidor con el mensaje de error correspondiente.
+
+### Ejemplos
+
+#### Consulta básica: obtener información de un cheque
+
+```python
+df = client.checks.reported(
+    codigo_entidad=123,
+    numero_cheque=456789
+)
+print(df.head())
+```
+
+#### Modo de depuración: obtener la URL de la API
+
+```python
+api_url = client.checks.reported(
+    codigo_entidad=123,
+    numero_cheque=456789,
+    debug=True
+)
+print(api_url)
+```
+
+### Notas
+
+- La validación de parámetros (tipos, formatos, etc.) es gestionada por el paquete.
+- Los errores del servidor (status_code != 200) se manejan devolviendo el JSON de respuesta del servidor.
+- El código de entidad debe ser un número entero válido.
+- El número de cheque debe ser un número entero válido.
+
+## Ejemplos de Uso
+
+### Obtener entidades bancarias
+```python
+from pyBCRAdata import checks
+
+# Obtener todas las entidades
+bancos = checks.banks()
+```
+
+### Consultar cheques denunciados
+```python
+from pyBCRAdata import checks
+
+# Consultar cheque específico
+cheque = checks.reported(
+    codigo_entidad=123,
+    numero_cheque=456789
+)
+
+# Obtener datos en formato JSON
+cheque_json = checks.reported(
+    codigo_entidad=123,
+    numero_cheque=456789,
+    json=True
+)
+```
+
+### Usar con el cliente completo
+```python
+from pyBCRAdata import BCRAclient
+
+client = BCRAclient()
+bancos = client.checks.banks()
+cheque = client.checks.reported(
+    codigo_entidad=123,
+    numero_cheque=456789
+)
 ```

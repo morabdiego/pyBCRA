@@ -1,137 +1,161 @@
-# Estadísticas Cambiarias / Exchange Rate Statistics
+# Currency API
 
-## Español
+La API de divisas proporciona acceso a cotizaciones y tipos de cambio del BCRA.
 
-### Descripción
-Acceso a las estadísticas cambiarias publicadas por el BCRA, incluyendo el listado de monedas, cotizaciones diarias y series históricas.
+## Método `currencies`
 
-### Métodos Disponibles
-
-#### `get_currencies()`
-Obtiene el listado de monedas disponibles.
-
-**Retorna:**
-- `pandas.DataFrame`: DataFrame con las monedas disponibles
-
-**Ejemplo:**
 ```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-monedas = client.get_currencies()
-print(monedas.head())
-```
-
-#### `get_exchange_rates(fecha=None)`
-Obtiene las cotizaciones de todas las monedas para una fecha específica.
-
-**Parámetros:**
-- `fecha` (str, opcional): Fecha de consulta (formato YYYY-MM-DD). Si no se especifica, se usa la fecha actual.
-
-**Retorna:**
-- `pandas.DataFrame`: DataFrame con las cotizaciones
-
-**Ejemplo:**
-```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-cotizaciones = client.get_exchange_rates(fecha="2024-03-21")
-print(cotizaciones.head())
-```
-
-#### `get_currency_series(moneda, fechadesde=None, fechahasta=None, limit=None, offset=None)`
-Obtiene la serie histórica de cotizaciones para una moneda específica.
-
-**Parámetros:**
-- `moneda` (str): Código de la moneda (ej: "USD")
-- `fechadesde` (str, opcional): Fecha de inicio (formato YYYY-MM-DD)
-- `fechahasta` (str, opcional): Fecha de fin (formato YYYY-MM-DD)
-- `limit` (int, opcional): Límite de registros
-- `offset` (int, opcional): Desplazamiento de registros
-
-**Retorna:**
-- `pandas.DataFrame`: DataFrame con la serie histórica
-
-**Ejemplo:**
-```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-# Obtener serie histórica del dólar
-usd = client.get_currency_series(
-    moneda="USD",
-    fechadesde="2024-01-01",
-    fechahasta="2024-03-21"
+client.currency.currencies(
+    debug=False,
+    json=False
 )
-print(usd.head())
 ```
 
----
+Obtiene el catálogo maestro de divisas disponibles.
 
-## English
+### Parámetros
 
-### Description
-Access to exchange rate statistics published by the BCRA, including the list of currencies, daily quotes and historical series.
+| Parámetro | Tipo | Descripción | Requerido |
+|-----------|------|-------------|-----------|
+| `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
+| `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
 
-### Available Methods
+### Retorno
 
-#### `get_currencies()`
-Gets the list of available currencies.
+Por defecto, devuelve un `pandas.DataFrame`.
 
-**Returns:**
-- `pandas.DataFrame`: DataFrame with available currencies
+En caso de error del servidor (status_code != 200), se retornará el JSON de respuesta del servidor con el mensaje de error correspondiente.
 
-**Example:**
+### Ejemplos
+
+#### Consulta básica: obtener todas las divisas disponibles
+
 ```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-currencies = client.get_currencies()
-print(currencies.head())
+df = client.currency.currencies()
+print(df.head())
 ```
 
-#### `get_exchange_rates(fecha=None)`
-Gets the exchange rates for all currencies on a specific date.
+#### Modo de depuración: obtener la URL de la API
 
-**Parameters:**
-- `fecha` (str, optional): Query date (format YYYY-MM-DD). If not specified, current date is used.
-
-**Returns:**
-- `pandas.DataFrame`: DataFrame with exchange rates
-
-**Example:**
 ```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-rates = client.get_exchange_rates(fecha="2024-03-21")
-print(rates.head())
+api_url = client.currency.currencies(debug=True)
+print(api_url)
 ```
 
-#### `get_currency_series(moneda, fechadesde=None, fechahasta=None, limit=None, offset=None)`
-Gets the historical series of exchange rates for a specific currency.
+## Método `rates`
 
-**Parameters:**
-- `moneda` (str): Currency code (e.g. "USD")
-- `fechadesde` (str, optional): Start date (format YYYY-MM-DD)
-- `fechahasta` (str, optional): End date (format YYYY-MM-DD)
-- `limit` (int, optional): Record limit
-- `offset` (int, optional): Record offset
-
-**Returns:**
-- `pandas.DataFrame`: DataFrame with the historical series
-
-**Example:**
 ```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-# Get USD historical series
-usd = client.get_currency_series(
-    moneda="USD",
-    fechadesde="2024-01-01",
-    fechahasta="2024-03-21"
+client.currency.rates(
+    fecha=None,
+    debug=False,
+    json=False
 )
-print(usd.head())
 ```
+
+Obtiene las cotizaciones de todas las divisas para una fecha específica.
+
+### Parámetros
+
+| Parámetro | Tipo | Descripción | Requerido |
+|-----------|------|-------------|-----------|
+| `fecha` | `str` | Fecha en formato YYYY-MM-DD | No |
+| `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
+| `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
+
+### Retorno
+
+Por defecto, devuelve un `pandas.DataFrame`.
+
+En caso de error del servidor (status_code != 200), se retornará el JSON de respuesta del servidor con el mensaje de error correspondiente.
+
+### Ejemplos
+
+#### Consulta básica: obtener cotizaciones del día
+
+```python
+df = client.currency.rates(fecha="2024-01-01")
+print(df.head())
+```
+
+#### Modo de depuración: obtener la URL de la API
+
+```python
+api_url = client.currency.rates(fecha="2024-01-01", debug=True)
+print(api_url)
+```
+
+## Método `series`
+
+```python
+client.currency.series(
+    moneda=None,
+    fechadesde=None,
+    fechahasta=None,
+    debug=False,
+    json=False
+)
+```
+
+Obtiene la serie histórica de cotizaciones para una divisa específica.
+
+### Parámetros
+
+| Parámetro | Tipo | Descripción | Requerido |
+|-----------|------|-------------|-----------|
+| `moneda` | `str` | Código de la divisa (ej: "USD", "EUR") | No |
+| `fechadesde` | `str` | Fecha de inicio (YYYY-MM-DD) | No |
+| `fechahasta` | `str` | Fecha final (YYYY-MM-DD) | No |
+| `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
+| `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
+
+### Retorno
+
+Por defecto, devuelve un `pandas.DataFrame`.
+
+En caso de error del servidor (status_code != 200), se retornará el JSON de respuesta del servidor con el mensaje de error correspondiente.
+
+### Ejemplos
+
+#### Consulta básica: obtener serie completa
+
+```python
+df = client.currency.series(moneda="USD")
+print(df.head())
+```
+
+#### Con filtros de fecha
+
+```python
+df = client.currency.series(
+    moneda="USD",
+    fechadesde="2023-01-01",
+    fechahasta="2023-12-31"
+)
+print(df.head())
+```
+
+#### Modo de depuración: obtener la URL de la API
+
+```python
+api_url = client.currency.series(moneda="USD", debug=True)
+print(api_url)
+```
+
+### Notas
+
+- La validación de parámetros (tipos, formatos, etc.) es gestionada por el paquete.
+- Los errores del servidor (status_code != 200) se manejan devolviendo el JSON de respuesta del servidor.
+- Las fechas deben estar en formato YYYY-MM-DD.
+- El código de moneda debe ser un código válido de divisa.
+
+## Divisas Comunes
+
+Algunas divisas comunes:
+
+| Código | Descripción |
+|--------|-------------|
+| USD | Dólar Estadounidense |
+| EUR | Euro |
+| BRL | Real Brasileño |
+| GBP | Libra Esterlina |
+| JPY | Yen Japonés |

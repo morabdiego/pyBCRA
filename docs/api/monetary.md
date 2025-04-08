@@ -1,101 +1,144 @@
-# Estadísticas Monetarias / Monetary Statistics
+# Monetary API
 
-## Español
+La API monetaria proporciona acceso a datos monetarios y financieros del BCRA.
 
-### Descripción
-Acceso a las estadísticas monetarias y financieras publicadas por el BCRA, incluyendo variables monetarias y sus series históricas.
+## Método `variables`
 
-### Métodos Disponibles
+```python
+client.monetary.variables(
+    debug=False,
+    json=False
+)
+```
 
-#### `get_monetary_variables()`
 Obtiene el listado de variables monetarias disponibles.
 
-**Retorna:**
-- `pandas.DataFrame`: DataFrame con las variables monetarias disponibles
+### Parámetros
 
-**Ejemplo:**
+| Parámetro | Tipo | Descripción | Requerido |
+|-----------|------|-------------|-----------|
+| `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
+| `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
+
+### Retorno
+
+Por defecto, devuelve un `pandas.DataFrame` con las siguientes columnas:
+
+En caso de error del servidor (status_code != 200), se retornará el JSON de respuesta del servidor con el mensaje de error correspondiente.
+
+### Ejemplos
+
+#### Consulta básica: obtener todas las variables disponibles
+
 ```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-variables = client.get_monetary_variables()
-print(variables.head())
+df = client.monetary.variables()
+print(df.head())
 ```
 
-#### `get_monetary_series(id_variable, desde=None, hasta=None, limit=None, offset=None)`
+#### Modo de depuración: obtener la URL de la API
+
+```python
+api_url = client.monetary.variables(debug=True)
+print(api_url)
+```
+
+## Método `series`
+
+```python
+client.monetary.series(
+    id_variable=None,
+    desde=None,
+    hasta=None,
+    debug=False,
+    json=False
+)
+```
+
 Obtiene la serie histórica de una variable monetaria específica.
 
-**Parámetros:**
-- `id_variable` (str): ID de la variable monetaria
-- `desde` (str, opcional): Fecha de inicio (formato YYYY-MM-DD)
-- `hasta` (str, opcional): Fecha de fin (formato YYYY-MM-DD)
-- `limit` (int, opcional): Límite de registros
-- `offset` (int, opcional): Desplazamiento de registros
+### Parámetros
 
-**Retorna:**
-- `pandas.DataFrame`: DataFrame con la serie histórica
+| Parámetro | Tipo | Descripción | Requerido |
+|-----------|------|-------------|-----------|
+| `id_variable` | `int` | ID de la variable a consultar | No |
+| `desde` | `str` | Fecha de inicio (YYYY-MM-DD) | No |
+| `hasta` | `str` | Fecha final (YYYY-MM-DD) | No |
+| `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
+| `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
 
-**Ejemplo:**
+### Retorno
+
+Por defecto, devuelve un `pandas.DataFrame`
+
+En caso de error del servidor (status_code != 200), se retornará el JSON de respuesta del servidor con el mensaje de error correspondiente.
+
+### Ejemplos
+
+#### Consulta básica: obtener serie completa
+
 ```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-# Obtener tasa de política monetaria (ID: 6)
-tpm = client.get_monetary_series(
-    id_variable="6",
-    desde="2024-01-01",
-    hasta="2024-03-21"
-)
-print(tpm.head())
+df = client.monetary.series(id_variable=1)
+print(df.head())
 ```
 
----
+#### Con filtros de fecha
 
-## English
-
-### Description
-Access to monetary and financial statistics published by the BCRA, including monetary variables and their historical series.
-
-### Available Methods
-
-#### `get_monetary_variables()`
-Gets the list of available monetary variables.
-
-**Returns:**
-- `pandas.DataFrame`: DataFrame with available monetary variables
-
-**Example:**
 ```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-variables = client.get_monetary_variables()
-print(variables.head())
+df = client.monetary.series(
+    id_variable=1,
+    desde="2023-01-01",
+    hasta="2023-12-31"
+)
+print(df.head())
 ```
 
-#### `get_monetary_series(id_variable, desde=None, hasta=None, limit=None, offset=None)`
-Gets the historical series of a specific monetary variable.
+#### Modo de depuración: obtener la URL de la API
 
-**Parameters:**
-- `id_variable` (str): ID of the monetary variable
-- `desde` (str, optional): Start date (format YYYY-MM-DD)
-- `hasta` (str, optional): End date (format YYYY-MM-DD)
-- `limit` (int, optional): Record limit
-- `offset` (int, optional): Record offset
+```python
+api_url = client.monetary.series(id_variable=1, debug=True)
+print(api_url)
+```
 
-**Returns:**
-- `pandas.DataFrame`: DataFrame with the historical series
+### Notas
 
-**Example:**
+- La validación de parámetros (tipos, formatos, etc.) es gestionada por el paquete.
+- Los errores del servidor (status_code != 200) se manejan devolviendo el JSON de respuesta del servidor.
+- Las fechas deben estar en formato YYYY-MM-DD.
+- El ID de variable debe ser un número entero válido.
+
+## Ejemplos de Uso
+
+### Obtener variables disponibles
+```python
+from pyBCRAdata import monetary
+
+# Obtener todas las variables
+variables = monetary.variables()
+```
+
+### Obtener serie histórica
+```python
+from pyBCRAdata import monetary
+
+# Obtener serie completa
+serie = monetary.series(id_variable=1)
+
+# Obtener serie con rango de fechas
+serie = monetary.series(
+    id_variable=1,
+    desde="2023-01-01",
+    hasta="2023-12-31"
+)
+
+# Obtener datos en formato JSON
+serie_json = monetary.series(id_variable=1, json=True)
+```
+
+### Usar con el cliente completo
 ```python
 from pyBCRAdata import BCRAclient
 
 client = BCRAclient()
-# Get monetary policy rate (ID: 6)
-tpm = client.get_monetary_series(
-    id_variable="6",
-    desde="2024-01-01",
-    hasta="2024-03-21"
-)
-print(tpm.head())
+variables = client.monetary.variables()
+serie = client.monetary.series(id_variable=1)
 ```

@@ -24,13 +24,31 @@ Requiere **Python 3.7+**, **requests** y **pandas**. Ver [documentación de inst
 ## 📊 Ejemplo Rápido
 
 ```python
+from pyBCRAdata import monetary, currency, checks, debtors
+
+# Obtener variables monetarias
+variables = monetary.variables()
+
+# Obtener cotización por fecha de todas las divisas
+cotizacion = currency.rates(fecha="2024-01-01")
+
+# Obtener entidades bancarias
+bancos = checks.banks()
+
+# Consultar deudores
+deudas = debtors.debtors(identificacion="12345678")
+```
+
+O usando el cliente completo:
+
+```python
 from pyBCRAdata import BCRAclient
 
 # Inicializar cliente
 client = BCRAclient()
 
 # Obtener tasa de política monetaria
-df = client.get_monetary_series(
+df = client.monetary.series(
     id_variable="6",  # Tasa de Política Monetaria (en % n.a.)
     desde="2024-01-01",
     hasta="2024-03-21"
@@ -38,7 +56,7 @@ df = client.get_monetary_series(
 print(df.head())
 
 # Obtener cotización histórica del dólar
-usd = client.get_currency_series(
+usd = client.currency.series(
     moneda="USD",
     fechadesde="2024-01-01",
     fechahasta="2024-03-21"
@@ -86,8 +104,6 @@ Este proyecto está licenciado bajo [Creative Commons Attribution-NonCommercial 
 
 ---
 
----
-
 # pyBCRAdata v0.3.5 [English]
 
 Python client to access monetary statistics, exchange rate data, and debtor information published by the Central Bank of the Argentine Republic (BCRA).
@@ -106,13 +122,31 @@ Requires **Python 3.7+**, **requests**, and **pandas**. See [installation docume
 ## 📊 Quick Example
 
 ```python
+from pyBCRAdata import monetary, currency, checks, debtors
+
+# Get monetary variables
+variables = monetary.variables()
+
+# Get USD exchange rate
+cotizacion = currency.rates(fecha="2024-01-01")
+
+# Get bank entities
+bancos = checks.banks()
+
+# Query debtors
+deudas = debtors.debtors(identificacion="12345678")
+```
+
+Or using the complete client:
+
+```python
 from pyBCRAdata import BCRAclient
 
 # Initialize client
 client = BCRAclient()
 
 # Get monetary policy rate
-df = client.get_monetary_series(
+df = client.monetary.series(
     id_variable="6",  # Monetary Policy Rate (in % p.a.)
     desde="2024-01-01",
     hasta="2024-03-21"
@@ -120,7 +154,7 @@ df = client.get_monetary_series(
 print(df.head())
 
 # Get historical USD exchange rate
-usd = client.get_currency_series(
+usd = client.currency.series(
     moneda="USD",
     fechadesde="2024-01-01",
     fechahasta="2024-03-21"

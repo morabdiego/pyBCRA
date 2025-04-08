@@ -64,51 +64,59 @@ class APISettings:
 
     COMMON_FUNC_PARAMS: ClassVar[Set[str]] = {"json", "debug"}
 
-    # Configuración de endpoints
-    ENDPOINTS: ClassVar[Dict[str, EndpointConfig]] = {
-        'monetary_variables': EndpointConfig(
-            endpoint=APIEndpoints.MONETARY_MASTER
-        ),
-        'monetary_series': EndpointConfig(
-            endpoint=APIEndpoints.MONETARY,
-            path_params={"id_variable"},
-            query_params={"desde", "hasta", "limit", "offset"},
-            required_args={"id_variable"}
-        ),
-        'currencies': EndpointConfig(
-            endpoint=APIEndpoints.CURRENCY_MASTER
-        ),
-        'exchange_rates': EndpointConfig(
-            endpoint=APIEndpoints.CURRENCY_QUOTES,
-            query_params={"fecha"}
-        ),
-        'currency_series': EndpointConfig(
-            endpoint=APIEndpoints.CURRENCY_TIMESERIES,
-            path_params={"moneda"},
-            query_params={"fechadesde", "fechahasta", "limit", "offset"},
-            required_args={"moneda"}
-        ),
-        'banks': EndpointConfig(
-            endpoint=APIEndpoints.CHECKS_MASTER
-        ),
-        'reported_checks': EndpointConfig(
-            endpoint=APIEndpoints.CHECKS_REPORTED,
-            path_params={'codigo_entidad', 'numero_cheque'},
-            required_args={'codigo_entidad', 'numero_cheque'}
-        ),
-        'debtors': EndpointConfig(
-            endpoint=APIEndpoints.DEBTS,
-            path_params={'identificacion'},
-            required_args={'identificacion'}
-        ),
-        'debtors_history': EndpointConfig(
-            endpoint=APIEndpoints.DEBTS_HISTORICAL,
-            path_params={'identificacion'},
-            required_args={'identificacion'}
-        ),
-        'rejected_checks': EndpointConfig(
-            endpoint=APIEndpoints.DEBTS_REJECTED_CHECKS,
-            path_params={'identificacion'},
-            required_args={'identificacion'}
-        )
+    # Configuración unificada de APIs y endpoints
+    API_CONFIG: ClassVar[Dict[str, Dict[str, EndpointConfig]]] = {
+        'monetary': {
+            'variables': EndpointConfig(
+                endpoint=APIEndpoints.MONETARY_MASTER
+            ),
+            'series': EndpointConfig(
+                endpoint=APIEndpoints.MONETARY,
+                path_params={"id_variable"},
+                query_params={"desde", "hasta", "limit", "offset"},
+                required_args={"id_variable"}
+            )
+        },
+        'currency': {
+            'currencies': EndpointConfig(
+                endpoint=APIEndpoints.CURRENCY_MASTER
+            ),
+            'rates': EndpointConfig(
+                endpoint=APIEndpoints.CURRENCY_QUOTES,
+                query_params={"fecha"}
+            ),
+            'series': EndpointConfig(
+                endpoint=APIEndpoints.CURRENCY_TIMESERIES,
+                path_params={"moneda"},
+                query_params={"fechadesde", "fechahasta", "limit", "offset"},
+                required_args={"moneda"}
+            )
+        },
+        'checks': {
+            'banks': EndpointConfig(
+                endpoint=APIEndpoints.CHECKS_MASTER
+            ),
+            'reported': EndpointConfig(
+                endpoint=APIEndpoints.CHECKS_REPORTED,
+                path_params={'codigo_entidad', 'numero_cheque'},
+                required_args={'codigo_entidad', 'numero_cheque'}
+            )
+        },
+        'debtors': {
+            'debtors': EndpointConfig(
+                endpoint=APIEndpoints.DEBTS,
+                path_params={'identificacion'},
+                required_args={'identificacion'}
+            ),
+            'history': EndpointConfig(
+                endpoint=APIEndpoints.DEBTS_HISTORICAL,
+                path_params={'identificacion'},
+                required_args={'identificacion'}
+            ),
+            'rejected': EndpointConfig(
+                endpoint=APIEndpoints.DEBTS_REJECTED_CHECKS,
+                path_params={'identificacion'},
+                required_args={'identificacion'}
+            )
+        }
     }

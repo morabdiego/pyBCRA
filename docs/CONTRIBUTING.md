@@ -5,7 +5,10 @@ Gracias por considerar contribuir a pyBCRAdata. Este documento proporciona direc
 ## Estructura del Proyecto
 
 El proyecto sigue esta estructura básica:
-- `src/`: Código fuente de la librería
+- `src/pyBCRAdata/`: Código fuente de la librería
+  - `client.py`: Cliente principal y generación de APIs
+  - `settings.py`: Configuración y constantes
+  - `connector.py`: Conexión HTTP y manejo de certificados
 - `docs/`: Documentación en español e inglés
 - `tests/`: Pruebas automatizadas
 
@@ -59,6 +62,37 @@ Utiliza mensajes de commit claros y descriptivos:
 - `feat: nuevo endpoint para consulta de cheques`
 - `fix: corrección en parámetros de divisas`
 
+## Estructura de Código
+
+El proyecto utiliza una estructura modular con las siguientes características:
+
+1. **APIs Preconfiguradas**: Cada API (monetary, currency, checks, debtors) es una instancia preconfigurada
+2. **Cliente Principal**: `BCRAclient` proporciona acceso a todas las APIs
+3. **Configuración Unificada**: Todas las configuraciones están centralizadas en `settings.py`
+
+### Ejemplo de Nueva API
+
+Para agregar una nueva API:
+
+1. Agregar la configuración en `settings.py`:
+```python
+API_CONFIG['nueva_api'] = {
+    'endpoint1': EndpointConfig(
+        endpoint="ruta/endpoint",
+        path_params={"param1"},
+        query_params={"param2"},
+        required_args={"param1"}
+    )
+}
+```
+
+2. Agregar la instancia preconfigurada en `__init__.py`:
+```python
+nueva_api = create_api_class('nueva_api')
+```
+
+3. Actualizar la documentación en `docs/api/`
+
 ---
 
 # 🌐 Guidelines for Contributors
@@ -68,7 +102,10 @@ Thank you for considering contributing to pyBCRAdata. This document provides gui
 ## Project Structure
 
 The project follows this basic structure:
-- `src/`: Library source code
+- `src/pyBCRAdata/`: Library source code
+  - `client.py`: Main client and API generation
+  - `settings.py`: Configuration and constants
+  - `connector.py`: HTTP connection and certificate handling
 - `docs/`: Documentation in Spanish and English
 - `tests/`: Automated tests
 
@@ -121,3 +158,34 @@ Use clear and descriptive commit messages:
 - `docs: updated bilingual documentation on monetary API`
 - `feat: new endpoint for check queries`
 - `fix: fixed currency parameters`
+
+## Code Structure
+
+The project uses a modular structure with the following features:
+
+1. **Preconfigured APIs**: Each API (monetary, currency, checks, debtors) is a preconfigured instance
+2. **Main Client**: `BCRAclient` provides access to all APIs
+3. **Unified Configuration**: All configurations are centralized in `settings.py`
+
+### New API Example
+
+To add a new API:
+
+1. Add configuration in `settings.py`:
+```python
+API_CONFIG['new_api'] = {
+    'endpoint1': EndpointConfig(
+        endpoint="path/endpoint",
+        path_params={"param1"},
+        query_params={"param2"},
+        required_args={"param1"}
+    )
+}
+```
+
+2. Add the preconfigured instance in `__init__.py`:
+```python
+new_api = create_api_class('new_api')
+```
+
+3. Update documentation in `docs/api/`

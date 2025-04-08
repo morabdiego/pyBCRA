@@ -1,103 +1,74 @@
-# Referencia de API pyBCRAdata
+# pyBCRAdata API Reference
 
-Esta sección contiene la documentación detallada de todos los métodos disponibles en el cliente pyBCRAdata.
+## Overview
 
-## Inicialización del Cliente
+pyBCRAdata es un cliente Python para acceder a la API del Banco Central de la República Argentina (BCRA). Proporciona una interfaz simple y eficiente para obtener datos económicos y financieros.
+
+## Instalación
+
+```bash
+pip install pyBCRAdata
+```
+
+## Uso Básico
+
+El paquete puede ser utilizado de dos formas:
+
+### 1. Usando instancias preconfiguradas
+
+```python
+from pyBCRAdata import monetary, currency, checks, debtors
+
+# Obtener variables monetarias
+monetary.variables()
+
+# Obtener cotizaciones de monedas
+currency.rates(fecha="2024-01-01")
+
+# Obtener entidades bancarias
+checks.banks()
+
+# Consultar deudores
+debtors.debtors(identificacion="12345678")
+```
+
+### 2. Usando el cliente completo
 
 ```python
 from pyBCRAdata import BCRAclient
 
-client = BCRAclient()
+# Crear cliente con configuración personalizada
+client = BCRAclient(
+    base_url="https://api.bcra.gob.ar",  # Opcional
+    cert_path="/path/to/cert.pem",       # Opcional
+    verify_ssl=True                      # Opcional
+)
+
+# Usar las APIs
+client.monetary.variables()
+client.currency.rates(fecha="2024-01-01")
+client.checks.banks()
+client.debtors.debtors(identificacion="12345678")
 ```
 
-También puede usar directamente los métodos exportados:
+## APIs Disponibles
 
-```python
-from pyBCRAdata import get_monetary_series, get_currencies
+El paquete proporciona acceso a las siguientes APIs:
 
-df = get_monetary_series(id_variable=1)
-```
-
-## Categorías de Datos
-
-La API provee acceso a las siguientes categorías de datos:
-
-### [Datos Monetarios](monetary.md)
-- [`get_monetary_variables`](monetary.md#método-get_monetary_variables) - Listado de variables monetarias disponibles
-- [`get_monetary_series`](monetary.md#método-get_monetary_series) - Series temporales de variables monetarias
-
-### [Datos de Divisas](currency.md)
-- [`get_currencies`](currency.md#método-get_currencies) - Catálogo maestro de divisas
-- [`get_exchange_rates`](currency.md#método-get_exchange_rates) - Cotizaciones de divisas para una fecha específica
-- [`get_currency_series`](currency.md#método-get_currency_series) - Series temporales de cotizaciones para una divisa específica
-
-### [Datos de Cheques](checks.md)
-- [`get_banks`](checks.md#método-get_banks) - Listado de entidades bancarias
-- [`get_reported_checks`](checks.md#método-get_reported_checks) - Información de cheques denunciados
-
-### [Datos de Central de Deudores](debts.md)
-- [`get_debtors`](debts.md#método-get_debtors) - Información de deudas registradas por CUIT/CUIL
-- [`get_debtors_history`](debts.md#método-get_debtors_history) - Histórico de deudas por CUIT/CUIL
-- [`get_rejected_checks`](debts.md#método-get_rejected_checks) - Cheques rechazados asociados a un CUIT/CUIL
+- [Monetary API](monetary.md): Datos monetarios y financieros
+- [Currency API](currency.md): Cotizaciones y tipos de cambio
+- [Checks API](checks.md): Información sobre cheques y entidades bancarias
+- [Debtors API](debts.md): Consulta de deudores y cheques rechazados
 
 ## Parámetros Comunes
 
-Todos los métodos de la API aceptan los siguientes parámetros comunes:
+Todas las APIs comparten algunos parámetros comunes:
 
-| Parámetro | Tipo | Descripción | Requerido |
-|-----------|------|-------------|-----------|
-| `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
-| `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
+- `json`: Si es `True`, retorna los datos en formato JSON en lugar de DataFrame
+- `debug`: Si es `True`, retorna la URL construida en lugar de hacer la llamada a la API
 
----
+## Manejo de Errores
 
-# 🌐 pyBCRAdata API Reference
-
-This section contains detailed documentation for all methods available in the pyBCRAdata client.
-
-## Client Initialization
-
-```python
-from pyBCRAdata import BCRAclient
-
-client = BCRAclient()
-```
-
-You can also use the directly exported methods:
-
-```python
-from pyBCRAdata import get_monetary_series, get_currencies
-
-df = get_monetary_series(id_variable=1)
-```
-
-## Data Categories
-
-The API provides access to the following data categories:
-
-### [Monetary Data](monetary.md)
-- [`get_monetary_variables`](monetary.md#method-get_monetary_variables) - List of available monetary variables
-- [`get_monetary_series`](monetary.md#method-get_monetary_series) - Time series of monetary variables
-
-### [Currency Data](currency.md)
-- [`get_currencies`](currency.md#method-get_currencies) - Currency master catalog
-- [`get_exchange_rates`](currency.md#method-get_exchange_rates) - Currency quotes for a specific date
-- [`get_currency_series`](currency.md#method-get_currency_series) - Time series of quotes for a specific currency
-
-### [Check Data](checks.md)
-- [`get_banks`](checks.md#method-get_banks) - List of banking entities
-- [`get_reported_checks`](checks.md#method-get_reported_checks) - Information on reported checks
-
-### [Debt Data](debts.md)
-- [`get_debtors`](debts.md#method-get_debtors) - Debt information registered by tax ID (CUIT/CUIL)
-- [`get_debtors_history`](debts.md#method-get_debtors_history) - Historical debt by tax ID (CUIT/CUIL)
-- [`get_rejected_checks`](debts.md#method-get_rejected_checks) - Rejected checks associated with a tax ID (CUIT/CUIL)
-
-## Common Parameters
-
-All API methods accept the following common parameters:
-
-| Parameter | Type | Description | Required |
-|-----------|------|-------------|----------|
-| `debug` | `bool` | Returns the URL instead of the data | No |
-| `json` | `bool` | Returns data as JSON instead of DataFrame | No |
+- La validación de parámetros (tipos, formatos, etc.) es gestionada por el paquete.
+- Los errores del servidor (status_code != 200) se manejan devolviendo el JSON de respuesta del servidor.
+- Por defecto, todos los métodos retornan un `pandas.DataFrame` con los datos solicitados.
