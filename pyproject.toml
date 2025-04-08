@@ -48,7 +48,7 @@ packages = [
 "pyBCRAdata" = [
     "cert/*.pem",
     "py.typed",
-    "schemas/*.json"  # Added for schema files
+    "api_docs.json"
 ]
 
 [tool.pytest.ini_options]
