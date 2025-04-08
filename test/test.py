@@ -4,21 +4,21 @@ client = BCRAclient()
 
 switch = False
 
-df_1 = client.get_monetary_data(id_variable=6, debug=switch)
-df_2 = client.get_monetary_master(debug=switch)
-df_3 = client.get_monetary_data(id_variable=6, desde='2023-01-01', hasta='2023-01-31', limit=12, offset=2, debug=switch)
+df_1 = client.get_monetary_series(id_variable=6, debug=switch)
+df_2 = client.get_monetary_variables(debug=switch)
+df_3 = client.get_monetary_series(id_variable=6, desde='2023-01-01', hasta='2023-01-31', limit=12, offset=2, debug=switch)
 
-df_4 = client.get_currency_master(debug=switch)
-df_5 = client.get_currency_quotes(fecha='2023-01-15', debug=switch)
-df_6 = client.get_currency_timeseries(moneda='USD', fechadesde='2023-01-01', fechahasta='2023-02-01', limit=12, offset=2, debug=switch)
+df_4 = client.get_currencies(debug=switch)
+df_5 = client.get_exchange_rates(fecha='2023-01-15', debug=switch)
+df_6 = client.get_currency_series(moneda='USD', fechadesde='2023-01-01', fechahasta='2023-02-01', limit=12, offset=2, debug=switch)
 
-df_7 = client.get_debts(identificacion='23409233449', debug=switch)
+df_7 = client.get_debtors(identificacion='23409233449', debug=switch)
 
-df_8 = client.get_checks_master(debug=switch)
-df_9 = client.get_checks_reported(codigo_entidad=11, numero_cheque=20377516 ,debug=switch)
+df_8 = client.get_banks(debug=switch)
+df_9 = client.get_reported_checks(codigo_entidad=11, numero_cheque=20377516 ,debug=switch)
 
-df_10 = client.get_debts_historical(identificacion='23409233449', debug=switch)
-df_11 = client.get_debts_rejected_checks(identificacion='23409233449', debug=switch)
+df_10 = client.get_debtors_history(identificacion='23409233449', debug=switch)
+df_11 = client.get_rejected_checks(identificacion='23409233449', debug=switch)
 
 print("DataFrame 1:")
 print(df_1)

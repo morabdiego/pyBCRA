@@ -47,7 +47,7 @@ client = BCRAclient(verify_ssl=False)
 import pyBCRAdata as client
 
 # O importar métodos específicos
-from pyBCRAdata import BCRAclient, get_monetary_data
+from pyBCRAdata import BCRAclient, get_monetary_variables
 ```
 
 ---
@@ -101,5 +101,5 @@ client = BCRAclient(verify_ssl=False)
 import pyBCRAdata as client
 
 # Or import specific methods
-from pyBCRAdata import BCRAclient, get_monetary_data
+from pyBCRAdata import BCRAclient, get_monetary_variables
 ```

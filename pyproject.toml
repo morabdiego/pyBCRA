@@ -15,7 +15,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Financial and Insurance Industry",
     "Intended Audience :: Science/Research",
-    "License :: Free for non-commercial use",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
@@ -25,6 +24,7 @@ classifiers = [
     "Topic :: Office/Business :: Financial",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
+license = "LicenseRef-NonCommercial-1.0"
 dependencies = [
     "pandas>=1.0.0",
     "requests>=2.25.0",
