@@ -16,7 +16,7 @@ La documentación está organizada en las siguientes secciones:
 ### 🔧 Referencia de API
 - **[Estadísticas Monetarias](api/monetary.md)** - Documentación de las funciones relacionadas con variables monetarias
 - **[Estadísticas Cambiarias](api/currency.md)** - Documentación de las funciones relacionadas con tipos de cambio
-- **[Central de Deudores](api/debts.md)** - Documentación de las funciones para consultar deudores
+- **[Central de Deudores](api/debtors.md)** - Documentación de las funciones para consultar deudores
 - **[Cheques Denunciados](api/checks.md)** - Documentación de las funciones para consultar cheques
 
 ### 🤝 Contribuciones
@@ -51,7 +51,7 @@ The documentation is organized into the following sections:
 ### 🔧 API Reference
 - **[Monetary Statistics](api/monetary.md)** - Documentation for monetary variables related functions
 - **[Exchange Rate Statistics](api/currency.md)** - Documentation for exchange rate related functions
-- **[Debtors Central](api/debts.md)** - Documentation for debtor query functions
+- **[Debtors Central](api/debtors.md)** - Documentation for debtor query functions
 - **[Reported Checks](api/checks.md)** - Documentation for check query functions
 
 ### 🤝 Contributions
