@@ -6,6 +6,13 @@ from urllib.parse import urlencode
 
 from .settings import COLUMN_TYPES
 
+SPECIAL_EXPLODE_ENDPOINTS = {
+    "currency.rates",
+    "debtors.debtors",
+    "debtors.history",
+    "checks.reported"
+}
+
 def build_url(
         base_url: str,
         endpoint: str, params: Dict[str, Any] = None,
@@ -44,7 +51,7 @@ class APIConnector:
             self._handle_request_error(e)
             return 0, {}
 
-    def fetch_data(self, url: str) -> pd.DataFrame:
+    def fetch_data(self, url: str, endpoint_key: str = "") -> pd.DataFrame:
         status_code, data = self.connect_to_api(url)
 
         if status_code != 200:
@@ -54,7 +61,7 @@ class APIConnector:
             return pd.DataFrame()
 
         try:
-            df = self._transform_to_dataframe(data)
+            df = self._transform_to_dataframe(data, endpoint_key)
             return self._assign_column_types(df) if not df.empty else df
         except Exception as e:
             self.logger.error(f"Error procesando datos: {e}")
@@ -79,21 +86,23 @@ class APIConnector:
                 items.extend(self._flatten_dict(v, new_key, sep=sep).items())
             elif isinstance(v, list):
                 if all(isinstance(i, dict) for i in v):
-                    items.append((new_key, v))  # Guardamos la lista para expandir luego
+                    items.append((new_key, v))
                 else:
                     items.append((new_key, ";".join(map(str, v))))
             else:
                 items.append((new_key, v))
         return dict(items)
 
-    def _transform_to_dataframe(self, data: Any) -> pd.DataFrame:
+    def _transform_to_dataframe(self, data: Any, endpoint_key: str = "") -> pd.DataFrame:
         if isinstance(data, dict) and 'results' in data:
             data = data['results']
         if not data:
             return pd.DataFrame()
-        return self._json_to_df(data)
+        return self._json_to_df(data, endpoint_key)
 
-    def _json_to_df(self, json_data: Union[Dict, List]) -> pd.DataFrame:
+    def _json_to_df(self, json_data: Union[Dict, List], endpoint_key: str = "") -> pd.DataFrame:
+        should_explode = endpoint_key in SPECIAL_EXPLODE_ENDPOINTS
+
         if isinstance(json_data, dict):
             json_data = [json_data]
         elif not isinstance(json_data, list):
@@ -105,6 +114,15 @@ class APIConnector:
             return pd.DataFrame()
 
         df = pd.DataFrame(flattened)
+
+        if not should_explode:
+            # Expandir listas de un solo dict en columnas
+            for col in df.columns:
+                if df[col].apply(lambda x: isinstance(x, list) and len(x) == 1 and isinstance(x[0], dict)).all():
+                    expanded = pd.json_normalize(df[col].apply(lambda x: x[0]))
+                    expanded.columns = [f"{col}_{subcol}" for subcol in expanded.columns]
+                    df = pd.concat([df.drop(columns=[col]), expanded], axis=1)
+            return df
 
         while True:
             list_columns = [col for col in df.columns if df[col].apply(lambda x: isinstance(x, list)).any()]
