@@ -11,7 +11,7 @@ __author__ = "Diego Mora"
 
 _default_client = BCRAclient()
 
-__all__ = ['BCRAclient', 'monetary', 'currency', 'checks', 'debtors']
+__all__ = ['BCRAclient', 'monetary', 'currency', 'checks', 'debtors', '__version__']
 
 _connector = APIConnector(
     base_url=APISettings.BASE_URL,
