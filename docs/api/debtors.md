@@ -1,22 +1,24 @@
-# Currency API
+# Debtors API
 
-La API de divisas proporciona acceso a cotizaciones y tipos de cambio del BCRA.
+La API de deudores proporciona acceso a información sobre deudores y cheques rechazados.
 
-## Método `currencies`
+## Método `debtors`
 
 ```python
-client.currency.currencies(
+client.debtors.debtors(
+    identificacion=None,
     debug=False,
     json=False
 )
 ```
 
-Obtiene el catálogo maestro de divisas disponibles.
+Obtiene información sobre las deudas actuales de un deudor.
 
 ### Parámetros
 
 | Parámetro | Tipo | Descripción | Requerido |
 |-----------|------|-------------|-----------|
+| `identificacion` | `str` | CUIT/CUIL del deudor | Si |
 | `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
 | `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
 
@@ -28,37 +30,37 @@ En caso de error del servidor (status_code != 200), se retornará el JSON de res
 
 ### Ejemplos
 
-#### Consulta básica: obtener todas las divisas disponibles
+#### Consulta básica: obtener deudas actuales
 
 ```python
-df = client.currency.currencies()
+df = client.debtors.debtors(identificacion="12345678")
 print(df.head())
 ```
 
 #### Modo de depuración: obtener la URL de la API
 
 ```python
-api_url = client.currency.currencies(debug=True)
+api_url = client.debtors.debtors(identificacion="12345678", debug=True)
 print(api_url)
 ```
 
-## Método `rates`
+## Método `history`
 
 ```python
-client.currency.rates(
-    fecha=None,
+client.debtors.history(
+    identificacion=None,
     debug=False,
     json=False
 )
 ```
 
-Obtiene las cotizaciones de todas las divisas para una fecha específica.
+Obtiene el historial de deudas de un deudor.
 
 ### Parámetros
 
 | Parámetro | Tipo | Descripción | Requerido |
 |-----------|------|-------------|-----------|
-| `fecha` | `str` | Fecha en formato YYYY-MM-DD | No |
+| `identificacion` | `str` | CUIT/CUIL del deudor | Si |
 | `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
 | `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
 
@@ -70,41 +72,37 @@ En caso de error del servidor (status_code != 200), se retornará el JSON de res
 
 ### Ejemplos
 
-#### Consulta básica: obtener cotizaciones del día
+#### Consulta básica: obtener historial de deudas
 
 ```python
-df = client.currency.rates(fecha="2024-01-01")
+df = client.debtors.history(identificacion="12345678")
 print(df.head())
 ```
 
 #### Modo de depuración: obtener la URL de la API
 
 ```python
-api_url = client.currency.rates(fecha="2024-01-01", debug=True)
+api_url = client.debtors.history(identificacion="12345678", debug=True)
 print(api_url)
 ```
 
-## Método `series`
+## Método `rejected`
 
 ```python
-client.currency.series(
-    moneda=None,
-    fechadesde=None,
-    fechahasta=None,
+client.debtors.rejected(
+    identificacion=None,
     debug=False,
     json=False
 )
 ```
 
-Obtiene la serie histórica de cotizaciones para una divisa específica.
+Obtiene información sobre cheques rechazados asociados a un deudor.
 
 ### Parámetros
 
 | Parámetro | Tipo | Descripción | Requerido |
 |-----------|------|-------------|-----------|
-| `moneda` | `str` | Código de la divisa (ej: "USD", "EUR") | Si |
-| `fechadesde` | `str` | Fecha de inicio (YYYY-MM-DD) | No |
-| `fechahasta` | `str` | Fecha final (YYYY-MM-DD) | No |
+| `identificacion` | `str` | CUIT/CUIL del deudor | Si |
 | `debug` | `bool` | Devuelve la URL en lugar de los datos | No |
 | `json` | `bool` | Devuelve los datos como JSON en lugar de DataFrame | No |
 
@@ -116,28 +114,17 @@ En caso de error del servidor (status_code != 200), se retornará el JSON de res
 
 ### Ejemplos
 
-#### Consulta básica: obtener serie completa
+#### Consulta básica: obtener cheques rechazados
 
 ```python
-df = client.currency.series(moneda="USD")
-print(df.head())
-```
-
-#### Con filtros de fecha
-
-```python
-df = client.currency.series(
-    moneda="USD",
-    fechadesde="2023-01-01",
-    fechahasta="2023-12-31"
-)
+df = client.debtors.rejected(identificacion="12345678")
 print(df.head())
 ```
 
 #### Modo de depuración: obtener la URL de la API
 
 ```python
-api_url = client.currency.series(moneda="USD", debug=True)
+api_url = client.debtors.rejected(identificacion="12345678", debug=True)
 print(api_url)
 ```
 
@@ -145,41 +132,29 @@ print(api_url)
 
 - La validación de parámetros (tipos, formatos, etc.) es gestionada por el paquete.
 - Los errores del servidor (status_code != 200) se manejan devolviendo el JSON de respuesta del servidor.
-- Las fechas deben estar en formato YYYY-MM-DD.
-- El código de moneda debe ser un código válido de divisa.
+- La identificación debe ser un CUIT/CUIL válido.
 
-## Divisas Comunes
+# Debtors API (English Version)
 
-Algunas divisas comunes:
+The Debtors API provides access to information about debtors and rejected checks.
 
-| Código | Descripción |
-|--------|-------------|
-| USD | Dólar Estadounidense |
-| EUR | Euro |
-| BRL | Real Brasileño |
-| GBP | Libra Esterlina |
-| JPY | Yen Japonés |
-
-
-# Currency API (English Version)
-
-The Currency API provides access to exchange rates and foreign currency quotations from the BCRA.
-
-## Method `currencies`
+## Method `debtors`
 
 ```python
-client.currency.currencies(
+client.debtors.debtors(
+    identificacion=None,
     debug=False,
     json=False
 )
 ```
 
-Retrieves the master catalog of available currencies.
+Retrieves information about a debtor's current debts.
 
 ### Parameters
 
 | Parameter | Type | Description | Required |
 |-----------|------|-------------|-----------|
+| `identificacion` | `str` | Debtor's CUIT/CUIL | Yes |
 | `debug` | `bool` | Returns the URL instead of the data | No |
 | `json` | `bool` | Returns the data as JSON instead of a DataFrame | No |
 
@@ -191,37 +166,37 @@ If a server error occurs (status_code != 200), the returned value will be the se
 
 ### Examples
 
-#### Basic query: retrieve all available currencies
+#### Basic query: retrieve current debts
 
 ```python
-df = client.currency.currencies()
+df = client.debtors.debtors(identificacion="12345678")
 print(df.head())
 ```
 
 #### Debug mode: get the API URL
 
 ```python
-api_url = client.currency.currencies(debug=True)
+api_url = client.debtors.debtors(identificacion="12345678", debug=True)
 print(api_url)
 ```
 
-## Method `rates`
+## Method `history`
 
 ```python
-client.currency.rates(
-    fecha=None,
+client.debtors.history(
+    identificacion=None,
     debug=False,
     json=False
 )
 ```
 
-Retrieves the exchange rates for all currencies on a specific date.
+Retrieves the debt history of a debtor.
 
 ### Parameters
 
 | Parameter | Type | Description | Required |
 |-----------|------|-------------|-----------|
-| `fecha` | `str` | Date in YYYY-MM-DD format | No |
+| `identificacion` | `str` | Debtor's CUIT/CUIL | Yes |
 | `debug` | `bool` | Returns the URL instead of the data | No |
 | `json` | `bool` | Returns the data as JSON instead of a DataFrame | No |
 
@@ -233,41 +208,37 @@ If a server error occurs (status_code != 200), the returned value will be the se
 
 ### Examples
 
-#### Basic query: retrieve exchange rates for a specific day
+#### Basic query: retrieve debt history
 
 ```python
-df = client.currency.rates(fecha="2024-01-01")
+df = client.debtors.history(identificacion="12345678")
 print(df.head())
 ```
 
 #### Debug mode: get the API URL
 
 ```python
-api_url = client.currency.rates(fecha="2024-01-01", debug=True)
+api_url = client.debtors.history(identificacion="12345678", debug=True)
 print(api_url)
 ```
 
-## Method `series`
+## Method `rejected`
 
 ```python
-client.currency.series(
-    moneda=None,
-    fechadesde=None,
-    fechahasta=None,
+client.debtors.rejected(
+    identificacion=None,
     debug=False,
     json=False
 )
 ```
 
-Retrieves the historical series of exchange rates for a specific currency.
+Retrieves information about rejected checks associated with a debtor.
 
 ### Parameters
 
 | Parameter | Type | Description | Required |
 |-----------|------|-------------|-----------|
-| `moneda` | `str` | Currency code (e.g., "USD", "EUR") | Yes |
-| `fechadesde` | `str` | Start date (YYYY-MM-DD) | No |
-| `fechahasta` | `str` | End date (YYYY-MM-DD) | No |
+| `identificacion` | `str` | Debtor's CUIT/CUIL | Yes |
 | `debug` | `bool` | Returns the URL instead of the data | No |
 | `json` | `bool` | Returns the data as JSON instead of a DataFrame | No |
 
@@ -279,28 +250,17 @@ If a server error occurs (status_code != 200), the returned value will be the se
 
 ### Examples
 
-#### Basic query: retrieve complete series
+#### Basic query: retrieve rejected checks
 
 ```python
-df = client.currency.series(moneda="USD")
-print(df.head())
-```
-
-#### With date filters
-
-```python
-df = client.currency.series(
-    moneda="USD",
-    fechadesde="2023-01-01",
-    fechahasta="2023-12-31"
-)
+df = client.debtors.rejected(identificacion="12345678")
 print(df.head())
 ```
 
 #### Debug mode: get the API URL
 
 ```python
-api_url = client.currency.series(moneda="USD", debug=True)
+api_url = client.debtors.rejected(identificacion="12345678", debug=True)
 print(api_url)
 ```
 
@@ -308,17 +268,4 @@ print(api_url)
 
 - Parameter validation (types, formats, etc.) is handled by the package.
 - Server errors (status_code != 200) are handled by returning the server's JSON response.
-- Dates must be in YYYY-MM-DD format.
-- The currency code must be a valid currency identifier.
-
-## Common Currencies
-
-Some common currencies:
-
-| Code | Description |
-|------|-------------|
-| USD | US Dollar |
-| EUR | Euro |
-| BRL | Brazilian Real |
-| GBP | British Pound Sterling |
-| JPY | Japanese Yen |
+- The identification must be a valid CUIT/CUIL.

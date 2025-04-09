@@ -2,24 +2,23 @@
 pyBCRAdata - Cliente Python para la API del Banco Central de la República Argentina
 """
 
-from .api.client import BCRAclient
+from .client import BCRAclient, MonetaryAPI, CurrencyAPI, ChecksAPI, DebtorsAPI
+from .connector import APIConnector
+from .settings import APISettings
 
-__version__ = "0.2.0"
+__version__ = "0.4.0"
 __author__ = "Diego Mora"
 
-# Create default client instance
 _default_client = BCRAclient()
 
-# Expose get methods from default client
-get_monetary_data = _default_client.get_monetary_data
-get_currency_master = _default_client.get_currency_master
-get_currency_quotes = _default_client.get_currency_quotes
-get_currency_timeseries = _default_client.get_currency_timeseries
+__all__ = ['BCRAclient', 'monetary', 'currency', 'checks', 'debtors', '__version__']
 
-__all__ = [
-    'BCRAclient',
-    'get_monetary_data',
-    'get_currency_master',
-    'get_currency_quotes',
-    'get_currency_timeseries'
-]
+_connector = APIConnector(
+    base_url=APISettings.BASE_URL,
+    cert_path=APISettings.CERT_PATH
+)
+
+monetary = MonetaryAPI(_connector)
+currency = CurrencyAPI(_connector)
+checks = ChecksAPI(_connector)
+debtors = DebtorsAPI(_connector)

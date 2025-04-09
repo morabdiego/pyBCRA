@@ -1,4 +1,4 @@
-# pyBCRAdata v0.3.4
+# pyBCRAdata v0.4.0
 
 [![PyPI version](https://img.shields.io/pypi/v/pyBCRAdata.svg?logo=pypi&logoColor=white)](https://badge.fury.io/py/pyBCRAdata)
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
@@ -24,13 +24,31 @@ Requiere **Python 3.7+**, **requests** y **pandas**. Ver [documentación de inst
 ## 📊 Ejemplo Rápido
 
 ```python
+from pyBCRAdata import monetary, currency, checks, debtors
+
+# Obtener variables monetarias
+variables = monetary.variables()
+
+# Obtener cotización por fecha de todas las divisas
+cotizacion = currency.rates(fecha="2024-01-01")
+
+# Obtener entidades bancarias
+bancos = checks.banks()
+
+# Consultar deudores
+deudas = debtors.debtors(identificacion="12345678")
+```
+
+O usando el cliente completo:
+
+```python
 from pyBCRAdata import BCRAclient
 
 # Inicializar cliente
 client = BCRAclient()
 
 # Obtener tasa de política monetaria
-df = client.get_monetary_data(
+df = client.monetary.series(
     id_variable="6",  # Tasa de Política Monetaria (en % n.a.)
     desde="2024-01-01",
     hasta="2024-03-21"
@@ -38,7 +56,7 @@ df = client.get_monetary_data(
 print(df.head())
 
 # Obtener cotización histórica del dólar
-usd = client.get_currency_timeseries(
+usd = client.currency.series(
     moneda="USD",
     fechadesde="2024-01-01",
     fechahasta="2024-03-21"
@@ -50,17 +68,17 @@ print(usd.head())
 
 La documentación completa está disponible en la carpeta [docs](https://github.com/morabdiego/pyBCRA/tree/main/docs/):
 
-- **[Documentación de Instalación](https://github.com/morabdiego/pyBCRA/tree/main/docs/installation/)** - Instrucciones para la instalación
+- **[Documentación de Instalación](https://github.com/morabdiego/pyBCRA/tree/main/docs/installation/installation.md)** - Instrucciones para la instalación
 - **[Referencia de API](https://github.com/morabdiego/pyBCRA/tree/main/docs/api/)** - Información detallada sobre cada método
 
 > **Nota**: Toda la documentación está disponible en español e inglés. Cada archivo incluye ambos idiomas con una separación clara.
 
 ### Principales áreas de datos
 
-- **[Datos Monetarios](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/monetary.md)** - Estadísticas monetarias y financieras
-- **[Datos de Divisas](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/currency.md)** - Cotizaciones y series históricas
-- **[Información de Deudores](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/debts.md)** - Consultas sobre deudas
-- **[Cheques Rechazados](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/checks.md)** - Información sobre cheques rechazados
+- **[Estadísticas Monetarias](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/monetary.md)** - Variables monetarias y series históricas
+- **[Estadísticas Cambiarias](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/currency.md)** - Monedas, cotizaciones y series históricas
+- **[Central de Deudores](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/debts.md)** - Deudores, historial y cheques rechazados
+- **[Cheques Denunciados](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/checks.md)** - Bancos y cheques denunciados
 
 ## 🔑 Acceso a la API
 
@@ -86,9 +104,7 @@ Este proyecto está licenciado bajo [Creative Commons Attribution-NonCommercial 
 
 ---
 
----
-
-# pyBCRAdata v0.3.4 [English]
+# pyBCRAdata v0.4.0 [English]
 
 Python client to access monetary statistics, exchange rate data, and debtor information published by the Central Bank of the Argentine Republic (BCRA).
 Designed for economists, analysts, and developers working with macroeconomic data.
@@ -106,13 +122,31 @@ Requires **Python 3.7+**, **requests**, and **pandas**. See [installation docume
 ## 📊 Quick Example
 
 ```python
+from pyBCRAdata import monetary, currency, checks, debtors
+
+# Get monetary variables
+variables = monetary.variables()
+
+# Get USD exchange rate
+cotizacion = currency.rates(fecha="2024-01-01")
+
+# Get bank entities
+bancos = checks.banks()
+
+# Query debtors
+deudas = debtors.debtors(identificacion="12345678")
+```
+
+Or using the complete client:
+
+```python
 from pyBCRAdata import BCRAclient
 
 # Initialize client
 client = BCRAclient()
 
 # Get monetary policy rate
-df = client.get_monetary_data(
+df = client.monetary.series(
     id_variable="6",  # Monetary Policy Rate (in % p.a.)
     desde="2024-01-01",
     hasta="2024-03-21"
@@ -120,7 +154,7 @@ df = client.get_monetary_data(
 print(df.head())
 
 # Get historical USD exchange rate
-usd = client.get_currency_timeseries(
+usd = client.currency.series(
     moneda="USD",
     fechadesde="2024-01-01",
     fechahasta="2024-03-21"
@@ -139,10 +173,10 @@ Complete documentation is available in the [docs](https://github.com/morabdiego/
 
 ### Main Data Areas
 
-- **[Monetary Data](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/monetary.md)** - Monetary and financial statistics
-- **[Currency Data](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/currency.md)** - Exchange rates and historical series
-- **[Debtor Information](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/debts.md)** - Queries about debts
-- **[Rejected Checks](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/checks.md)** - Information about rejected checks
+- **[Monetary Statistics](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/monetary.md)** - Monetary variables and historical series
+- **[Exchange Rate Statistics](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/currency.md)** - Currencies, exchange rates and historical series
+- **[Debtors Central](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/debts.md)** - Debtors, history and rejected checks
+- **[Reported Checks](https://github.com/morabdiego/pyBCRA/blob/main/docs/api/checks.md)** - Banks and reported checks
 
 ## 🔑 API Access
 

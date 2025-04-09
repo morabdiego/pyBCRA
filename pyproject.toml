@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyBCRAdata"
-version = "0.3.4"
+version = "0.4.0"
 authors = [
     { name = "Diego Mora", email = "morabdiego@gmail.com" },
 ]
@@ -15,7 +15,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Financial and Insurance Industry",
     "Intended Audience :: Science/Research",
-    "License :: Free for non-commercial use",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
@@ -25,10 +24,19 @@ classifiers = [
     "Topic :: Office/Business :: Financial",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
+license = "LicenseRef-NonCommercial-1.0"
 dependencies = [
     "pandas>=1.0.0",
     "requests>=2.25.0",
-    "typing-extensions>=4.0.0",  # Added for better type hint support
+    "typing-extensions>=4.0.0",
+    "pydantic>=2.0.0",  # Added for schema validation
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "build"
 ]
 
 [project.urls]
@@ -40,14 +48,17 @@ dependencies = [
 [tool.setuptools]
 package-dir = {"" = "src"}
 packages = [
-    "pyBCRAdata",
-    "pyBCRAdata.api",
-    "pyBCRAdata.config",
-    "pyBCRAdata.utils"
+    "pyBCRAdata"
 ]
 
 [tool.setuptools.package-data]
-"pyBCRdata" = [
+"pyBCRAdata" = [
     "cert/*.pem",
-    "py.typed"  # Added for type hint support
+    "py.typed",
+    "api_docs.json"
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=pyBCRAdata --cov-report=term-missing"

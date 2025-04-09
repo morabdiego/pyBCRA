@@ -5,7 +5,10 @@ Gracias por considerar contribuir a pyBCRAdata. Este documento proporciona direc
 ## Estructura del Proyecto
 
 El proyecto sigue esta estructura básica:
-- `src/`: Código fuente de la librería
+- `src/pyBCRAdata/`: Código fuente de la librería
+  - `client.py`: Cliente principal y generación de APIs
+  - `settings.py`: Configuración y constantes
+  - `connector.py`: Conexión HTTP y manejo de certificados
 - `docs/`: Documentación en español e inglés
 - `tests/`: Pruebas automatizadas
 
@@ -33,9 +36,6 @@ Contenido en español...
 Content in English...
 ```
 
-### Plantilla
-
-Usa la plantilla en [`docs/template.md`](template.md) para crear nuevos documentos.
 
 ### Consideraciones para Traducciones
 
@@ -59,6 +59,14 @@ Utiliza mensajes de commit claros y descriptivos:
 - `feat: nuevo endpoint para consulta de cheques`
 - `fix: corrección en parámetros de divisas`
 
+## Estructura de Código
+
+El proyecto utiliza una estructura modular con las siguientes características:
+
+1. **APIs Preconfiguradas**: Cada API (monetary, currency, checks, debtors) es una instancia preconfigurada
+2. **Cliente Principal**: `BCRAclient` proporciona acceso a todas las APIs
+3. **Configuración Unificada**: Todas las configuraciones están centralizadas en `settings.py`
+
 ---
 
 # 🌐 Guidelines for Contributors
@@ -68,7 +76,10 @@ Thank you for considering contributing to pyBCRAdata. This document provides gui
 ## Project Structure
 
 The project follows this basic structure:
-- `src/`: Library source code
+- `src/pyBCRAdata/`: Library source code
+  - `client.py`: Main client and API generation
+  - `settings.py`: Configuration and constants
+  - `connector.py`: HTTP connection and certificate handling
 - `docs/`: Documentation in Spanish and English
 - `tests/`: Automated tests
 
@@ -95,11 +106,6 @@ Contenido en español...
 
 Content in English...
 ```
-
-### Template
-
-Use the template in [`docs/template.md`](template.md) to create new documents.
-
 ### Translation Considerations
 
 - Maintain the same section structure in both languages
@@ -121,3 +127,11 @@ Use clear and descriptive commit messages:
 - `docs: updated bilingual documentation on monetary API`
 - `feat: new endpoint for check queries`
 - `fix: fixed currency parameters`
+
+## Code Structure
+
+The project uses a modular structure with the following features:
+
+1. **Preconfigured APIs**: Each API (monetary, currency, checks, debtors) is a preconfigured instance
+2. **Main Client**: `BCRAclient` provides access to all APIs
+3. **Unified Configuration**: All configurations are centralized in `settings.py`
