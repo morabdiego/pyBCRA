@@ -9,7 +9,7 @@ df_2 = client.monetary.variables(debug=switch)
 df_3 = client.monetary.series(id_variable=6, desde='2023-01-01', hasta='2023-01-31', limit=12, offset=2, debug=switch)
 
 df_4 = client.currency.currencies(debug=switch)
-df_5 = client.currency.rates(fecha='2023-01-15', debug=switch)
+df_5 = client.currency.rates(fecha='2023-01-17', debug=switch)
 df_6 = client.currency.series(moneda='USD', fechadesde='2023-01-01', fechahasta='2023-02-01', limit=12, offset=2, debug=switch)
 
 df_7 = client.debtors.debtors(identificacion='23409233449', debug=switch)

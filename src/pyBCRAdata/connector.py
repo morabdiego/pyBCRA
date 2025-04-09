@@ -26,7 +26,7 @@ def build_url(
     query_dict = {
         k: v for k, v in params.items()
         if k in (query_params or set()) and v is not None
-            }
+    }
 
     return f"{url}?{urlencode(query_dict)}" if query_dict else url
 
@@ -71,6 +71,21 @@ class APIConnector:
                 df[col] = df[col].astype(dtype)
         return df
 
+    def _flatten_dict(self, d: dict, parent_key: str = '', sep: str = '_') -> dict:
+        items = []
+        for k, v in d.items():
+            new_key = f"{parent_key}{sep}{k}" if parent_key else k
+            if isinstance(v, dict):
+                items.extend(self._flatten_dict(v, new_key, sep=sep).items())
+            elif isinstance(v, list):
+                if all(isinstance(i, dict) for i in v):
+                    items.append((new_key, v))  # Guardamos la lista para expandir luego
+                else:
+                    items.append((new_key, ";".join(map(str, v))))
+            else:
+                items.append((new_key, v))
+        return dict(items)
+
     def _transform_to_dataframe(self, data: Any) -> pd.DataFrame:
         if isinstance(data, dict) and 'results' in data:
             data = data['results']
@@ -78,23 +93,30 @@ class APIConnector:
             return pd.DataFrame()
         return self._json_to_df(data)
 
-    def _flatten_dict(self, d: dict, parent_key: str = '', sep: str = '_') -> dict:
-        items = []
-        for k, v in d.items():
-            new_key = f"{parent_key}{sep}{k}" if parent_key else k
-            if isinstance(v, dict):
-                items.extend(self._flatten_dict(v, new_key, sep=sep).items())
-            elif isinstance(v, list) and all(isinstance(item, dict) for item in v):
-                for i, item in enumerate(v):
-                    items.extend(self._flatten_dict(item, f"{new_key}{sep}{i}", sep=sep).items())
-            else:
-                items.append((new_key, v))
-        return dict(items)
-
     def _json_to_df(self, json_data: Union[Dict, List]) -> pd.DataFrame:
         if isinstance(json_data, dict):
-            return pd.DataFrame([self._flatten_dict(json_data)])
-        elif isinstance(json_data, list):
-            if all(isinstance(item, dict) for item in json_data):
-                return pd.DataFrame([self._flatten_dict(item) for item in json_data])
-            return pd.DataFrame(json_data)
+            json_data = [json_data]
+        elif not isinstance(json_data, list):
+            return pd.DataFrame()
+
+        flattened = [self._flatten_dict(item) for item in json_data]
+
+        if not flattened:
+            return pd.DataFrame()
+
+        df = pd.DataFrame(flattened)
+
+        while True:
+            list_columns = [col for col in df.columns if df[col].apply(lambda x: isinstance(x, list)).any()]
+            if not list_columns:
+                break
+
+            col_to_explode = list_columns[0]
+            df = df.explode(col_to_explode).reset_index(drop=True)
+
+            if df[col_to_explode].apply(lambda x: isinstance(x, dict)).all():
+                expanded_cols = pd.json_normalize(df[col_to_explode])
+                expanded_cols.columns = [f"{col_to_explode}_{subcol}" for subcol in expanded_cols.columns]
+                df = pd.concat([df.drop(columns=[col_to_explode]), expanded_cols], axis=1)
+
+        return df

@@ -32,6 +32,13 @@ dependencies = [
     "pydantic>=2.0.0",  # Added for schema validation
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "build"
+]
+
 [project.urls]
 "Homepage" = "https://github.com/morabdiego/pyBCRA"
 "Bug Tracker" = "https://github.com/morabdiego/pyBCRA/issues"

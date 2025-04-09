@@ -1,0 +1,260 @@
+DataFrame 1:
+     idVariable      fecha  valor
+0             6 2025-04-09   29.0
+1             6 2025-04-08   29.0
+2             6 2025-04-07   29.0
+3             6 2025-04-04   29.0
+4             6 2025-04-03   29.0
+..          ...        ...    ...
+995           6 2021-03-10   38.0
+996           6 2021-03-09   38.0
+997           6 2021-03-08   38.0
+998           6 2021-03-05   38.0
+999           6 2021-03-04   38.0
+
+[1000 rows x 3 columns]
+
+DataFrame 2:
+     idVariable  ...         valor
+0             1  ...  2.483800e+04
+1             4  ...  1.105570e+03
+2             5  ...  1.077130e+03
+3             6  ...  2.900000e+01
+4             7  ...  3.181250e+01
+..          ...  ...           ...
+183         192  ... -2.679300e+00
+184         193  ...  6.194000e+00
+185         194  ...  8.600000e-01
+186         195  ...  2.500000e+00
+187         196  ...  5.770094e+06
+
+[188 rows x 5 columns]
+
+DataFrame 3:
+    idVariable      fecha  valor
+0            6 2023-01-27   75.0
+1            6 2023-01-26   75.0
+2            6 2023-01-25   75.0
+3            6 2023-01-24   75.0
+4            6 2023-01-23   75.0
+5            6 2023-01-20   75.0
+6            6 2023-01-19   75.0
+7            6 2023-01-18   75.0
+8            6 2023-01-17   75.0
+9            6 2023-01-16   75.0
+10           6 2023-01-13   75.0
+11           6 2023-01-12   75.0
+
+DataFrame 4:
+   codigo                     denominacion
+0     ARS                             PESO
+1     ATS              CHELINES AUSTRIACOS
+2     AUD                  DOLAR AUSTRALIA
+3     AWG     FLORIN (ANTILLAS HOLANDESAS)
+4     BOB                       BOLIVIANOS
+5     BRL                             REAL
+6     CAD                  DOLAR CANADIEN.
+7     CHF                     FRANCO SUIZO
+8     CLP                     PESO CHILENO
+9     CNH      YUAN CNH RENMINBI OFF SHORE
+10    CNY                YUAN CNY RENMINBI
+11    COP                      COLOMBIANOS
+12    CZK                   CORONAS CHECAS
+13    DEM                     MARCO ALEMAN
+14    DKK                  CORONAS DANESAS
+15    ESP                           PESETA
+16    EUR                             EURO
+17    GBP                  LIBRA ESTERLINA
+18    HKD                  DOLAR HONG KONG
+19    ILS                    LIBRA ISRAELI
+20    INR                    RUPIA (INDIA)
+21    ITL                    LIRA ITALIANA
+22    JPY                             YENS
+23    MXP                    PESO MEXICANO
+24    NIO             CORDOBA NICARAGUENSE
+25    NIO                         CORDOBAS
+26    NOK                  CORONAS NORUEGA
+27    NZD                DOLAR NEOZELANDES
+28    PEN                            SOLES
+29    PYG                        GUARANIES
+30    REF        DOLAR REFERENCIA COM 3500
+31    RSD                     DINAR SERBIA
+32    RUB                            RUSIA
+33    SEK                   CORONAS SUECAS
+34    SGD                DOLAR DE SINGAPUR
+35    TRY                       LIRA TURCA
+36    USD                   DOLAR E.E.U.U.
+37    UYU                    PESO URUGUAYO
+38    VEB                        BOLIVARES
+39    VND  DONG VIETNAM (c/1.000 unidades)
+40    XAG                PLATA - ONZA TROY
+41    XAU                ORO FINO (1 ONZA)
+42    XDR                              DEG
+43    ZAR                         RAND SUD
+
+DataFrame 5:
+        fecha detalle_codigoMoneda  ... detalle_tipoPase  detalle_tipoCotizacion
+0  2023-01-17                  ARS  ...         0.005480                0.000000
+1  2023-01-17                  AUD  ...         0.698700              127.505763
+2  2023-01-17                  AWG  ...         0.558659              101.949721
+3  2023-01-17                  BOB  ...         0.144785               26.421787
+4  2023-01-17                  BRL  ...         0.195982               35.764821
+5  2023-01-17                  CAD  ...         0.746659              136.257747
+6  2023-01-17                  CHF  ...         1.084128              197.842585
+7  2023-01-17                  CLP  ...         0.001226                0.223678
+8  2023-01-17                  CNH  ...         0.147634               26.941758
+9  2023-01-17                  CNY  ...         0.147634               26.941758
+10 2023-01-17                  COP  ...         0.000211                0.038580
+11 2023-01-17                  CZK  ...         0.045042                8.219641
+12 2023-01-17                  DKK  ...         0.144961               26.453960
+13 2023-01-17                  EUR  ...         1.078300              196.778967
+14 2023-01-17                  GBP  ...         1.226300              223.787487
+15 2023-01-17                  HKD  ...         0.127916               23.343481
+16 2023-01-17                  ILS  ...         0.293677               53.593140
+17 2023-01-17                  INR  ...         0.012230                2.231884
+18 2023-01-17                  JPY  ...         0.007797                1.422924
+19 2023-01-17                  MXP  ...         0.053495                9.762269
+20 2023-01-17                  NIO  ...         0.027332                4.987755
+21 2023-01-17                  NOK  ...         0.101193               18.466723
+22 2023-01-17                  NZD  ...         0.642600              117.268074
+23 2023-01-17                  PEN  ...         0.260146               47.473985
+24 2023-01-17                  PYG  ...         0.000135                0.024603
+25 2023-01-17                  REF  ...         0.000000              182.491700
+26 2023-01-17                  RSD  ...         0.009187                1.676587
+27 2023-01-17                  RUB  ...         0.014519                2.649579
+28 2023-01-17                  SEK  ...         0.096010               17.520834
+29 2023-01-17                  SGD  ...         0.757002              138.145344
+30 2023-01-17                  TRY  ...         0.053271                9.721342
+31 2023-01-17                  USD  ...         0.000000              182.490000
+32 2023-01-17                  UYU  ...         0.025232                4.604531
+33 2023-01-17                  VEB  ...         0.052268                9.538470
+34 2023-01-17                  VND  ...         0.042669                7.786738
+35 2023-01-17                  XAG  ...        23.967100                0.000000
+36 2023-01-17                  XAU  ...      1907.500000                0.000000
+37 2023-01-17                  XDR  ...         1.348730              246.129738
+38 2023-01-17                  ZAR  ...         0.058579               10.690059
+
+[39 rows x 5 columns]
+
+DataFrame 6:
+        fecha detalle_codigoMoneda  ... detalle_tipoPase  detalle_tipoCotizacion
+0  2023-01-30                  USD  ...              0.0                  186.56
+1  2023-01-27                  USD  ...              0.0                  185.61
+2  2023-01-26                  USD  ...              0.0                  185.32
+3  2023-01-25                  USD  ...              0.0                  185.03
+4  2023-01-24                  USD  ...              0.0                  184.69
+5  2023-01-23                  USD  ...              0.0                  184.37
+6  2023-01-20                  USD  ...              0.0                  183.45
+7  2023-01-19                  USD  ...              0.0                  183.11
+8  2023-01-18                  USD  ...              0.0                  182.81
+9  2023-01-17                  USD  ...              0.0                  182.49
+10 2023-01-16                  USD  ...              0.0                  182.20
+11 2023-01-13                  USD  ...              0.0                  181.27
+
+[12 rows x 5 columns]
+
+DataFrame 7:
+   identificacion  ... periodos_entidades_procesoJud
+0     23409233449  ...                         False
+
+[1 rows x 14 columns]
+
+DataFrame 8:
+    codigoEntidad                              denominacion
+0             297                          BANCO BANEX S.A.
+1              17                 BANCO BBVA ARGENTINA S.A.
+2             426                           BANCO BICA S.A.
+3             259                          BANCO BMA S.A.U.
+4             336           BANCO BRADESCO ARGENTINA S.A.U.
+5             319                            BANCO CMF S.A.
+6             431                         BANCO COINAG S.A.
+7             389                       BANCO COLUMBIA S.A.
+8             299             BANCO COMAFI SOCIEDAD ANONIMA
+9             191      BANCO CREDICOOP COOPERATIVO LIMITADO
+10            432                    BANCO DE COMERCIO S.A.
+11             94                  BANCO DE CORRIENTES S.A.
+12            315                     BANCO DE FORMOSA S.A.
+13              7    BANCO DE GALICIA Y BUENOS AIRES S.A.U.
+14             29        BANCO DE LA CIUDAD DE BUENOS AIRES
+15             11              BANCO DE LA NACION ARGENTINA
+16             93                  BANCO DE LA PAMPA S.E.M.
+17             14     BANCO DE LA PROVINCIA DE BUENOS AIRES
+18             20     BANCO DE LA PROVINCIA DE CORDOBA S.A.
+19             45                    BANCO DE SAN JUAN S.A.
+20             86                  BANCO DE SANTA CRUZ S.A.
+21            321         BANCO DE SANTIAGO DEL ESTERO S.A.
+22            338   BANCO DE SERVICIOS Y TRANSACCIONES S.A.
+23            198                     BANCO DE VALORES S.A.
+24             83                     BANCO DEL CHUBUT S.A.
+25            310                        BANCO DEL SOL S.A.
+26             60                    BANCO DEL TUCUMAN S.A.
+27            448                           BANCO DINO S.A.
+28            303                       BANCO FINANSUR S.A.
+29            150                             Banco GGAL SA
+30             44                    BANCO HIPOTECARIO S.A.
+31            322                          BANCO INDUSTRIAL
+32            305              BANCO JULIO SOCIEDAD ANONIMA
+33            285                          BANCO MACRO S.A.
+34            254                         BANCO MARIVA S.A.
+35            341                      BANCO MASVENTAS S.A.
+36            281                       BANCO MERIDIAN S.A.
+37             65                BANCO MUNICIPAL DE ROSARIO
+38             34                     BANCO PATAGONIA  S.A.
+39            301                          BANCO PIANO S.A.
+40            306         BANCO PRIVADO DE INVERSIONES S.A.
+41            268       BANCO PROVINCIA DE TIERRA DEL FUEGO
+42             97          BANCO PROVINCIA DEL NEUQUEN S.A.
+43             79               BANCO REGIONAL DE CUYO S.A.
+44            309  BANCO RIOJA SOCIEDAD ANÓNIMA UNIPERSONAL
+45            247                          BANCO ROELA S.A.
+46            277                          BANCO SAENZ S.A.
+47             72            BANCO SANTANDER ARGENTINA S.A.
+48            435           BANCO SUCREDITO REGIONAL S.A.U.
+49             27                    BANCO SUPERVIELLE S.A.
+50            147                               BIBANK S.A.
+51            266                               BNP PARIBAS
+52             16                             CITIBANK N.A.
+53             15   INDUSTRIAL AND COMMERCIAL BANK OF CHINA
+54             18                            MUFG BANK, LTD
+55            386            NUEVO BANCO DE ENTRE RÍOS S.A.
+56            330  NUEVO BANCO DE SANTA FE SOCIEDAD ANONIMA
+57            311               NUEVO BANCO DEL CHACO S. A.
+58              5           The Royal Bank of Scotland N.V.
+
+DataFrame 9:
+   numeroCheque  denunciado  ... detalles_numeroCuenta         detalles_causal
+0      20377516        True  ...            5240055962  Denunciado por tercero
+
+[1 rows x 7 columns]
+
+DataFrame 10:
+    identificacion  ... periodos_entidades_procesoJud
+0      23409233449  ...                         False
+1      23409233449  ...                         False
+2      23409233449  ...                         False
+3      23409233449  ...                         False
+4      23409233449  ...                         False
+5      23409233449  ...                         False
+6      23409233449  ...                         False
+7      23409233449  ...                         False
+8      23409233449  ...                         False
+9      23409233449  ...                         False
+10     23409233449  ...                         False
+11     23409233449  ...                         False
+12     23409233449  ...                         False
+13     23409233449  ...                         False
+14     23409233449  ...                         False
+15     23409233449  ...                         False
+16     23409233449  ...                         False
+17     23409233449  ...                         False
+18     23409233449  ...                         False
+19     23409233449  ...                         False
+20     23409233449  ...                         False
+21     23409233449  ...                         False
+22     23409233449  ...                         False
+23     23409233449  ...                         False
+
+[24 rows x 8 columns]
+
+DataFrame 11:
+{'status': 404, 'errorMessages': ['No se encontró datos para la identificación ingresada.']}
