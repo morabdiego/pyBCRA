@@ -1,6 +1,4 @@
-<div align="center">
-  <img src="assets/logo.png" alt="logo" width="800"/>
-</div>
+![logo](https://raw.githubusercontent.com/morabdiego/pyBCRA/main/assets/logo.png)
 
 
 [![PyPI version](https://img.shields.io/pypi/v/pyBCRAdata.svg?logo=pypi&logoColor=white)](https://badge.fury.io/py/pyBCRAdata)
@@ -106,9 +104,7 @@ Creado por Diego Mora — Economista y Desarrollador Python.
 Este proyecto está licenciado bajo [Creative Commons Attribution-NonCommercial 4.0 International License](http://creativecommons.org/licenses/by-nc/4.0/).
 
 ---
-<div align="center">
-  <img src="assets/logo.png" alt="logo" width="800"/>
-</div>
+![logo](https://raw.githubusercontent.com/morabdiego/pyBCRA/main/assets/logo.png)
 
 
 Python client to access monetary statistics, exchange rate data, and debtor information published by the Central Bank of the Argentine Republic (BCRA).

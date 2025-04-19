@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyBCRAdata"
-version = "0.4.1"
+version = "0.4.2"
 authors = [
     { name = "Diego Mora", email = "morabdiego@gmail.com" },
 ]
@@ -55,7 +55,8 @@ packages = [
 "pyBCRAdata" = [
     "cert/*.pem",
     "py.typed",
-    "api_docs.json"
+    "api_docs.json",
+    "assets/*"
 ]
 
 [tool.pytest.ini_options]
