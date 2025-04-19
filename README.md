@@ -1,11 +1,6 @@
-<div align="center" style="display: flex; align-items: center; justify-content: center; gap: 20px;">
-  <img src="assets/logo.png" alt="logo" width="300"/>
-  <span style="font-family: 'JetBrains Mono', monospace; font-size: 80px; color: #F4EEE0;">
-    pyBCRAdata
-  </span>
+<div align="center">
+  <img src="assets/logo.png" alt="logo" width="800"/>
 </div>
-
-
 
 
 [![PyPI version](https://img.shields.io/pypi/v/pyBCRAdata.svg?logo=pypi&logoColor=white)](https://badge.fury.io/py/pyBCRAdata)
@@ -111,12 +106,8 @@ Creado por Diego Mora — Economista y Desarrollador Python.
 Este proyecto está licenciado bajo [Creative Commons Attribution-NonCommercial 4.0 International License](http://creativecommons.org/licenses/by-nc/4.0/).
 
 ---
-
-<div align="center" style="display: flex; align-items: center; justify-content: center; gap: 20px;">
-  <img src="assets/logo.png" alt="logo" width="300"/>
-  <span style="font-family: 'JetBrains Mono', monospace; font-size: 80px; color: #F4EEE0;">
-    pyBCRAdata (en)
-  </span>
+<div align="center">
+  <img src="assets/logo.png" alt="logo" width="800"/>
 </div>
 
 
