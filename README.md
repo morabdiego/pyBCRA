@@ -1,15 +1,10 @@
-<div align="center">
-  <table>
-    <tr>
-      <td><img src="assets/logo.png" alt="logo" width="300"/></td>
-      <td>
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 80px; color: #F4EEE0;">
-          pyBCRAdata
-        </span>
-      </td>
-    </tr>
-  </table>
+<div align="center" style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+  <img src="assets/logo.png" alt="logo" width="300"/>
+  <span style="font-family: 'JetBrains Mono', monospace; font-size: 80px; color: #F4EEE0;">
+    pyBCRAdata
+  </span>
 </div>
+
 
 
 
@@ -117,18 +112,13 @@ Este proyecto está licenciado bajo [Creative Commons Attribution-NonCommercial 
 
 ---
 
-<div align="center">
-  <table>
-    <tr>
-      <td><img src="assets/logo.png" alt="logo" width="300"/></td>
-      <td>
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 80px; color: #F4EEE0;">
-          pyBCRAdata (en)
-        </span>
-      </td>
-    </tr>
-  </table>
+<div align="center" style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+  <img src="assets/logo.png" alt="logo" width="300"/>
+  <span style="font-family: 'JetBrains Mono', monospace; font-size: 80px; color: #F4EEE0;">
+    pyBCRAdata (en)
+  </span>
 </div>
+
 
 Python client to access monetary statistics, exchange rate data, and debtor information published by the Central Bank of the Argentine Republic (BCRA).
 Designed for economists, analysts, and developers working with macroeconomic data.
