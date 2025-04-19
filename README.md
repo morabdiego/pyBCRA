@@ -1,15 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 150" preserveAspectRatio="xMidYMid meet">
-  <rect width="100%" height="100%" fill="transparent"/>
-  <text x="50%" y="80" text-anchor="middle" font-family="Montserrat" font-weight="700" font-size="48" fill="#f0eedc">
-    pyBCRAdata
-  </text>
-  <g transform="translate(-100,-70)">
-    <rect x="300" y="90" width="8" height="20" fill="#64b692"/>
-    <rect x="320" y="60" width="8" height="50" fill="#64b692"/>
-    <rect x="340" y="80" width="8" height="30" fill="#9b4d4d"/>
-    <rect x="360" y="70" width="8" height="40" fill="#64b692"/>
-  </g>
-</svg>
+<div align="center">
+  <table>
+    <tr>
+      <td><img src="assets/logo.png" alt="logo" width="300"/></td>
+      <td>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 80px; color: #F4EEE0;">
+          pyBCRAdata
+        </span>
+      </td>
+    </tr>
+  </table>
+</div>
+
 
 
 [![PyPI version](https://img.shields.io/pypi/v/pyBCRAdata.svg?logo=pypi&logoColor=white)](https://badge.fury.io/py/pyBCRAdata)
@@ -116,7 +117,18 @@ Este proyecto está licenciado bajo [Creative Commons Attribution-NonCommercial 
 
 ---
 
-# pyBCRAdata v0.4.1 [English]
+<div align="center">
+  <table>
+    <tr>
+      <td><img src="assets/logo.png" alt="logo" width="300"/></td>
+      <td>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 80px; color: #F4EEE0;">
+          pyBCRAdata (en)
+        </span>
+      </td>
+    </tr>
+  </table>
+</div>
 
 Python client to access monetary statistics, exchange rate data, and debtor information published by the Central Bank of the Argentine Republic (BCRA).
 Designed for economists, analysts, and developers working with macroeconomic data.
