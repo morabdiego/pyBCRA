@@ -46,6 +46,13 @@ client = BCRAclient()
 
 ## Configuración Avanzada
 
+Los certificados SSL tienen una fecha de expiración (el más próximo 23/4/2026). Intentaremos mantener el proyecto actualizado cuando esto suceda. Si encuentras errores SSL utiliza un certificado.pem actualizado, puedes obtenerlo por ejemplo de la siguiente manera:
+
+1. Abre el sitio web en un navegador como Chrome o Firefox en alguna url de la api, por ejemplo https://api.bcra.gob.ar/estadisticas/v3.0/monetarias?.
+2. Inspecciona el certificado del sitio (clic en el candado > Más información > Ver certificado).
+3. Exporta la cadena completa de certificados (servidor, intermedio, raíz) y úsala en tu script. Debe ser un archivo.pem
+
+
 ### Certificados SSL personalizados
 
 Si necesitas utilizar certificados personalizados:
@@ -61,17 +68,6 @@ client = BCRAclient(
 
 ```python
 client = BCRAclient(verify_ssl=False)
-```
-
-### URL base personalizada
-
-Si necesitas usar una URL base diferente:
-
-```python
-client = BCRAclient(
-    base_url="https://api.custom.bcra.gob.ar",
-    verify_ssl=True
-)
 ```
 
 ## Ejemplos de Uso
@@ -176,6 +172,12 @@ client = BCRAclient()
 ```
 
 ## Advanced Configuration
+
+SSL certificates have an expiration date (the earliest is April 23, 2026). We will try to keep the project updated when this happens. If you encounter SSL errors, use an updated .pem certificate. You can obtain it, for example, as follows:
+
+1. Open the website in a browser like Chrome or Firefox at an API URL, for example https://api.bcra.gob.ar/estadisticas/v3.0/monetarias?
+2. Inspect the site's certificate (click the lock > More information > View certificate).
+3. Export the complete certificate chain (server, intermediate, root) and use it in your script. It must be a .pem file.
 
 ### Custom SSL Certificates
 
